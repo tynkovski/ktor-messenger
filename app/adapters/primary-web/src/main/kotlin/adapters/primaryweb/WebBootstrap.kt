@@ -107,7 +107,6 @@ fun Application.webBootstrap() {
     install(Authentication) {
         jwt {
             realm = "Messenger"
-
         }
     }
 
