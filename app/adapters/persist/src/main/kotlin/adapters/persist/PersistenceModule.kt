@@ -1,9 +1,9 @@
 package adapters.persist
 
-import adapters.persist.addressbook.LoadPersonAdapter
-import adapters.persist.addressbook.SavePersonAdapter
-import adapters.persist.addressbook.repo.PersonRepo
-import adapters.persist.addressbook.repo.PostalAddressRepo
+import adapters.persist.messenger.LoadPersonAdapter
+import adapters.persist.messenger.SavePersonAdapter
+import adapters.persist.messenger.repo.PersonRepo
+import adapters.persist.messenger.repo.PostalAddressRepo
 import adapters.persist.util.DatabaseErrorInspector
 import adapters.persist.util.postgresql.PgErrorInspector
 import core.outport.AddPersonPort

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Ktor Hexagonal Multimodule Address Book API
+  title: Ktor Messenger API
   version: 0.0.1
 
 paths:

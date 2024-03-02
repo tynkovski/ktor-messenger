@@ -1,7 +1,7 @@
-package adapters.persist.addressbook
+package adapters.persist.messenger
 
-import adapters.persist.addressbook.repo.PersonRepo
-import adapters.persist.addressbook.repo.PostalAddressRepo
+import adapters.persist.messenger.repo.PersonRepo
+import adapters.persist.messenger.repo.PostalAddressRepo
 import com.github.michaelbull.logging.InlineLogger
 import core.models.PersonEntry
 import core.models.PersonEntryNotFoundException

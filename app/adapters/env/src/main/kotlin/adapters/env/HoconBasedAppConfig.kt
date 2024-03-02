@@ -2,12 +2,8 @@ package adapters.env
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import core.outport.DeploymentConfig
-import core.outport.GetDatabaseConfigPort
-import core.outport.GetDeploymentConfigPort
-import core.outport.GetRandomPersonServiceConfigPort
-import core.outport.RandomPersonServiceConfig
-import java.util.Properties
+import core.outport.*
+import java.util.*
 
 /**
  * Application configuration reader from HOCON config file.
@@ -15,7 +11,8 @@ import java.util.Properties
 internal class HoconBasedAppConfig(deploymentEnv: String) :
     GetDeploymentConfigPort,
     GetDatabaseConfigPort,
-    GetRandomPersonServiceConfigPort {
+    GetRandomPersonServiceConfigPort,
+    GetAuthPort {
     private val config: Config
 
     init {
@@ -41,6 +38,11 @@ internal class HoconBasedAppConfig(deploymentEnv: String) :
 
     override val database: Properties by lazy {
         val node = config.getConfig("main-db.hikari")
+        node.toProperties()
+    }
+
+    override val auth: Properties by lazy {
+        val node = config.getConfig("jwt")
         node.toProperties()
     }
 

@@ -14,6 +14,8 @@ dependencies {
     api(project(":app:common"))
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
     implementation("io.ktor:ktor-server-cors:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
@@ -31,7 +33,7 @@ dependencies {
 }
 
 openApiGenerate {
-    inputSpec.set("$projectDir/src/main/resources/openapi/addrbook.yaml")
+    inputSpec.set("$projectDir/src/main/resources/openapi/messenger.yaml")
     outputDir.set("$projectDir")
     generatorName.set("kotlin")
     globalProperties.put("models", "")

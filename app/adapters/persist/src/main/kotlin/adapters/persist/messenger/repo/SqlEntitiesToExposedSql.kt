@@ -1,4 +1,4 @@
-package adapters.persist.addressbook.repo
+package adapters.persist.messenger.repo
 
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.InsertStatement

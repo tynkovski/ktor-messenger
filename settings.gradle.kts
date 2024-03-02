@@ -1,4 +1,4 @@
-rootProject.name = "ktor-hexagonal-multimodule"
+rootProject.name = "ktor-messenger"
 include(
     "app:infra",
     "app:core",

@@ -175,7 +175,7 @@ of new entry in persistent storage. The communication with persistence storage s
 via output ports and for this specific use case the perfect match will be `core.outport.AddPersonPort`
 port interface.<br><br> 
 
-3. `persis` adapter's code in `adapters.persist.addressbook.SavePersonAdapter` class
+3. `persis` adapter's code in `adapters.persist.messenger.SavePersonAdapter` class
 implements `AddPersonPort` interface and therefore responsible to handle persistence logic
 needed by core module. First it performs validations required, converts business entity
 `PersonEntry` into two data classes - `PersonSqlEntity` and `PostalAddressSqlEntity` and
@@ -210,7 +210,7 @@ and it uses to output ports to perform it work: `GenerateRandomPersonPort` to ob
 from a remote service and `AddPersonPort` (similar to our first example) to persist this random person
 into a database.<br><br>
 
-3. `adapters.persist.addressbook.SavePersonAdapter` class in module `persist` implements `AddPersonPort` and performs
+3. `adapters.persist.messenger.SavePersonAdapter` class in module `persist` implements `AddPersonPort` and performs
 entity transformations and calls to persist repository to store data.<br><br>
 
 4. Repository class uses ExposedSQL to store SQL entities into database.<br><br>
@@ -272,7 +272,7 @@ Make sure to create **addrbook** database in your PostgreSQL instance.
 Application uses HOCON configuration files and some parameters rely on environment variable,
 so you need to set them up first:
 
-APP_DEPLOYMENT_ENV=local;APP_DB_USERNAME=baeldung;APP_DB_PASSWORD=baeldung;APP_DB_URI=jdbc:postgresql://localhost:5432/addrbook;APP_VERSION=0.0;APP_BUILD_NUMBER=0
+APP_DEPLOYMENT_ENV=local;APP_DB_USERNAME=baeldung;APP_DB_PASSWORD=baeldung;APP_DB_URI=jdbc:postgresql://localhost:5432/ktor-messenger;APP_VERSION=0.0;APP_BUILD_NUMBER=0
 
 - Deployment target. Application can have multiple configurations (local, dev, sit, prod etc) and therefore
   multiple resource files, such as `infra/src/main/resources/config-local.conf` (`config-prod.conf` etc) are available.

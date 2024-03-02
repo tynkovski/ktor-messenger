@@ -1,7 +1,7 @@
 package adapters.persist
 
-import adapters.persist.addressbook.repo.PersonSqlEntities
-import adapters.persist.addressbook.repo.PostalAddressSqlEntities
+import adapters.persist.messenger.repo.PersonSqlEntities
+import adapters.persist.messenger.repo.PostalAddressSqlEntities
 import adapters.persist.util.DatabaseErrorInspector
 import com.github.michaelbull.logging.InlineLogger
 import com.zaxxer.hikari.HikariConfig

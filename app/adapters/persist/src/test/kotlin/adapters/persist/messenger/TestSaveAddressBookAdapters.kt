@@ -1,4 +1,4 @@
-package adapters.persist.addressbook
+package adapters.persist.messenger
 
 import adapters.persist.DatabaseConnector
 import core.errors.ResourceAlreadyExistsException

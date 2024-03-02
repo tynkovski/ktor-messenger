@@ -25,6 +25,10 @@ interface GetDatabaseConfigPort {
     val database: Properties
 }
 
+interface GetAuthPort {
+    val auth: Properties
+}
+
 interface GetRandomPersonServiceConfigPort {
     val randomPersonService: RandomPersonServiceConfig
 }

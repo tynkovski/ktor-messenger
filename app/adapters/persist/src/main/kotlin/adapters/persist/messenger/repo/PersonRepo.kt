@@ -1,4 +1,4 @@
-package adapters.persist.addressbook.repo
+package adapters.persist.messenger.repo
 
 import adapters.persist.util.postgresql.pgInsertOrUpdate
 import com.github.michaelbull.logging.InlineLogger
