@@ -14,6 +14,7 @@ dependencies {
     api(project(":app:adapters:persist"))
     api(project(":app:adapters:remoting"))
     api(project(":app:adapters:primary-web"))
+    api(project(":app:adapters:security"))
     api(project(":app:core"))
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")

@@ -17,6 +17,6 @@ val envModule =
                 GetDeploymentConfigPort::class,
                 GetDatabaseConfigPort::class,
                 GetRandomPersonServiceConfigPort::class,
-                GetAuthPort::class,
+                GetTokenConfigPort::class,
             )
     }

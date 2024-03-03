@@ -1,12 +1,6 @@
 package core.services
 
-import core.usecase.AddPersonUsecase
-import core.usecase.DeletePersonUsecase
-import core.usecase.HealthStatusUsecase
-import core.usecase.LoadAllPersonsUsecase
-import core.usecase.LoadPersonUsecase
-import core.usecase.PopulateRandomPersonUsecase
-import core.usecase.UpdatePersonUsecase
+import core.usecase.*
 import org.koin.dsl.module
 
 internal val serviceModule = module {
@@ -29,7 +23,6 @@ internal val serviceModule = module {
     single<LoadAllPersonsUsecase> {
         LoadAllPersonsService(loadAllPersonsPort = get(), txPort = get())
     }
-
     single<PopulateRandomPersonUsecase> {
         RandomPersonService(
             generateRandomPersonPort = get(),
@@ -37,4 +30,26 @@ internal val serviceModule = module {
             txPort = get(),
         )
     }
+
+    single<AddUserUsecase> {
+        AddUserService(addUserPort = get(), txPort = get())
+    }
+    single<GetUserUsecase> {
+        GetUserService(getUserPort = get(), txPort = get())
+    }
+    single<DeleteUserUsecase> {
+        DeleteUserService(deleteUserPort = get(), txPort = get())
+    }
+    single<UpdateUserUsecase> {
+        UpdateUserService(updateUserPort = get(), txPort = get())
+    }
+
+    single<VerifyPasswordUsecase> {
+        VerifyPasswordService(verifyPasswordPort = get())
+    }
+
+    single<GenerateSaltedHashUsecase> {
+        GenerateSaltedHashService(generateSaltedHashPort= get())
+    }
+
 }

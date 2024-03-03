@@ -1,7 +1,8 @@
-package adapters.persist.messenger
+package adapters.persist.messenger.person
 
-import adapters.persist.messenger.repo.PersonRepo
-import adapters.persist.messenger.repo.PostalAddressRepo
+import adapters.persist.messenger.mappers.fromEntity
+import adapters.persist.messenger.mappers.toPersonSqlEntity
+import adapters.persist.messenger.mappers.toPostalAddressSqlEntity
 import com.github.michaelbull.logging.InlineLogger
 import core.models.PersonEntry
 import core.models.PersonEntryNotFoundException
@@ -14,8 +15,8 @@ import core.outport.UpdatePersonPort
  * Adapter to perform save/delete operations over address book item and postal address repositories.
  */
 internal class SavePersonAdapter(
-    private val personRepository: PersonRepo,
-    private val postalAddressRepo: PostalAddressRepo,
+    private val personRepository: PersonRepository,
+    private val postalAddressRepository: PostalAddressRepository,
 ) : AddPersonPort,
     UpdatePersonPort,
     DeletePersonPort {
@@ -36,7 +37,7 @@ internal class SavePersonAdapter(
         if (!personRepository.hasEntityWithId(id = personId)) {
             throw PersonEntryNotFoundException(searchCriteria = "id=$personId")
         }
-        val postalAddressId = postalAddressRepo
+        val postalAddressId = postalAddressRepository
             .getByPersonIdOrNull(personId)
             ?.id
         return upsertPersonEntry(
@@ -57,7 +58,7 @@ internal class SavePersonAdapter(
                 postalAddressId = postalAddressId,
             )
             ?.let {
-                postalAddressRepo.upsert(it)
+                postalAddressRepository.upsert(it)
             }
         return PersonEntry.fromEntity(
             personSqlEntity = addressBookItemSqlEntity,

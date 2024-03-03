@@ -1,12 +1,16 @@
-package adapters.persist.messenger.repo
+package adapters.persist.messenger.person
 
+import adapters.persist.messenger.entities.PostalAddressSqlEntities
+import adapters.persist.messenger.entities.PostalAddressSqlEntity
+import adapters.persist.messenger.mappers.fromSqlResultRow
+import adapters.persist.messenger.mappers.toSqlStatement
 import adapters.persist.util.postgresql.pgInsertOrUpdate
 import com.github.michaelbull.logging.InlineLogger
 import core.outport.MustBeCalledInTransactionContext
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 
-internal class PostalAddressRepo {
+internal class PostalAddressRepository {
 
     private val logger = InlineLogger()
 

@@ -1,35 +1,32 @@
 package adapters.primaryweb
 
+import adapters.primaryweb.mappers.toRestGenericException
+import adapters.primaryweb.routes.authRoute
 import adapters.primaryweb.routes.healthRoute
 import adapters.primaryweb.routes.personRoute
+import adapters.primaryweb.routes.userRoute
 import adapters.primaryweb.util.RestGenericException
 import adapters.primaryweb.util.RestInternalServerError
 import adapters.primaryweb.util.respondRestException
 import com.github.michaelbull.logging.InlineLogger
-import common.log.setXRequestId
 import common.log.X_REQUEST_ID_LOG_KEY
+import common.log.setXRequestId
 import core.errors.DomainException
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.application.Application
-import io.ktor.server.application.install
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import io.ktor.server.plugins.callid.CallId
-import io.ktor.server.plugins.callid.callId
-import io.ktor.server.plugins.callloging.CallLogging
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.plugins.cors.routing.CORS
-import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.request.header
-import io.ktor.server.request.path
-import io.ktor.server.request.uri
-import io.ktor.server.response.respond
-import io.ktor.server.routing.routing
+import io.ktor.server.plugins.callid.*
+import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import org.slf4j.event.Level
-import java.util.UUID
+import java.util.*
 
 private val logger = InlineLogger()
 
@@ -107,6 +104,7 @@ fun Application.webBootstrap() {
     install(Authentication) {
         jwt {
             realm = "Messenger"
+            // todo add `verifier(tokenService.accessTokenVerifier)`
         }
     }
 
@@ -115,6 +113,8 @@ fun Application.webBootstrap() {
             logger.debug { "routing/trace(): ${it.buildText()}" }
         }
         healthRoute()
+        userRoute()
+        authRoute()
         personRoute()
     }
 }

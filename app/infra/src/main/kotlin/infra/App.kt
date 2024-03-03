@@ -7,6 +7,7 @@ import adapters.env.envModule
 import adapters.persist.persistenceModule
 import adapters.primaryweb.webBootstrap
 import adapters.remoting.remotingModule
+import adapters.security.hashingModule
 import com.github.michaelbull.logging.InlineLogger
 import core.coreModule
 import core.outport.BootPersistStoragePort
@@ -34,6 +35,7 @@ fun Application.main() {
             coreModule,
             persistenceModule,
             remotingModule,
+            hashingModule
         )
     }
 

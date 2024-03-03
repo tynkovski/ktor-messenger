@@ -1,4 +1,4 @@
-package adapters.persist.messenger.repo
+package adapters.persist.messenger.entities
 
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table

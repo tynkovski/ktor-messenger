@@ -1,7 +1,6 @@
-package adapters.persist.messenger
+package adapters.persist.messenger.person
 
-import adapters.persist.messenger.repo.PersonRepo
-import adapters.persist.messenger.repo.PostalAddressRepo
+import adapters.persist.messenger.mappers.fromEntity
 import com.github.michaelbull.logging.InlineLogger
 import core.models.PersonEntry
 import core.models.PersonEntryNotFoundException
@@ -13,8 +12,8 @@ import core.outport.MustBeCalledInTransactionContext
  * Adapter to perform load operations over address book item and postal address repositories.
  */
 internal class LoadPersonAdapter(
-    private val personRepo: PersonRepo,
-    private val postalAddressRepo: PostalAddressRepo,
+    private val personRepository: PersonRepository,
+    private val postalAddressRepository: PostalAddressRepository,
 ) : LoadPersonPort,
     LoadAllPersonsPort {
 
@@ -23,9 +22,9 @@ internal class LoadPersonAdapter(
     @MustBeCalledInTransactionContext
     override fun loadPerson(id: Long): PersonEntry {
         logger.debug { "loadPerson(): Load person entry: id=$id" }
-        val personSqlEntity = personRepo.getByIdOrNull(id = id)
+        val personSqlEntity = personRepository.getByIdOrNull(id = id)
             ?: throw PersonEntryNotFoundException(searchCriteria = "id=$id")
-        val postalAddressSqlEntity = postalAddressRepo.getByPersonIdOrNull(id)
+        val postalAddressSqlEntity = postalAddressRepository.getByPersonIdOrNull(id)
         return PersonEntry.fromEntity(
             personSqlEntity = personSqlEntity,
             postalAddressSqlEntity = postalAddressSqlEntity,
@@ -35,8 +34,8 @@ internal class LoadPersonAdapter(
     @MustBeCalledInTransactionContext
     override fun loadAllPersons(): Collection<PersonEntry> {
         logger.debug { "loadAllPersons(): Load all person entries" }
-        val personSqlEntities = personRepo.getAll()
-        val postalAddressSqlEntitiesMap = postalAddressRepo.getAll().associateBy {
+        val personSqlEntities = personRepository.getAll()
+        val postalAddressSqlEntitiesMap = postalAddressRepository.getAll().associateBy {
             it.personId
         }
         return personSqlEntities
