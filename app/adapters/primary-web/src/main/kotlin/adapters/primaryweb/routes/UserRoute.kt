@@ -51,7 +51,6 @@ private fun Route.getUser() {
     // val userUsecase by inject<GetUserUsecase>()
     get {
         val user = checkNotNull(call.principal<JWTPrincipalExtended>()).user
-        logger.debug { "pizda $user" }
         call.respond(status = HttpStatusCode.OK, message = user.toResponse())
     }
 }
