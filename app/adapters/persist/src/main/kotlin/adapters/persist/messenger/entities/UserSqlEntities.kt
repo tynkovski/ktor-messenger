@@ -1,9 +1,6 @@
 package adapters.persist.messenger.entities
 
-import adapters.persist.messenger.entities.PersonSqlEntities.index
-import adapters.persist.messenger.entities.PersonSqlEntities.uniqueIndex
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.LocalDateTime
 
@@ -14,7 +11,7 @@ internal object UserSqlEntities : Table(name = "user") {
     val login = text("login").uniqueIndex()
     val password = text("password")
     val salt = text("salt")
-    val createdAt = datetime("created_at").index()
+    val createdAt = datetime("created_at")
 
     override val primaryKey = PrimaryKey(id, name = "PK_user_id")
 }

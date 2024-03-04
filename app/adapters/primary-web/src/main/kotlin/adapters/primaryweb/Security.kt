@@ -9,7 +9,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import org.koin.ktor.ext.inject
 
-fun Application.configureSecurity() {
+internal fun Application.configureSecurity() {
     val accessTokenVerifier by inject<AccessTokenVerifierUsecase>()
     val tokenConfig by inject<TokenConfig>()
     val findUserForAccessKeyUsecase by inject<FindUserForAccessKeyUsecase>()

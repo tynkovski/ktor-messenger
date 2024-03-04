@@ -10,7 +10,7 @@ import io.ktor.server.routing.*
 
 private val logger = InlineLogger()
 
-fun Application.configureRouting() {
+internal fun Application.configureRouting() {
     routing {
         trace {
             logger.debug { "routing/trace(): ${it.buildText()}" }
