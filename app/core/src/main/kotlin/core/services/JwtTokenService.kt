@@ -13,7 +13,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-internal class JwtTokenVerifierService(
+internal class JwtTokenService(
     configPort: GetTokenConfigPort
 ) : AccessTokenVerifierUsecase,
     GenerateKeyUsecase,

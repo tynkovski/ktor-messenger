@@ -54,7 +54,7 @@ internal val serviceModule = module {
     }
 
     single {
-        JwtTokenVerifierService(configPort = get())
+        JwtTokenService(configPort = get())
     } binds arrayOf(
         AccessTokenVerifierUsecase::class,
         GenerateKeyUsecase::class,
