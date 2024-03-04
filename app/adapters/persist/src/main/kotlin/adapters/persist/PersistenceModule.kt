@@ -1,9 +1,11 @@
 package adapters.persist
 
+import adapters.persist.messenger.keystore.KeyStoreAdapter
+import adapters.persist.messenger.keystore.KeyStoreRepository
 import adapters.persist.messenger.person.PersonAdapter
-import adapters.persist.messenger.user.UserAdapter
 import adapters.persist.messenger.person.PersonRepository
 import adapters.persist.messenger.person.PostalAddressRepository
+import adapters.persist.messenger.user.UserAdapter
 import adapters.persist.messenger.user.UserRepository
 import adapters.persist.util.DatabaseErrorInspector
 import adapters.persist.util.postgresql.PgErrorInspector
@@ -17,6 +19,22 @@ val persistenceModule = module {
     }
 
     single {
+        PersonRepository()
+    }
+
+    single {
+        PostalAddressRepository()
+    }
+
+    single {
+        UserRepository()
+    }
+
+    single {
+        KeyStoreRepository()
+    }
+
+    single {
         DatabaseConnector(
             databaseConfig = get<GetDatabaseConfigPort>().database,
             errorInspector = get(),
@@ -26,16 +44,6 @@ val persistenceModule = module {
         ShutdownPersistStoragePort::class,
         PersistTransactionPort::class,
     )
-
-    single {
-        PersonRepository()
-    }
-    single {
-        PostalAddressRepository()
-    }
-    single {
-        UserRepository()
-    }
 
     single {
         PersonAdapter(
@@ -51,11 +59,30 @@ val persistenceModule = module {
     )
 
     single {
-        UserAdapter(userRepository = get())
+        UserAdapter(
+            userRepository = get(),
+            keyStoreRepository = get()
+        )
     } binds arrayOf(
         GetUserPort::class,
         AddUserPort::class,
         UpdateUserPort::class,
         DeleteUserPort::class,
+        GetUserByLoginPort::class,
+        FindUserForAccessKeyPort::class,
+        FindUserForKeysPort::class
+    )
+
+    single {
+        KeyStoreAdapter(
+            keyStoreRepository = get(),
+            generateKeyUsecase = get(),
+            generateAccessTokenUsecase = get(),
+            generateRefreshTokenUsecase = get(),
+        )
+    } binds arrayOf(
+        CreateAndSaveTokensPort::class,
+        CreateAccessTokenPort::class,
+        DeleteRefreshTokenPort::class
     )
 }

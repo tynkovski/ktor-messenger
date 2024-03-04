@@ -5,16 +5,16 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.LocalDateTime
 
-internal object KeyStoreEntities : Table(name = "key_store") {
+internal object KeyStoreSqlEntities : Table(name = "key_store") {
     val id = long("id").autoIncrement()
     val userId = long("user_id")
-        .references(PersonSqlEntities.id, onDelete = ReferenceOption.CASCADE)
-        .uniqueIndex()
-    val accessKey = text("access_key").index()
-    val refreshKey = text("refresh_key")
+        .references(UserSqlEntities.id, onDelete = ReferenceOption.CASCADE)
+        .index()
+    val accessKey = text("access_key").uniqueIndex()
+    val refreshKey = text("refresh_key").uniqueIndex()
     val createdAt = datetime("created_at")
 
-    override val primaryKey = PrimaryKey(UserSqlEntities.id, name = "PK_user_id")
+    override val primaryKey = PrimaryKey(id, name = "PK_key_store_id")
 }
 
 internal data class KeyStoreSqlEntity(

@@ -1,7 +1,16 @@
 package core.outport
 
+import core.models.TokenEntry
 import core.models.UserEntry
 
-interface FindUserForAccessKeyPort {
-    fun findUserForAccessKey(accessKey: String): UserEntry?
+interface CreateAndSaveTokensPort {
+    fun createAndSaveTokens(user: UserEntry): TokenEntry
+}
+
+interface CreateAccessTokenPort {
+    fun createAndSaveAccessToken(user: UserEntry, refreshKey: String): String
+}
+
+interface DeleteRefreshTokenPort {
+    fun deleteRefreshToken(refreshKey: String)
 }

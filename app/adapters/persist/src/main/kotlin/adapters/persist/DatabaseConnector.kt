@@ -1,5 +1,6 @@
 package adapters.persist
 
+import adapters.persist.messenger.entities.KeyStoreSqlEntities
 import adapters.persist.messenger.entities.PersonSqlEntities
 import adapters.persist.messenger.entities.PostalAddressSqlEntities
 import adapters.persist.messenger.entities.UserSqlEntities
@@ -35,7 +36,8 @@ internal class DatabaseConnector(
     private val tables = arrayOf(
         PersonSqlEntities,
         PostalAddressSqlEntities,
-        UserSqlEntities
+        UserSqlEntities,
+        KeyStoreSqlEntities
         // add your tables here
     )
 

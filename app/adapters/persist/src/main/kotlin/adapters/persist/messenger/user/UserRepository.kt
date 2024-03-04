@@ -21,6 +21,15 @@ internal class UserRepository {
     }
 
     @MustBeCalledInTransactionContext
+    fun getByLoginOrNull(login: String): UserSqlEntity? {
+        return UserSqlEntities
+            .select { UserSqlEntities.login eq login }
+            .limit(1)
+            .map { UserSqlEntity.fromSqlResultRow(it) }
+            .singleOrNull()
+    }
+
+    @MustBeCalledInTransactionContext
     fun upsert(entity: UserSqlEntity): UserSqlEntity {
         return UserSqlEntities
             .pgInsertOrUpdate(UserSqlEntities.id) { entity.toSqlStatement(it) }

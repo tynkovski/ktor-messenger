@@ -38,6 +38,9 @@ internal val serviceModule = module {
     single<GetUserUsecase> {
         GetUserService(getUserPort = get(), txPort = get())
     }
+    single<GetUserByLoginUsecase> {
+        GetUserByLoginService(getUserPort = get(), txPort = get())
+    }
     single<DeleteUserUsecase> {
         DeleteUserService(deleteUserPort = get(), txPort = get())
     }
@@ -50,7 +53,7 @@ internal val serviceModule = module {
     }
 
     single<GenerateSaltedHashUsecase> {
-        GenerateSaltedHashService(generateSaltedHashPort= get())
+        GenerateSaltedHashService(generateSaltedHashPort = get())
     }
 
     single {
@@ -63,4 +66,20 @@ internal val serviceModule = module {
         VerifyRefreshTokenUsecase::class,
         VerifyAccessTokenUsecase::class
     )
+
+    single<FindUserForAccessKeyUsecase> {
+        FindUserForAccessKeyService(findUserForAccessKeyPort = get(), txPort = get())
+    }
+    single<FindUserForKeysUsecase> {
+        FindUserForKeysService(findUserForKeysPort = get(), txPort = get())
+    }
+    single<CreateAndSaveTokensUsecase> {
+        CreateAndSaveTokensService(createAndSaveTokensPort = get(), txPort = get())
+    }
+    single<CreateAccessTokenUsecase> {
+        CreateAccessTokenService(createAccessTokenPort = get(), txPort = get())
+    }
+    single<DeleteRefreshTokenUsecase> {
+        DeleteRefreshTokenService(deleteRefreshTokenPort = get(), txPort = get())
+    }
 }

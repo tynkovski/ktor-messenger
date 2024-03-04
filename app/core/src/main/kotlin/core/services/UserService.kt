@@ -2,10 +2,7 @@ package core.services
 
 import core.models.UserEntry
 import core.outport.*
-import core.usecase.AddUserUsecase
-import core.usecase.DeleteUserUsecase
-import core.usecase.GetUserUsecase
-import core.usecase.UpdateUserUsecase
+import core.usecase.*
 
 internal class AddUserService(
     private val addUserPort: AddUserPort,
@@ -23,6 +20,14 @@ internal class GetUserService(
         txPort.withNewTransaction { getUserPort.getUser(id) }
 }
 
+internal class GetUserByLoginService(
+    private val getUserPort: GetUserByLoginPort,
+    private val txPort: PersistTransactionPort,
+) : GetUserByLoginUsecase {
+    override suspend fun getUser(login: String): UserEntry =
+        txPort.withNewTransaction { getUserPort.getUser(login) }
+}
+
 internal class DeleteUserService(
     private val deleteUserPort: DeleteUserPort,
     private val txPort: PersistTransactionPort,
@@ -38,4 +43,22 @@ internal class UpdateUserService(
 ) : UpdateUserUsecase {
     override suspend fun updateUser (entry: UserEntry): UserEntry =
         txPort.withNewTransaction { updateUserPort.updateUser(entry) }
+}
+
+internal class FindUserForAccessKeyService(
+    private val findUserForAccessKeyPort: FindUserForAccessKeyPort,
+    private val txPort: PersistTransactionPort,
+) : FindUserForAccessKeyUsecase {
+    override suspend fun findUserForAccessKey(accessKey: String) = txPort.withNewTransaction {
+        findUserForAccessKeyPort.findUserForAccessKey(accessKey)
+    }
+}
+
+internal class FindUserForKeysService(
+    private val findUserForKeysPort: FindUserForKeysPort,
+    private val txPort: PersistTransactionPort,
+) : FindUserForKeysUsecase {
+    override suspend fun findUserForKeys(accessKey: String, refreshKey: String) = txPort.withNewTransaction {
+        findUserForKeysPort.findUserForKeys(accessKey, refreshKey)
+    }
 }

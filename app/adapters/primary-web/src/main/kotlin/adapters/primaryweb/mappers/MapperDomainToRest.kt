@@ -3,8 +3,10 @@ package adapters.primaryweb.mappers
 import adapters.primaryweb.gen.models.RestGender
 import adapters.primaryweb.gen.models.RestPersonResponse
 import adapters.primaryweb.gen.models.RestPostalAddressResponse
+import adapters.primaryweb.models.responses.RestTokenResponse
 import adapters.primaryweb.models.responses.RestUserResponse
 import core.models.PersonEntry
+import core.models.TokenEntry
 import core.models.UserEntry
 import java.time.format.DateTimeFormatter
 
@@ -43,5 +45,11 @@ internal fun UserEntry.toResponse(): RestUserResponse = with(this) {
         name = name,
         login = login,
         createdAt = formatter.format(createdAt)
+    )
+}
+internal fun TokenEntry.toResponse(): RestTokenResponse = with(this) {
+    RestTokenResponse(
+        accessToken = accessToken,
+        refreshToken = refreshToken
     )
 }

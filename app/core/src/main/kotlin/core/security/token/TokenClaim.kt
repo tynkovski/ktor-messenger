@@ -7,6 +7,7 @@ data class TokenClaim(
     val value: String
 ) {
     companion object {
-        fun create(user: UserEntry) = TokenClaim("userId", "${user.id}")
+        const val TAG = "user_id"
+        fun create(user: UserEntry) = TokenClaim(TAG, "${user.id}")
     }
 }

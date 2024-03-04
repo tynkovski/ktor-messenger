@@ -2,6 +2,7 @@ package core.usecase
 
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.interfaces.DecodedJWT
+import core.models.UserEntry
 import core.security.token.TokenClaim
 
 fun interface AccessTokenVerifierUsecase {

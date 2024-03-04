@@ -9,7 +9,7 @@ import core.usecase.VerifyPasswordUsecase
 internal class VerifyPasswordService(
     private val verifyPasswordPort: VerifyPasswordPort,
 ): VerifyPasswordUsecase {
-    override suspend fun verify(password: String, saltedHash: SaltedHash): Boolean {
+    override fun verify(password: String, saltedHash: SaltedHash): Boolean {
         return verifyPasswordPort.verify(password, saltedHash)
     }
 }
@@ -17,7 +17,7 @@ internal class VerifyPasswordService(
 internal class GenerateSaltedHashService(
     private val generateSaltedHashPort: GenerateSaltedHashPort,
 ): GenerateSaltedHashUsecase {
-    override suspend fun generate(value: String, saltLength: Int): SaltedHash {
+    override fun generate(value: String, saltLength: Int): SaltedHash {
         return generateSaltedHashPort.generate(value, saltLength)
     }
 }
