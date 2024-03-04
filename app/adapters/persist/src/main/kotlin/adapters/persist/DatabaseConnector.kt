@@ -1,7 +1,9 @@
 package adapters.persist
 
-import adapters.persist.messenger.repo.PersonSqlEntities
-import adapters.persist.messenger.repo.PostalAddressSqlEntities
+import adapters.persist.messenger.entities.KeyStoreSqlEntities
+import adapters.persist.messenger.entities.PersonSqlEntities
+import adapters.persist.messenger.entities.PostalAddressSqlEntities
+import adapters.persist.messenger.entities.UserSqlEntities
 import adapters.persist.util.DatabaseErrorInspector
 import com.github.michaelbull.logging.InlineLogger
 import com.zaxxer.hikari.HikariConfig
@@ -34,6 +36,8 @@ internal class DatabaseConnector(
     private val tables = arrayOf(
         PersonSqlEntities,
         PostalAddressSqlEntities,
+        UserSqlEntities,
+        KeyStoreSqlEntities
         // add your tables here
     )
 

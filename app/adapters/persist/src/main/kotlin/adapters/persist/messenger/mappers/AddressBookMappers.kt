@@ -1,8 +1,8 @@
-package adapters.persist.messenger
+package adapters.persist.messenger.mappers
 
-import adapters.persist.messenger.repo.GenderSqlType
-import adapters.persist.messenger.repo.PersonSqlEntity
-import adapters.persist.messenger.repo.PostalAddressSqlEntity
+import adapters.persist.messenger.entities.GenderSqlType
+import adapters.persist.messenger.entities.PersonSqlEntity
+import adapters.persist.messenger.entities.PostalAddressSqlEntity
 import core.models.PersonEntry
 
 internal fun PersonEntry.Companion.fromEntity(

@@ -12,11 +12,10 @@ val envModule =
 
         single {
             HoconBasedAppConfig(get<GetDeploymentEnvPort>().deploymentEnv)
-        } binds
-            arrayOf(
-                GetDeploymentConfigPort::class,
-                GetDatabaseConfigPort::class,
-                GetRandomPersonServiceConfigPort::class,
-                GetAuthPort::class,
-            )
+        } binds arrayOf(
+            GetDeploymentConfigPort::class,
+            GetDatabaseConfigPort::class,
+            GetRandomPersonServiceConfigPort::class,
+            GetTokenConfigPort::class,
+        )
     }

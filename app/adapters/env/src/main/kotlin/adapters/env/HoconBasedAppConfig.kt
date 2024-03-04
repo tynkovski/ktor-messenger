@@ -12,7 +12,8 @@ internal class HoconBasedAppConfig(deploymentEnv: String) :
     GetDeploymentConfigPort,
     GetDatabaseConfigPort,
     GetRandomPersonServiceConfigPort,
-    GetAuthPort {
+    GetTokenConfigPort
+{
     private val config: Config
 
     init {
@@ -41,9 +42,14 @@ internal class HoconBasedAppConfig(deploymentEnv: String) :
         node.toProperties()
     }
 
-    override val auth: Properties by lazy {
+    override val tokenConfig: TokenConfig by lazy {
         val node = config.getConfig("jwt")
-        node.toProperties()
+        TokenConfig(
+            issuer = node.getString("issuer"),
+            audience = node.getString("audience"),
+            accessSecret = node.getString("accessSecret"),
+            refreshSecret = node.getString("refreshSecret"),
+        )
     }
 
     override val randomPersonService: RandomPersonServiceConfig by lazy {

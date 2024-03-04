@@ -7,4 +7,5 @@ include(
     "app:adapters:persist",
     "app:adapters:remoting",
     "app:adapters:primary-web",
+    "app:adapters:security",
 )

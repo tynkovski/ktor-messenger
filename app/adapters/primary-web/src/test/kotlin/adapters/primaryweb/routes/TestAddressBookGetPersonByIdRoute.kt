@@ -2,7 +2,7 @@ package adapters.primaryweb.routes
 
 import adapters.primaryweb.gen.models.RestErrorResponse
 import adapters.primaryweb.gen.models.RestPersonResponse
-import adapters.primaryweb.toResponse
+import adapters.primaryweb.mappers.toResponse
 import core.models.PersonEntryNotFoundException
 import core.usecase.LoadPersonUsecase
 import io.kotest.assertions.ktor.client.shouldHaveStatus
@@ -13,7 +13,6 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.testApplication
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.IOException
 

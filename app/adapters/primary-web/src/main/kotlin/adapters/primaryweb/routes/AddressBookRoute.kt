@@ -1,16 +1,15 @@
 package adapters.primaryweb.routes
 
 import adapters.primaryweb.gen.models.RestSavePersonRequest
-import adapters.primaryweb.toPersonEntry
-import adapters.primaryweb.toResponse
+import adapters.primaryweb.mappers.toPersonEntry
+import adapters.primaryweb.mappers.toResponse
 import adapters.primaryweb.util.longParameter
 import adapters.primaryweb.util.receiveValidated
-import com.github.michaelbull.logging.InlineLogger
 import core.usecase.AddPersonUsecase
 import core.usecase.DeletePersonUsecase
 import core.usecase.LoadAllPersonsUsecase
 import core.usecase.LoadPersonUsecase
-import core.usecase.PopulateRandomPersonUsecase
+import core.usecase.RandomPersonUsecase
 import core.usecase.UpdatePersonUsecase
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -23,8 +22,6 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import org.koin.ktor.ext.inject
-
-private val logger = InlineLogger()
 
 internal fun Routing.personRoute() {
     route("/persons") {
@@ -96,7 +93,7 @@ private fun Route.deletePerson() {
 }
 
 private fun Route.addRandomPerson() {
-    val randomPersonUsecase by inject<PopulateRandomPersonUsecase>()
+    val randomPersonUsecase by inject<RandomPersonUsecase>()
 
     post("random") {
         val person = randomPersonUsecase.populateRandomPerson()

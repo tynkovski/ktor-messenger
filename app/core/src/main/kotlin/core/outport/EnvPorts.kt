@@ -7,6 +7,13 @@ data class RandomPersonServiceConfig(
     val apiKey: String,
 )
 
+data class TokenConfig(
+    val issuer: String,
+    val audience: String,
+    val accessSecret: String,
+    val refreshSecret: String
+)
+
 data class DeploymentConfig(
     val env: String,
     val version: String,
@@ -25,8 +32,8 @@ interface GetDatabaseConfigPort {
     val database: Properties
 }
 
-interface GetAuthPort {
-    val auth: Properties
+interface GetTokenConfigPort {
+    val tokenConfig: TokenConfig
 }
 
 interface GetRandomPersonServiceConfigPort {

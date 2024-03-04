@@ -2,7 +2,7 @@ package adapters.primaryweb.routes
 
 import adapters.primaryweb.gen.models.RestErrorResponse
 import adapters.primaryweb.gen.models.RestPersonResponse
-import adapters.primaryweb.toResponse
+import adapters.primaryweb.mappers.toResponse
 import core.usecase.LoadAllPersonsUsecase
 import io.kotest.assertions.ktor.client.shouldHaveStatus
 import io.kotest.core.spec.style.DescribeSpec

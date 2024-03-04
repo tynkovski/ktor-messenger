@@ -1,12 +1,7 @@
 package core.services
 
-import core.usecase.AddPersonUsecase
-import core.usecase.DeletePersonUsecase
-import core.usecase.HealthStatusUsecase
-import core.usecase.LoadAllPersonsUsecase
-import core.usecase.LoadPersonUsecase
-import core.usecase.PopulateRandomPersonUsecase
-import core.usecase.UpdatePersonUsecase
+import core.usecase.*
+import org.koin.dsl.binds
 import org.koin.dsl.module
 
 internal val serviceModule = module {
@@ -29,12 +24,62 @@ internal val serviceModule = module {
     single<LoadAllPersonsUsecase> {
         LoadAllPersonsService(loadAllPersonsPort = get(), txPort = get())
     }
-
-    single<PopulateRandomPersonUsecase> {
+    single<RandomPersonUsecase> {
         RandomPersonService(
             generateRandomPersonPort = get(),
             addPersonPort = get(),
             txPort = get(),
         )
+    }
+
+    single<AddUserUsecase> {
+        AddUserService(addUserPort = get(), txPort = get())
+    }
+    single<GetUserUsecase> {
+        GetUserService(getUserPort = get(), txPort = get())
+    }
+    single<GetUserByLoginUsecase> {
+        GetUserByLoginService(getUserPort = get(), txPort = get())
+    }
+    single<DeleteUserUsecase> {
+        DeleteUserService(deleteUserPort = get(), txPort = get())
+    }
+    single<UpdateUserUsecase> {
+        UpdateUserService(updateUserPort = get(), txPort = get())
+    }
+
+    single<VerifyPasswordUsecase> {
+        VerifyPasswordService(verifyPasswordPort = get())
+    }
+
+    single<GenerateSaltedHashUsecase> {
+        GenerateSaltedHashService(generateSaltedHashPort = get())
+    }
+
+    single {
+        JwtTokenService(configPort = get())
+    } binds arrayOf(
+        AccessTokenVerifierUsecase::class,
+        GenerateKeyUsecase::class,
+        GenerateAccessTokenUsecase::class,
+        GenerateRefreshTokenUsecase::class,
+        VerifyRefreshTokenUsecase::class,
+        VerifyAccessTokenUsecase::class
+    )
+
+    single<FindUserForAccessKeyUsecase> {
+        FindUserForAccessKeyService(findUserForAccessKeyPort = get(), txPort = get())
+    }
+    single<FindUserForKeysUsecase> {
+        FindUserForKeysService(findUserForKeysPort = get(), txPort = get())
+    }
+    single<CreateAndSaveTokensUsecase> {
+        CreateAndSaveTokensService(createAndSaveTokensPort = get(), txPort = get())
+    }
+    single<CreateAccessTokenUsecase> {
+        CreateAccessTokenService(createAccessTokenPort = get(), txPort = get())
+    }
+    single<DeleteRefreshTokenUsecase> {
+        DeleteRefreshTokenService(deleteRefreshTokenPort = get(), txPort = get())
     }
 }

@@ -1,5 +1,9 @@
-package adapters.persist.messenger.repo
+package adapters.persist.messenger.mappers
 
+import adapters.persist.messenger.entities.PersonSqlEntities
+import adapters.persist.messenger.entities.PersonSqlEntity
+import adapters.persist.messenger.entities.PostalAddressSqlEntities
+import adapters.persist.messenger.entities.PostalAddressSqlEntity
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.InsertStatement
 

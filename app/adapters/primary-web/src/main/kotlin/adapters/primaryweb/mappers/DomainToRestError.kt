@@ -1,4 +1,4 @@
-package adapters.primaryweb
+package adapters.primaryweb.mappers
 
 import adapters.primaryweb.util.RestGenericException
 import core.errors.DomainException

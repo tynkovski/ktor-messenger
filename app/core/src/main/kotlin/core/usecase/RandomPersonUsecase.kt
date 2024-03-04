@@ -2,6 +2,6 @@ package core.usecase
 
 import core.models.PersonEntry
 
-interface PopulateRandomPersonUsecase {
+interface RandomPersonUsecase {
     suspend fun populateRandomPerson(): PersonEntry
 }
