@@ -13,7 +13,7 @@ import core.usecase.AddPersonUsecase
 import core.usecase.DeletePersonUsecase
 import core.usecase.LoadAllPersonsUsecase
 import core.usecase.LoadPersonUsecase
-import core.usecase.PopulateRandomPersonUsecase
+import core.usecase.RandomPersonUsecase
 import core.usecase.UpdatePersonUsecase
 
 internal class AddPersonService(
@@ -75,7 +75,7 @@ internal class RandomPersonService(
     private val generateRandomPersonPort: GenerateRandomPersonPort,
     private val addPersonPort: AddPersonPort,
     private val txPort: PersistTransactionPort,
-) : PopulateRandomPersonUsecase {
+) : RandomPersonUsecase {
 
     private val logger = InlineLogger()
 

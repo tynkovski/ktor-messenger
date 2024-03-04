@@ -1,7 +1,6 @@
 package adapters.persist
 
-import adapters.persist.messenger.person.LoadPersonAdapter
-import adapters.persist.messenger.person.SavePersonAdapter
+import adapters.persist.messenger.person.PersonAdapter
 import adapters.persist.messenger.user.UserAdapter
 import adapters.persist.messenger.person.PersonRepository
 import adapters.persist.messenger.person.PostalAddressRepository
@@ -39,20 +38,13 @@ val persistenceModule = module {
     }
 
     single {
-        LoadPersonAdapter(
+        PersonAdapter(
             personRepository = get(),
             postalAddressRepository = get(),
         )
     } binds arrayOf(
         LoadPersonPort::class,
         LoadAllPersonsPort::class,
-    )
-    single {
-        SavePersonAdapter(
-            personRepository = get(),
-            postalAddressRepository = get(),
-        )
-    } binds arrayOf(
         AddPersonPort::class,
         UpdatePersonPort::class,
         DeletePersonPort::class,

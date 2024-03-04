@@ -6,20 +6,19 @@ import adapters.persist.messenger.mappers.toPostalAddressSqlEntity
 import com.github.michaelbull.logging.InlineLogger
 import core.models.PersonEntry
 import core.models.PersonEntryNotFoundException
-import core.outport.AddPersonPort
-import core.outport.DeletePersonPort
-import core.outport.MustBeCalledInTransactionContext
-import core.outport.UpdatePersonPort
+import core.outport.*
 
 /**
  * Adapter to perform save/delete operations over address book item and postal address repositories.
  */
-internal class SavePersonAdapter(
+internal class PersonAdapter(
     private val personRepository: PersonRepository,
     private val postalAddressRepository: PostalAddressRepository,
 ) : AddPersonPort,
     UpdatePersonPort,
-    DeletePersonPort {
+    DeletePersonPort,
+    LoadPersonPort,
+    LoadAllPersonsPort {
 
     private val logger = InlineLogger()
 
@@ -72,5 +71,34 @@ internal class SavePersonAdapter(
         if (!personRepository.deleteById(id = id)) {
             throw PersonEntryNotFoundException(searchCriteria = "id=$id")
         }
+    }
+
+    @MustBeCalledInTransactionContext
+    override fun loadPerson(id: Long): PersonEntry {
+        logger.debug { "loadPerson(): Load person entry: id=$id" }
+        val personSqlEntity = personRepository.getByIdOrNull(id = id)
+            ?: throw PersonEntryNotFoundException(searchCriteria = "id=$id")
+        val postalAddressSqlEntity = postalAddressRepository.getByPersonIdOrNull(id)
+        return PersonEntry.fromEntity(
+            personSqlEntity = personSqlEntity,
+            postalAddressSqlEntity = postalAddressSqlEntity,
+        )
+    }
+
+    @MustBeCalledInTransactionContext
+    override fun loadAllPersons(): Collection<PersonEntry> {
+        logger.debug { "loadAllPersons(): Load all person entries" }
+        val personSqlEntities = personRepository.getAll()
+        val postalAddressSqlEntitiesMap = postalAddressRepository.getAll().associateBy {
+            it.personId
+        }
+        return personSqlEntities
+            .map { personSqlEntity ->
+                val postalAddressSqlEntity = postalAddressSqlEntitiesMap[personSqlEntity.id!!]
+                PersonEntry.fromEntity(
+                    personSqlEntity = personSqlEntity,
+                    postalAddressSqlEntity = postalAddressSqlEntity,
+                )
+            }
     }
 }

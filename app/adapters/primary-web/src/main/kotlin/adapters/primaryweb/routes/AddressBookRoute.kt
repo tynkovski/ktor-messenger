@@ -9,7 +9,7 @@ import core.usecase.AddPersonUsecase
 import core.usecase.DeletePersonUsecase
 import core.usecase.LoadAllPersonsUsecase
 import core.usecase.LoadPersonUsecase
-import core.usecase.PopulateRandomPersonUsecase
+import core.usecase.RandomPersonUsecase
 import core.usecase.UpdatePersonUsecase
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -93,7 +93,7 @@ private fun Route.deletePerson() {
 }
 
 private fun Route.addRandomPerson() {
-    val randomPersonUsecase by inject<PopulateRandomPersonUsecase>()
+    val randomPersonUsecase by inject<RandomPersonUsecase>()
 
     post("random") {
         val person = randomPersonUsecase.populateRandomPerson()

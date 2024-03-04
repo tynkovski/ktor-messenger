@@ -24,7 +24,7 @@ internal val serviceModule = module {
     single<LoadAllPersonsUsecase> {
         LoadAllPersonsService(loadAllPersonsPort = get(), txPort = get())
     }
-    single<PopulateRandomPersonUsecase> {
+    single<RandomPersonUsecase> {
         RandomPersonService(
             generateRandomPersonPort = get(),
             addPersonPort = get(),
