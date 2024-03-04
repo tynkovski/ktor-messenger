@@ -1,4 +1,4 @@
-package service
+package core.security.token
 
 import com.auth0.jwt.interfaces.Payload
 import core.models.UserEntry

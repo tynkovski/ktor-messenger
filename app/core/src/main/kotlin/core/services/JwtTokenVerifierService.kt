@@ -1,25 +1,28 @@
-package service
+package core.services
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.TokenExpiredException
 import com.auth0.jwt.interfaces.DecodedJWT
-import core.outport.TokenConfig
+import core.outport.GetTokenConfigPort
 import core.security.token.TokenClaim
-import service.util.toHex
-import usecase.*
+import core.usecase.*
+import core.util.toHex
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 internal class JwtTokenVerifierService(
-    private val config: TokenConfig
-) : AccessTokenVerifierUsecase, GenerateKeyUsecase,
+    configPort: GetTokenConfigPort
+) : AccessTokenVerifierUsecase,
+    GenerateKeyUsecase,
     GenerateAccessTokenUsecase,
     GenerateRefreshTokenUsecase,
     VerifyRefreshTokenUsecase,
     VerifyAccessTokenUsecase {
+    private val config = configPort.tokenConfig
+
     private val accessTokenAlgorithm = Algorithm.HMAC256(config.accessSecret)
 
     private val refreshTokenAlgorithm = Algorithm.HMAC256(config.refreshSecret)

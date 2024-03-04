@@ -1,13 +1,15 @@
-import service.JWTPrincipalExtended
+package adapters.primaryweb
+
 import core.outport.TokenConfig
+import core.security.token.JWTPrincipalExtended
+import core.usecase.AccessTokenVerifierUsecase
 import core.usecase.FindUserForAccessKeyUsecase
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import org.koin.ktor.ext.inject
-import usecase.AccessTokenVerifierUsecase
 
-fun Application.setupSecurity() {
+fun Application.configureSecurity() {
     val accessTokenVerifier by inject<AccessTokenVerifierUsecase>()
     val tokenConfig by inject<TokenConfig>()
     val findUserForAccessKeyUsecase by inject<FindUserForAccessKeyUsecase>()

@@ -1,6 +1,7 @@
 package core.services
 
 import core.usecase.*
+import org.koin.dsl.binds
 import org.koin.dsl.module
 
 internal val serviceModule = module {
@@ -52,4 +53,14 @@ internal val serviceModule = module {
         GenerateSaltedHashService(generateSaltedHashPort= get())
     }
 
+    single {
+        JwtTokenVerifierService(configPort = get())
+    } binds arrayOf(
+        AccessTokenVerifierUsecase::class,
+        GenerateKeyUsecase::class,
+        GenerateAccessTokenUsecase::class,
+        GenerateRefreshTokenUsecase::class,
+        VerifyRefreshTokenUsecase::class,
+        VerifyAccessTokenUsecase::class
+    )
 }

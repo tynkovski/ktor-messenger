@@ -1,10 +1,6 @@
 package adapters.primaryweb
 
 import adapters.primaryweb.mappers.toRestGenericException
-import adapters.primaryweb.routes.authRoute
-import adapters.primaryweb.routes.healthRoute
-import adapters.primaryweb.routes.personRoute
-import adapters.primaryweb.routes.userRoute
 import adapters.primaryweb.util.RestGenericException
 import adapters.primaryweb.util.RestInternalServerError
 import adapters.primaryweb.util.respondRestException
@@ -15,8 +11,6 @@ import core.errors.DomainException
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -24,16 +18,13 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import io.ktor.server.routing.*
 import org.slf4j.event.Level
 import java.util.*
 
 private val logger = InlineLogger()
 
 fun Application.webBootstrap() {
-    install(ContentNegotiation) {
-        json()
-    }
+    install(ContentNegotiation) { json() }
 
     install(CallLogging) {
         level = Level.DEBUG
@@ -100,16 +91,6 @@ fun Application.webBootstrap() {
             }
         }
     }
-
-
-
-    routing {
-        trace {
-            logger.debug { "routing/trace(): ${it.buildText()}" }
-        }
-        healthRoute()
-        userRoute()
-        authRoute()
-        personRoute()
-    }
+    configureSecurity()
+    configureRouting()
 }

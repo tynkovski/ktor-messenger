@@ -12,7 +12,8 @@ internal class HoconBasedAppConfig(deploymentEnv: String) :
     GetDeploymentConfigPort,
     GetDatabaseConfigPort,
     GetRandomPersonServiceConfigPort,
-    GetTokenConfigPort {
+    GetTokenConfigPort
+{
     private val config: Config
 
     init {

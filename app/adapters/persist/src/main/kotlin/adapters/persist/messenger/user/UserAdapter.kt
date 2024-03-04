@@ -4,14 +4,18 @@ import adapters.persist.messenger.mappers.fromEntity
 import adapters.persist.messenger.mappers.toUserSqlEntity
 import core.models.UserEntry
 import core.models.UserEntryNotFoundException
-import core.outport.AddUserPort
-import core.outport.DeleteUserPort
-import core.outport.MustBeCalledInTransactionContext
-import core.outport.UpdateUserPort
+import core.outport.*
 
-internal class SaveUserAdapter(
+internal class UserAdapter(
     private val userRepository: UserRepository
-) : AddUserPort, DeleteUserPort, UpdateUserPort {
+) : GetUserPort, AddUserPort, DeleteUserPort, UpdateUserPort {
+    @MustBeCalledInTransactionContext
+    override fun getUser(id: Long): UserEntry {
+        val entity = userRepository.getByIdOrNull(id = id)
+            ?: throw UserEntryNotFoundException(searchCriteria = "id=$id")
+        return UserEntry.fromEntity(entity = entity)
+    }
+
     @MustBeCalledInTransactionContext
     override fun addUser(entry: UserEntry): UserEntry {
         require(entry.id == null) { "entry.id must be null" }

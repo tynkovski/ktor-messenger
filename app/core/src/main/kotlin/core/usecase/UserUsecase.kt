@@ -19,5 +19,5 @@ fun interface UpdateUserUsecase {
 }
 
 fun interface FindUserForAccessKeyUsecase {
-    suspend fun findUserForAccessKey(accessKey: String): UserEntry
+    suspend fun findUserForAccessKey(accessKey: String): UserEntry?
 }
