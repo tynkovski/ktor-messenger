@@ -10,5 +10,7 @@ plugins {
 dependencies {
     api(project(":app:core"))
     api(project(":app:common"))
+    implementation("io.insert-koin:koin-ktor:$koinVersion")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("commons-codec:commons-codec:$codecVersion")
 }

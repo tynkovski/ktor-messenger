@@ -17,7 +17,6 @@ internal object UserSqlEntities : Table(name = "user") {
     val createdAt = datetime("created_at").index()
 
     override val primaryKey = PrimaryKey(id, name = "PK_user_id")
-
 }
 
 // --- ENTITIES

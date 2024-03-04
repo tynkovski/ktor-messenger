@@ -101,12 +101,7 @@ fun Application.webBootstrap() {
         }
     }
 
-    install(Authentication) {
-        jwt {
-            realm = "Messenger"
-            // todo add `verifier(tokenService.accessTokenVerifier)`
-        }
-    }
+
 
     routing {
         trace {

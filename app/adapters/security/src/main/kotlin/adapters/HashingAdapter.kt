@@ -1,4 +1,4 @@
-package adapters.security
+package adapters
 
 import core.outport.GenerateSaltedHashPort
 import core.outport.VerifyPasswordPort

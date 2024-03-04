@@ -17,3 +17,7 @@ fun interface DeleteUserUsecase {
 fun interface UpdateUserUsecase {
     suspend fun updateUser(entry: UserEntry): UserEntry
 }
+
+fun interface FindUserForAccessKeyUsecase {
+    suspend fun findUserForAccessKey(accessKey: String): UserEntry
+}
