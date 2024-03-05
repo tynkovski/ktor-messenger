@@ -1,5 +1,8 @@
 package adapters.primaryweb
 
+import adapters.primaryweb.configs.configureWebSockets
+import adapters.primaryweb.configs.configureRouting
+import adapters.primaryweb.configs.configureSecurity
 import adapters.primaryweb.mappers.toRestGenericException
 import adapters.primaryweb.util.RestGenericException
 import adapters.primaryweb.util.RestInternalServerError
@@ -18,7 +21,9 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import io.ktor.server.websocket.*
 import org.slf4j.event.Level
+import java.time.Duration
 import java.util.*
 
 private val logger = InlineLogger()
@@ -91,6 +96,15 @@ fun Application.webBootstrap() {
             }
         }
     }
+
+    install(WebSockets) {
+        pingPeriod = Duration.ofSeconds(15)
+        timeout = Duration.ofSeconds(15)
+        maxFrameSize = Long.MAX_VALUE
+        masking = false
+    }
+
     configureSecurity()
     configureRouting()
+    configureWebSockets()
 }

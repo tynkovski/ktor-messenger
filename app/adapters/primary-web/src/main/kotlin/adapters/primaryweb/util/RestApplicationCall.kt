@@ -1,8 +1,10 @@
 package adapters.primaryweb.util
 
 import com.github.michaelbull.logging.InlineLogger
+import core.security.token.JWTUserPrincipal
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.request.receive
 import io.ktor.server.request.uri
@@ -49,3 +51,5 @@ internal suspend fun ApplicationCall.respondRestException(ex: RestGenericExcepti
     val errorResponse = ex.toRestErrorResponse(path = request.uri)
     this.respond(status = HttpStatusCode.fromValue(errorResponse.status), message = errorResponse)
 }
+
+internal fun ApplicationCall.getUser() = checkNotNull(this.principal<JWTUserPrincipal>()).user

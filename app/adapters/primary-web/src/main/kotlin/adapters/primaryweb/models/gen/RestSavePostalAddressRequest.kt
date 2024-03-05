@@ -13,7 +13,7 @@
     "UnusedImport"
 )
 
-package adapters.primaryweb.gen.models
+package adapters.primaryweb.models.gen
 
 
 import kotlinx.serialization.Serializable
@@ -31,7 +31,7 @@ import kotlinx.serialization.Contextual
  */
 @Serializable
 
-data class RestPostalAddressResponse (
+data class RestSavePostalAddressRequest (
 
     @SerialName(value = "address1")
     val address1: kotlin.String,

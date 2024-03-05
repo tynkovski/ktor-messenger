@@ -1,5 +1,6 @@
-package adapters.primaryweb
+package adapters.primaryweb.configs
 
+import adapters.primaryweb.routes.*
 import adapters.primaryweb.routes.authRoute
 import adapters.primaryweb.routes.healthRoute
 import adapters.primaryweb.routes.personRoute
@@ -21,3 +22,4 @@ internal fun Application.configureRouting() {
         personRoute()
     }
 }
+

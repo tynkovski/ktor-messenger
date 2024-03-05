@@ -1,8 +1,8 @@
 package adapters.primaryweb.mappers
 
-import adapters.primaryweb.gen.models.RestGender
-import adapters.primaryweb.gen.models.RestPersonResponse
-import adapters.primaryweb.gen.models.RestPostalAddressResponse
+import adapters.primaryweb.models.gen.RestGender
+import adapters.primaryweb.models.gen.RestPersonResponse
+import adapters.primaryweb.models.gen.RestPostalAddressResponse
 import adapters.primaryweb.models.responses.RestTokenResponse
 import adapters.primaryweb.models.responses.RestUserResponse
 import core.models.PersonEntry
@@ -47,6 +47,7 @@ internal fun UserEntry.toResponse(): RestUserResponse = with(this) {
         createdAt = formatter.format(createdAt)
     )
 }
+
 internal fun TokenEntry.toResponse(): RestTokenResponse = with(this) {
     RestTokenResponse(
         accessToken = accessToken,

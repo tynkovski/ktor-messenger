@@ -13,19 +13,15 @@
     "UnusedImport"
 )
 
-package adapters.primaryweb.gen.models
-
-import adapters.primaryweb.gen.models.RestGender
-import adapters.primaryweb.gen.models.RestPostalAddressResponse
+package adapters.primaryweb.models.gen
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Contextual
 
 /**
- * Response with person information
+ * Request to add/update a person
  *
- * @param id 
  * @param firstName 
  * @param lastName 
  * @param phoneNumber 
@@ -36,10 +32,7 @@ import kotlinx.serialization.Contextual
  */
 @Serializable
 
-data class RestPersonResponse (
-
-    @SerialName(value = "id")
-    val id: kotlin.Long,
+data class RestSavePersonRequest (
 
     @SerialName(value = "firstName")
     val firstName: kotlin.String,
@@ -60,7 +53,7 @@ data class RestPersonResponse (
     val age: kotlin.Int? = null,
 
     @SerialName(value = "postalAddress")
-    val postalAddress: RestPostalAddressResponse? = null
+    val postalAddress: RestSavePostalAddressRequest? = null
 
 )
 

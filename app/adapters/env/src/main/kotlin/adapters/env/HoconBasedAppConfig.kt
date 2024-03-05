@@ -45,6 +45,7 @@ internal class HoconBasedAppConfig(deploymentEnv: String) :
     override val tokenConfig: TokenConfig by lazy {
         val node = config.getConfig("jwt")
         TokenConfig(
+            realm = node.getString("realm"),
             issuer = node.getString("issuer"),
             audience = node.getString("audience"),
             accessSecret = node.getString("accessSecret"),

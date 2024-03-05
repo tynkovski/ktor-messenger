@@ -13,7 +13,7 @@
     "UnusedImport"
 )
 
-package adapters.primaryweb.gen.models
+package adapters.primaryweb.models.gen
 
 
 import kotlinx.serialization.Serializable

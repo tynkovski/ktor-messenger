@@ -1,10 +1,8 @@
 package adapters.primaryweb.mappers
 
-import adapters.primaryweb.gen.models.RestGender
-import adapters.primaryweb.gen.models.RestSavePersonRequest
-import adapters.primaryweb.models.requests.RestSaveUserRequest
+import adapters.primaryweb.models.gen.RestGender
+import adapters.primaryweb.models.gen.RestSavePersonRequest
 import core.models.PersonEntry
-import core.models.UserEntry
 
 internal fun RestSavePersonRequest.toPersonEntry(id: Long?) = PersonEntry(
     id = id,

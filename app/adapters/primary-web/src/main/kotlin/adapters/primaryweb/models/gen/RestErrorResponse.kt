@@ -13,13 +13,10 @@
     "UnusedImport"
 )
 
-package adapters.primaryweb.gen.models
-
-import adapters.primaryweb.gen.models.RestErrorSpecificsResponse
+package adapters.primaryweb.models.gen
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Contextual
 
 /**
  * Organization info item

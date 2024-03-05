@@ -8,6 +8,7 @@ data class RandomPersonServiceConfig(
 )
 
 data class TokenConfig(
+    val realm: String,
     val issuer: String,
     val audience: String,
     val accessSecret: String,
