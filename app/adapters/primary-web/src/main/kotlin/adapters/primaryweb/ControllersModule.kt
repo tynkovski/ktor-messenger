@@ -1,5 +1,8 @@
-package adapters.primaryweb.controllers
+package adapters.primaryweb
 
+import adapters.primaryweb.controllers.AuthController
+import adapters.primaryweb.controllers.RoomController
+import adapters.primaryweb.controllers.UserController
 import org.koin.dsl.module
 
 val controllersModule = module {

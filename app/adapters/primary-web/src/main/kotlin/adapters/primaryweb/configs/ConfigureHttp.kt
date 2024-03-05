@@ -1,6 +1,5 @@
 package adapters.primaryweb.configs
 
-import adapters.primaryweb.routes.*
 import adapters.primaryweb.routes.authRoute
 import adapters.primaryweb.routes.healthRoute
 import adapters.primaryweb.routes.personRoute
@@ -11,7 +10,7 @@ import io.ktor.server.routing.*
 
 private val logger = InlineLogger()
 
-internal fun Application.configureRouting() {
+internal fun Application.configureHttp() {
     routing {
         trace {
             logger.debug { "routing/trace(): ${it.buildText()}" }

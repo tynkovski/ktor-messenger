@@ -1,11 +1,11 @@
-package adapters
+package adapters.security
 
 import core.outport.GenerateSaltedHashPort
 import core.outport.VerifyPasswordPort
 import org.koin.dsl.binds
 import org.koin.dsl.module
 
-val adapterModule = module {
+val hashingModule = module {
     single {
         HashingAdapter()
     } binds arrayOf(

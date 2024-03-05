@@ -1,7 +1,7 @@
 package adapters.primaryweb
 
 import adapters.primaryweb.configs.configureWebSockets
-import adapters.primaryweb.configs.configureRouting
+import adapters.primaryweb.configs.configureHttp
 import adapters.primaryweb.configs.configureSecurity
 import adapters.primaryweb.mappers.toRestGenericException
 import adapters.primaryweb.util.RestGenericException
@@ -105,6 +105,6 @@ fun Application.webBootstrap() {
     }
 
     configureSecurity()
-    configureRouting()
+    configureHttp()
     configureWebSockets()
 }
