@@ -1,5 +1,39 @@
 package core.usecase
 
-fun interface CreateRoomUsecase {
-    suspend fun createRoom()
+import core.models.RoomEntry
+
+fun interface AddRoomUsecase {
+    suspend fun addRoom(entry: RoomEntry): RoomEntry
+}
+
+fun interface GetRoomUsecase {
+    suspend fun getRoom(id: Long): RoomEntry
+}
+
+fun interface GetRoomsPagingUsecase {
+    suspend fun getRooms(userId: Long, page: Int, pageSize: Int): Collection<RoomEntry>
+}
+
+fun interface DeleteRoomUsecase {
+    suspend fun deleteRoom(id: Long)
+}
+
+fun interface UpdateRoomUsecase {
+    suspend fun updateRoom(entry: RoomEntry): RoomEntry
+}
+
+fun interface AddUserToRoomUsecase {
+    suspend fun addUser(userId: Long, entry: RoomEntry): RoomEntry
+}
+
+fun interface RemoveUserFromRoomUsecase {
+    suspend fun removeUser(userId: Long, entry: RoomEntry): RoomEntry
+}
+
+fun interface AddModeratorToRoomUsecase {
+    suspend fun addModerator(userId: Long, entry: RoomEntry): RoomEntry
+}
+
+fun interface RemoveModeratorFromRoomUsecase {
+    suspend fun removeModerator(userId: Long, entry: RoomEntry): RoomEntry
 }

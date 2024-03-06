@@ -1,4 +1,4 @@
-package models
+package adapters.primaryweb.models
 
 import core.models.UserEntry
 import io.ktor.websocket.*

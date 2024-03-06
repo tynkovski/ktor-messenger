@@ -19,16 +19,20 @@ internal class UserController(
     private val updateUserUsecase: UpdateUserUsecase,
     private val deleteUserUsecase: DeleteUserUsecase
 ) {
-    suspend fun addUser(call: ApplicationCall) {
-        val request = call.receiveValidated<RestSaveUserRequest>()
+    private fun buildUser(request: RestSaveUserRequest): UserEntry {
         val generated = saltedHashUsecase.generate(request.password, 32)
-        val userToSave = UserEntry(
+        return UserEntry(
             id = null,
             name = request.name,
             login = request.login,
             password = generated.hash,
             salt = generated.salt,
         )
+    }
+
+    suspend fun addUser(call: ApplicationCall) {
+        val request = call.receiveValidated<RestSaveUserRequest>()
+        val userToSave = buildUser(request)
         val user = addUserUsecase.addUser(userToSave)
         call.respond(status = HttpStatusCode.OK, message = user.toResponse())
     }

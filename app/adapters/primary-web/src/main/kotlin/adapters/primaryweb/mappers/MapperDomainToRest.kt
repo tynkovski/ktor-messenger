@@ -5,7 +5,9 @@ import adapters.primaryweb.models.gen.RestPersonResponse
 import adapters.primaryweb.models.gen.RestPostalAddressResponse
 import adapters.primaryweb.models.responses.RestTokenResponse
 import adapters.primaryweb.models.responses.RestUserResponse
+import adapters.primaryweb.models.responses.WebsocketsRoomResponse
 import core.models.PersonEntry
+import core.models.RoomEntry
 import core.models.TokenEntry
 import core.models.UserEntry
 import java.time.format.DateTimeFormatter
@@ -52,5 +54,16 @@ internal fun TokenEntry.toResponse(): RestTokenResponse = with(this) {
     RestTokenResponse(
         accessToken = accessToken,
         refreshToken = refreshToken
+    )
+}
+
+internal fun RoomEntry.toResponse(): WebsocketsRoomResponse = with(this) {
+    WebsocketsRoomResponse(
+        id = id!!,
+        name = name,
+        image = image,
+        users = users,
+        moderators = moderators,
+        createdAt = formatter.format(createdAt)
     )
 }

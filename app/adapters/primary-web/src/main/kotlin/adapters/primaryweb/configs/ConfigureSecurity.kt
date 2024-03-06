@@ -1,6 +1,5 @@
 package adapters.primaryweb.configs
 
-import com.github.michaelbull.logging.InlineLogger
 import core.outport.GetTokenConfigPort
 import core.security.token.JWTUserPrincipal
 import core.usecase.AccessTokenVerifierUsecase
@@ -9,8 +8,6 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import org.koin.ktor.ext.inject
-
-private val logger = InlineLogger()
 
 internal fun Application.configureSecurity() {
     val accessTokenVerifier by inject<AccessTokenVerifierUsecase>()

@@ -57,5 +57,6 @@ koverMerged {
         kover(project(":app:adapters:persist"))
         kover(project(":app:adapters:primary-web"))
         kover(project(":app:adapters:remoting"))
+        kover(project(":app:adapters:security"))
     }
 }
