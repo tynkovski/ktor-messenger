@@ -1,8 +1,10 @@
 package adapters.persist
 
+import adapters.persist.messenger.entities.*
 import adapters.persist.messenger.entities.KeyStoreSqlEntities
 import adapters.persist.messenger.entities.PersonSqlEntities
 import adapters.persist.messenger.entities.PostalAddressSqlEntities
+import adapters.persist.messenger.entities.RoomSqlEntities
 import adapters.persist.messenger.entities.UserSqlEntities
 import adapters.persist.util.DatabaseErrorInspector
 import com.github.michaelbull.logging.InlineLogger
@@ -34,10 +36,11 @@ internal class DatabaseConnector(
     private lateinit var db: Database
 
     private val tables = arrayOf(
-        PersonSqlEntities,
-        PostalAddressSqlEntities,
+        PersonSqlEntities, PostalAddressSqlEntities,
         UserSqlEntities,
-        KeyStoreSqlEntities
+        KeyStoreSqlEntities,
+        RoomSqlEntities, UserToRoomSqlEntities, ModeratorToRoomSqlEntities,
+        MessageSqlEntities, ReaderToMessageSqlEntities
         // add your tables here
     )
 

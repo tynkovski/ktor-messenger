@@ -47,7 +47,7 @@ internal class JwtTokenService(
             .withAudience(config.audience)
             .withIssuer(config.issuer)
             .withIssuedAt(Date())
-            .withExpiresAt(Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30)))
+            .withExpiresAt(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1))) // todo change token life duration
             .withClaim("key", key)
 
         claim.forEach { token = token.withClaim(it.name, it.value) }

@@ -14,7 +14,6 @@ internal fun Route.roomRoute() {
     webSocket("/room") {
         try {
             roomController.connect(this)
-            roomController.listen(this)
         } catch (e: Exception) {
             logger.error(e) { "roomRoute() ${e.printStackTrace()}" }
         } finally {
@@ -23,8 +22,4 @@ internal fun Route.roomRoute() {
     }
 }
 
-internal fun Route.chatRoute() {
-    webSocket("/chat") {
 
-    }
-}

@@ -1,9 +1,10 @@
 package adapters.primaryweb.controllers
 
+import adapters.primaryweb.controllers.interfaces.UserPrincipalController
 import adapters.primaryweb.mappers.toResponse
+import adapters.primaryweb.models.requests.RestEditUserNameRequest
 import adapters.primaryweb.models.requests.RestSaveUserRequest
 import adapters.primaryweb.models.requests.RestUpdateUserRequest
-import adapters.primaryweb.util.getUser
 import adapters.primaryweb.util.receiveValidated
 import core.models.UserEntry
 import core.security.token.JWTUserPrincipal
@@ -17,8 +18,9 @@ internal class UserController(
     private val saltedHashUsecase: GenerateSaltedHashUsecase,
     private val addUserUsecase: AddUserUsecase,
     private val updateUserUsecase: UpdateUserUsecase,
+    private val editUserNameUsecase: EditUserNameUsecase,
     private val deleteUserUsecase: DeleteUserUsecase
-) {
+) : UserPrincipalController {
     private fun buildUser(request: RestSaveUserRequest): UserEntry {
         val generated = saltedHashUsecase.generate(request.password, 32)
         return UserEntry(
@@ -38,14 +40,21 @@ internal class UserController(
     }
 
     suspend fun getUser(call: ApplicationCall) {
-        val user = call.getUser()
+        val user = findUser(call)
         call.respond(status = HttpStatusCode.OK, message = user.toResponse())
     }
 
     suspend fun updateUser(call: ApplicationCall) {
         val request = call.receiveValidated<RestUpdateUserRequest>()
-        val user = call.getUser().copy(name = request.name)
-        val newUser = updateUserUsecase.updateUser(user)
+        val user = findUser(call)
+        val newUser = updateUserUsecase.updateUser(user.copy(name = request.name))
+        call.respond(status = HttpStatusCode.OK, message = newUser.toResponse())
+    }
+
+    suspend fun editUserName(call: ApplicationCall) {
+        val request = call.receiveValidated<RestEditUserNameRequest>()
+        val user = findUser(call)
+        val newUser = editUserNameUsecase.editUserName(user, request.name)
         call.respond(status = HttpStatusCode.OK, message = newUser.toResponse())
     }
 

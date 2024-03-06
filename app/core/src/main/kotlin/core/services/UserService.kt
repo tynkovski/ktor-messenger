@@ -36,12 +36,21 @@ internal class DeleteUserService(
         txPort.withNewTransaction { deleteUserPort.deleteUser(id) }
 }
 
+internal class EditUserNameService(
+    private val updateUserPort: UpdateUserPort,
+    private val txPort: PersistTransactionPort,
+) : EditUserNameUsecase {
+    override suspend fun editUserName(entry: UserEntry, name: String): UserEntry =
+        txPort.withNewTransaction {
+            updateUserPort.updateUser(entry.copy(name = name))
+        }
+}
 
 internal class UpdateUserService(
     private val updateUserPort: UpdateUserPort,
     private val txPort: PersistTransactionPort,
 ) : UpdateUserUsecase {
-    override suspend fun updateUser (entry: UserEntry): UserEntry =
+    override suspend fun updateUser(entry: UserEntry): UserEntry =
         txPort.withNewTransaction { updateUserPort.updateUser(entry) }
 }
 

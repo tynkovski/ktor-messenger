@@ -5,10 +5,10 @@ import java.time.LocalDateTime
 
 data class MessageEntry(
     val id: Long? = null,
-    val sender: Long,
+    val senderId: Long,
     val roomId: Long,
     val text: String,
-    val readBy: List<Long>,
+    val readBy: Set<Long>,
     val sentAt: LocalDateTime = LocalDateTime.now()
 ) {
     companion object

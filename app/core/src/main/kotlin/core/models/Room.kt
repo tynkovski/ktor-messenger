@@ -7,8 +7,8 @@ data class RoomEntry(
     val id: Long? = null,
     val name: String?,
     val image: String?,
-    val users: List<Long>,
-    val moderators: List<Long>,
+    val users: Set<Long>,
+    val moderators: Set<Long>,
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) {
     companion object

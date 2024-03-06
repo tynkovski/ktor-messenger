@@ -2,7 +2,7 @@ package core.usecase
 
 import core.models.MessageEntry
 
-fun interface CreateMessageUsecase {
+fun interface AddMessageUsecase {
     suspend fun createMessage(entry: MessageEntry): MessageEntry
 }
 

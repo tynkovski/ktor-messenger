@@ -62,8 +62,8 @@ internal fun RoomEntry.toResponse(): WebsocketsRoomResponse = with(this) {
         id = id!!,
         name = name,
         image = image,
-        users = users,
-        moderators = moderators,
+        users = users.toList(),
+        moderators = moderators.toList(),
         createdAt = formatter.format(createdAt)
     )
 }

@@ -2,9 +2,15 @@ package adapters.persist
 
 import adapters.persist.messenger.keystore.KeyStoreAdapter
 import adapters.persist.messenger.keystore.KeyStoreRepository
+import adapters.persist.messenger.message.MessageRepository
+import adapters.persist.messenger.message.ReaderToMessageRepository
 import adapters.persist.messenger.person.PersonAdapter
 import adapters.persist.messenger.person.PersonRepository
 import adapters.persist.messenger.person.PostalAddressRepository
+import adapters.persist.messenger.room.ModeratorToRoomRepository
+import adapters.persist.messenger.room.RoomAdapter
+import adapters.persist.messenger.room.RoomRepository
+import adapters.persist.messenger.room.UserToRoomRepository
 import adapters.persist.messenger.user.UserAdapter
 import adapters.persist.messenger.user.UserRepository
 import adapters.persist.util.DatabaseErrorInspector
@@ -21,7 +27,6 @@ val persistenceModule = module {
     single {
         PersonRepository()
     }
-
     single {
         PostalAddressRepository()
     }
@@ -29,9 +34,25 @@ val persistenceModule = module {
     single {
         UserRepository()
     }
-
     single {
         KeyStoreRepository()
+    }
+
+    single {
+        RoomRepository()
+    }
+    single {
+        UserToRoomRepository()
+    }
+    single {
+        ModeratorToRoomRepository()
+    }
+
+    single {
+        MessageRepository()
+    }
+    single {
+        ReaderToMessageRepository()
     }
 
     single {
@@ -71,6 +92,20 @@ val persistenceModule = module {
         GetUserByLoginPort::class,
         FindUserForAccessKeyPort::class,
         FindUserForKeysPort::class
+    )
+
+    single {
+        RoomAdapter(
+            roomRepository = get(),
+            userToRoomRepository = get(),
+            moderatorToRoomRepository = get()
+        )
+    } binds arrayOf(
+        AddRoomPort::class,
+        GetRoomPort::class,
+        GetRoomsPagingPort::class,
+        UpdateRoomPort::class,
+        DeleteRoomPort::class,
     )
 
     single {

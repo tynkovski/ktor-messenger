@@ -22,6 +22,10 @@ fun interface UpdateUserUsecase {
     suspend fun updateUser(entry: UserEntry): UserEntry
 }
 
+fun interface EditUserNameUsecase {
+    suspend fun editUserName(entry: UserEntry, name: String): UserEntry
+}
+
 fun interface FindUserForAccessKeyUsecase {
     suspend fun findUserForAccessKey(accessKey: String): UserEntry?
 }
