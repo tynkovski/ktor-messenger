@@ -1,6 +1,9 @@
-package adapters.persist.messenger
+package adapters.persist.messenger.addrbook
 
 import adapters.persist.DatabaseConnector
+import adapters.persist.messenger.AddressBookPersistSpec
+import adapters.persist.messenger.assertPerson
+import adapters.persist.messenger.createDefaultPerson
 import core.models.PersonEntryNotFoundException
 import core.outport.AddPersonPort
 import core.outport.DeletePersonPort

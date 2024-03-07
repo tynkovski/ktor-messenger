@@ -1,10 +1,10 @@
-package adapters.primaryweb.models.requests
+package adapters.primaryweb.models.requests.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RestUpdateUserRequest(
+data class RestEditUserNameRequest(
     @SerialName(value = "name")
     val name: String
 )

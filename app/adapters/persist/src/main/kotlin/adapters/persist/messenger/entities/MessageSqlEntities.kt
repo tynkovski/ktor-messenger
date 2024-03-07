@@ -31,7 +31,7 @@ internal object ReaderToMessageSqlEntities : Table(name = "user_to_message") {
     val messageId = long("message_id")
         .references(MessageSqlEntities.id, onDelete = ReferenceOption.CASCADE)
 
-    override val primaryKey = PrimaryKey(readerId, messageId, name = "PK_user_to_message_id")
+    override val primaryKey = PrimaryKey(messageId, readerId, name = "PK_user_to_message_id")
 }
 
 internal data class MessageSqlEntity(

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RestEditUserNameRequest(
-    @SerialName(value = "name")
-    val name: String
+data class WebsocketsRequestWrapper<T : Any>(
+    @SerialName("method") val method: String,
+    @SerialName("body") val data: T,
 )

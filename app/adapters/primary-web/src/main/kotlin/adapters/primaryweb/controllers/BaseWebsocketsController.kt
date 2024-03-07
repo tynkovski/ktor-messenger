@@ -1,7 +1,6 @@
 package adapters.primaryweb.controllers
 
 import adapters.primaryweb.controllers.interfaces.UserPrincipalController
-import adapters.primaryweb.models.WebSocketMember
 import com.github.michaelbull.logging.InlineLogger
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
@@ -11,38 +10,59 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentHashMap
 
-abstract class BaseWebsocketsController : UserPrincipalController {
-    protected val logger = InlineLogger()
-    protected val members = ConcurrentHashMap<Long, WebSocketMember>()
+interface BaseControllerEvent
 
-    protected suspend inline fun <reified R : Any> notifyConnectedUsers(
-        users: Set<Long>,
-        response: @Serializable R
-    ) {
-        // todo notify each user in coroutine
-        for (user in users) {
-            if (!members.containsKey(user)) continue
-            val json = Json.encodeToString<R>(response)
-            val frame = Frame.Text(json)
-            members[user]?.session?.outgoing?.send(frame)
+abstract class BaseWebsocketsController<E : BaseControllerEvent> : UserPrincipalController {
+
+    private val members = ConcurrentHashMap<Long, WebSocketSession>()
+
+    protected val logger = InlineLogger()
+    protected fun getSession(userId: Long) = members[userId]
+
+    private suspend fun processFrame(userId: Long, frame: Frame) {
+        if (frame is Frame.Text) {
+            val (event, json) = frame.readText().split("#", limit = 2)
+            processEvent(userId, processText(event, json))
         }
     }
 
+    protected suspend inline fun <reified R : Any> notifyUsersIfConnected(
+        users: Set<Long>,
+        response: @Serializable R
+    ) {
+        logger.debug { "notifying users: $users" }
+        // todo notify each user in coroutine
+        // CoroutineScope(Dispatchers.IO).launch { }
+        for (userId in users) {
+            getSession(userId)?.let {
+                val json = Json.encodeToString<R>(response)
+                val frame = Frame.Text(json)
+                it.outgoing.send(frame)
+            }
+        }
+    }
+
+    protected inline fun <reified T : Any> decode(json: String): T {
+        return Json.decodeFromString<T>(json)
+    }
+
     suspend fun connect(session: DefaultWebSocketServerSession) {
-        val user = findUser(session.call)
-        members[user.id!!] = WebSocketMember(session = session, user = user)
-        session.incoming.consumeEach { frame ->
-            processFrame(session, frame)
+        val userId = findUser(session.call).id!!
+        members[userId] = session
+        members[userId]?.incoming?.consumeEach { frame ->
+            processFrame(userId, frame)
         }
     }
 
     suspend fun disconnect(session: DefaultWebSocketServerSession) {
         val userId = findUser(session.call).id
-        members[userId]?.session?.close()
+        members[userId]?.close()
         if (members.containsKey(userId)) {
             members.remove(userId)
         }
     }
 
-    abstract suspend fun processFrame(session: DefaultWebSocketServerSession, frame: Frame)
+    abstract suspend fun processEvent(userId: Long, event: E)
+
+    abstract suspend fun processText(event: String, json: String): E
 }

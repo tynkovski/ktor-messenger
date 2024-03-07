@@ -11,7 +11,7 @@ fun interface GetRoomUsecase {
 }
 
 fun interface GetRoomsPagingUsecase {
-    suspend fun getRooms(userId: Long, page: Int, pageSize: Int): Collection<RoomEntry>
+    suspend fun getRooms(userId: Long, page: Long, pageSize: Int): Collection<RoomEntry>
 }
 
 fun interface DeleteRoomUsecase {
@@ -21,6 +21,11 @@ fun interface DeleteRoomUsecase {
 fun interface UpdateRoomUsecase {
     suspend fun updateRoom(entry: RoomEntry): RoomEntry
 }
+
+fun interface RenameRoomUsecase {
+    suspend fun renameRoom(id: Long, name: String?): RoomEntry
+}
+
 
 fun interface AddUserToRoomUsecase {
     suspend fun addUser(userId: Long, entry: RoomEntry): RoomEntry

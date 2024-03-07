@@ -28,7 +28,7 @@ internal class GetRoomsPagingService(
     private val getRoomsPort: GetRoomsPagingPort,
     private val txPort: PersistTransactionPort,
 ) : GetRoomsPagingUsecase {
-    override suspend fun getRooms(userId: Long, page: Int, pageSize: Int): Collection<RoomEntry> =
+    override suspend fun getRooms(userId: Long, page: Long, pageSize: Int): Collection<RoomEntry> =
         txPort.withNewTransaction {
             getRoomsPort.getRoomsPaging(userId = userId, page = page, pageSize = pageSize)
         }
@@ -51,6 +51,18 @@ internal class UpdateRoomService(
     override suspend fun updateRoom(entry: RoomEntry): RoomEntry =
         txPort.withNewTransaction {
             updateRoomPort.updateRoom(entry)
+        }
+}
+
+internal class RenameRoomService(
+    private val getRoomPort: GetRoomPort,
+    private val updateRoomPort: UpdateRoomPort,
+    private val txPort: PersistTransactionPort,
+) : RenameRoomUsecase {
+    override suspend fun renameRoom(id: Long, name: String?): RoomEntry =
+        txPort.withNewTransaction {
+            val room = getRoomPort.getRoom(id).copy(name = name)
+            updateRoomPort.updateRoom(room)
         }
 }
 

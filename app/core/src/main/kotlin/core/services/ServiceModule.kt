@@ -157,6 +157,13 @@ internal val serviceModule = module {
             txPort = get()
         )
     }
+    single<RenameRoomUsecase> {
+        RenameRoomService(
+            getRoomPort = get(),
+            updateRoomPort = get(),
+            txPort = get()
+        )
+    }
     single<DeleteRoomUsecase> {
         DeleteRoomService(
             deleteRoomPort = get(),

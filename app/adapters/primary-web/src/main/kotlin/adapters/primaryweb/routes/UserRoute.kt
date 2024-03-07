@@ -10,6 +10,7 @@ internal fun Routing.userRoute() {
     val controller by inject<UserController>()
     route("/user") {
         post { controller.addUser(call) }
+        get("{id}") { controller.getUserById(call) }
         authenticate {
             get { controller.getUser(call) }
             put { controller.updateUser(call) }

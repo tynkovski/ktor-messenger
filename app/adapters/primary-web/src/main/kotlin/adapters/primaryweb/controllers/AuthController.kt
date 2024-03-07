@@ -1,10 +1,10 @@
 package adapters.primaryweb.controllers
 
 import adapters.primaryweb.mappers.toResponse
-import adapters.primaryweb.models.requests.RestLogoutRequest
-import adapters.primaryweb.models.requests.RestRefreshRequest
-import adapters.primaryweb.models.requests.RestSaveUserRequest
-import adapters.primaryweb.models.requests.RestSignInRequest
+import adapters.primaryweb.models.requests.auth.RestLogoutRequest
+import adapters.primaryweb.models.requests.auth.RestRefreshRequest
+import adapters.primaryweb.models.requests.user.RestSaveUserRequest
+import adapters.primaryweb.models.requests.auth.RestSignInRequest
 import adapters.primaryweb.models.responses.RestAccessResponse
 import adapters.primaryweb.models.responses.RestTokenResponse
 import adapters.primaryweb.util.receiveValidated

@@ -9,6 +9,7 @@ import common.log.X_REQUEST_ID_LOG_KEY
 import common.log.setXRequestId
 import core.errors.DomainException
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.callid.*
@@ -19,6 +20,7 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.websocket.*
+import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
 import java.time.Duration
 import java.util.*
@@ -99,5 +101,6 @@ internal fun Application.configurePlugins() {
         timeout = Duration.ofSeconds(15)
         maxFrameSize = Long.MAX_VALUE
         masking = false
+        contentConverter = KotlinxWebsocketSerializationConverter(Json)
     }
 }

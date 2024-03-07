@@ -11,7 +11,7 @@ interface GetRoomPort {
 }
 
 interface GetRoomsPagingPort {
-    fun getRoomsPaging(userId: Long, page: Int, pageSize: Int): Collection<RoomEntry>
+    fun getRoomsPaging(userId: Long, page: Long, pageSize: Int): Collection<RoomEntry>
 }
 
 interface DeleteRoomPort {

@@ -29,21 +29,20 @@ internal fun RoomEntry.toSqlEntity() = with(this) {
     )
 }
 
-internal fun RoomEntry.toSqlEntities(roomId: Long) = Pair(
-    with(this.users) {
-        map { userId ->
-            UserToRoomSqlEntity(
-                userId = userId,
-                roomId = roomId
-            )
-        }
-    },
-    with(this.moderators) {
-        map { moderatorId ->
-            ModeratorToRoomSqlEntity(
-                userId = moderatorId,
-                roomId = roomId
-            )
-        }
+internal fun RoomEntry.toUsersToRoomEntities(roomId: Long) = with(this.users) {
+    map { userId ->
+        UserToRoomSqlEntity(
+            userId = userId,
+            roomId = roomId
+        )
     }
-)
+}
+
+internal fun RoomEntry.toModeratorsToRoomEntities(roomId: Long) = with(this.moderators) {
+    map { userId ->
+        ModeratorToRoomSqlEntity(
+            userId = userId,
+            roomId = roomId
+        )
+    }
+}

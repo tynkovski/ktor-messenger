@@ -2,9 +2,10 @@ package adapters.primaryweb.controllers
 
 import adapters.primaryweb.controllers.interfaces.UserPrincipalController
 import adapters.primaryweb.mappers.toResponse
-import adapters.primaryweb.models.requests.RestEditUserNameRequest
-import adapters.primaryweb.models.requests.RestSaveUserRequest
-import adapters.primaryweb.models.requests.RestUpdateUserRequest
+import adapters.primaryweb.models.requests.user.RestEditUserNameRequest
+import adapters.primaryweb.models.requests.user.RestSaveUserRequest
+import adapters.primaryweb.models.requests.user.RestUpdateUserRequest
+import adapters.primaryweb.util.longParameter
 import adapters.primaryweb.util.receiveValidated
 import core.models.UserEntry
 import core.security.token.JWTUserPrincipal
@@ -16,6 +17,7 @@ import io.ktor.server.response.*
 
 internal class UserController(
     private val saltedHashUsecase: GenerateSaltedHashUsecase,
+    private val getUserUsecase: GetUserUsecase,
     private val addUserUsecase: AddUserUsecase,
     private val updateUserUsecase: UpdateUserUsecase,
     private val editUserNameUsecase: EditUserNameUsecase,
@@ -41,6 +43,12 @@ internal class UserController(
 
     suspend fun getUser(call: ApplicationCall) {
         val user = findUser(call)
+        call.respond(status = HttpStatusCode.OK, message = user.toResponse())
+    }
+
+    suspend fun getUserById(call: ApplicationCall) {
+        val id = call.longParameter("id")
+        val user = getUserUsecase.getUser(id)
         call.respond(status = HttpStatusCode.OK, message = user.toResponse())
     }
 
