@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 interface BaseControllerEvent
 
-abstract class BaseWebsocketsController<E : BaseControllerEvent> : UserPrincipalController {
+abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalController {
 
     private val members = ConcurrentHashMap<Long, WebSocketSession>()
 
@@ -62,7 +62,7 @@ abstract class BaseWebsocketsController<E : BaseControllerEvent> : UserPrincipal
         }
     }
 
-    abstract suspend fun processEvent(userId: Long, event: E)
+    abstract suspend fun processEvent(userId: Long, event: BaseControllerEvent)
 
-    abstract suspend fun processText(event: String, json: String): E
+    abstract suspend fun processText(event: String, json: String): BaseControllerEvent
 }

@@ -36,7 +36,9 @@ val controllersModule = module {
         RoomController(
             getRoomUsecase = get(),
             addRoomUsecase = get(),
-            renameRoomUsecase = get()
+            renameRoomUsecase = get(),
+            getRoomsCountUsecase = get(),
+            getRoomsPagedUsecase = get()
         )
     }
     single {

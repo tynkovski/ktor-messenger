@@ -10,6 +10,10 @@ interface GetRoomPort {
     fun getRoom(id: Long): RoomEntry
 }
 
+interface GetRoomCountPort {
+    fun getRoomCount(userId: Long): Long
+}
+
 interface GetRoomsPagingPort {
     fun getRoomsPaging(userId: Long, page: Long, pageSize: Int): Collection<RoomEntry>
 }

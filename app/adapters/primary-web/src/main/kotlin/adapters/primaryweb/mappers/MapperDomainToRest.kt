@@ -5,7 +5,8 @@ import adapters.primaryweb.models.gen.RestPersonResponse
 import adapters.primaryweb.models.gen.RestPostalAddressResponse
 import adapters.primaryweb.models.responses.RestTokenResponse
 import adapters.primaryweb.models.responses.RestUserResponse
-import adapters.primaryweb.models.responses.WebsocketsRoomResponse
+import adapters.primaryweb.models.responses.RoomResponse
+import adapters.primaryweb.models.responses.RoomsPagingResponse
 import core.models.PersonEntry
 import core.models.RoomEntry
 import core.models.TokenEntry
@@ -57,13 +58,29 @@ internal fun TokenEntry.toResponse(): RestTokenResponse = with(this) {
     )
 }
 
-internal fun RoomEntry.toResponse(): WebsocketsRoomResponse = with(this) {
-    WebsocketsRoomResponse(
+internal fun RoomEntry.toResponse(): RoomResponse = with(this) {
+    RoomResponse(
         id = id!!,
         name = name,
         image = image,
         users = users.toList(),
         moderators = moderators.toList(),
         createdAt = formatter.format(createdAt)
+    )
+}
+
+internal fun Collection<RoomEntry>.toResponse(count: Long): RoomsPagingResponse = with(this) {
+    RoomsPagingResponse(
+        count = count,
+        rooms = map { room ->
+            RoomResponse(
+                id = room.id!!,
+                name = room.name,
+                image = room.image,
+                users = room.users.toList(),
+                moderators = room.moderators.toList(),
+                createdAt = formatter.format(room.createdAt)
+            )
+        }
     )
 }

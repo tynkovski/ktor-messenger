@@ -145,6 +145,12 @@ internal val serviceModule = module {
             txPort = get()
         )
     }
+    single<GetRoomCountUsecase> {
+        GetRoomCountService(
+            getRoomCountPort = get(),
+            txPort = get()
+        )
+    }
     single<GetRoomsPagingUsecase> {
         GetRoomsPagingService(
             getRoomsPort = get(),

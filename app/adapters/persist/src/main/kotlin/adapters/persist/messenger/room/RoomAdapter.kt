@@ -16,6 +16,7 @@ internal class RoomAdapter(
     private val moderatorToRoomRepository: ModeratorToRoomRepository,
 ) : AddRoomPort,
     GetRoomPort,
+    GetRoomCountPort,
     GetRoomsPagingPort,
     UpdateRoomPort,
     DeleteRoomPort {
@@ -24,7 +25,7 @@ internal class RoomAdapter(
         val usersToAdd = roomEntry.toUsersToRoomEntities(roomId)
 
         userToRoomRepository
-            .getByIds(roomEntry.users)
+            .getUsersByRoomId(roomId)
             .map(UserToRoomSqlEntity::userId)
             .filterNot(roomEntry.users::contains)
             .forEach(userToRoomRepository::deleteUserFromRoom)
@@ -37,7 +38,7 @@ internal class RoomAdapter(
         val moderatorEntities = roomEntry.toModeratorsToRoomEntities(roomId)
 
         moderatorToRoomRepository
-            .getByIds(roomEntry.moderators)
+            .getUsersByRoomId(roomId)
             .map(ModeratorToRoomSqlEntity::userId)
             .filterNot(roomEntry.moderators::contains)
             .forEach(moderatorToRoomRepository::deleteModeratorFromRoom)
@@ -72,12 +73,17 @@ internal class RoomAdapter(
     }
 
     @MustBeCalledInTransactionContext
+    override fun getRoomCount(userId: Long): Long {
+        return userToRoomRepository.countUserRooms(userId)
+    }
+
+    @MustBeCalledInTransactionContext
     override fun getRoom(id: Long): RoomEntry {
         val roomEntity = roomRepository.getByIdOrNull(id)
             ?: throw RoomEntryNotFoundException(searchCriteria = "id=$id")
 
-        val usersEntities = userToRoomRepository.getUsers(id)
-        val moderatorsEntities = moderatorToRoomRepository.getUsers(id)
+        val usersEntities = userToRoomRepository.getUsersByRoomId(id)
+        val moderatorsEntities = moderatorToRoomRepository.getUsersByRoomId(id)
 
         return RoomEntry.fromEntities(
             roomSqlEntity = roomEntity,
@@ -91,8 +97,8 @@ internal class RoomAdapter(
         val roomEntities = roomRepository.getRoomsPaging(userId = userId, page = page, pageSize = pageSize)
         val roomsIds = roomEntities.map { it.id!! }
 
-        val usersEntities = userToRoomRepository.getByIds(roomsIds)
-        val moderatorsEntities = moderatorToRoomRepository.getByIds(roomsIds)
+        val usersEntities = userToRoomRepository.getUsersByRoomIds(roomsIds)
+        val moderatorsEntities = moderatorToRoomRepository.getUsersByRoomIds(roomsIds)
 
         return roomEntities.map { entity ->
             RoomEntry.fromEntities(

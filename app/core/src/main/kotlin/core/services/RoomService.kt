@@ -24,6 +24,16 @@ internal class GetRoomService(
         }
 }
 
+internal class GetRoomCountService(
+    private val getRoomCountPort: GetRoomCountPort,
+    private val txPort: PersistTransactionPort,
+) : GetRoomCountUsecase {
+    override suspend fun getRoomCount(userId: Long): Long =
+        txPort.withNewTransaction {
+            getRoomCountPort.getRoomCount(userId)
+        }
+}
+
 internal class GetRoomsPagingService(
     private val getRoomsPort: GetRoomsPagingPort,
     private val txPort: PersistTransactionPort,

@@ -103,6 +103,7 @@ val persistenceModule = module {
     } binds arrayOf(
         AddRoomPort::class,
         GetRoomPort::class,
+        GetRoomCountPort::class,
         GetRoomsPagingPort::class,
         UpdateRoomPort::class,
         DeleteRoomPort::class,

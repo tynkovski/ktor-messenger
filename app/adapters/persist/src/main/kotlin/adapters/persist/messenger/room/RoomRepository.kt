@@ -7,7 +7,6 @@ import adapters.persist.util.postgresql.pgInsertOrUpdate
 import core.outport.MustBeCalledInTransactionContext
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
 
@@ -57,16 +56,16 @@ internal class RoomRepository {
 internal class UserToRoomRepository {
 
     @MustBeCalledInTransactionContext
-    fun getUsers(roomId: Long): Collection<UserToRoomSqlEntity> {
+    fun getUsersByRoomId(roomId: Long): Collection<UserToRoomSqlEntity> {
         return UserToRoomSqlEntities
             .select { UserToRoomSqlEntities.roomId eq roomId }
             .map { UserToRoomSqlEntity.fromSqlResultRow(it) }
     }
 
     @MustBeCalledInTransactionContext
-    fun getByIds(userIds: Collection<Long>): Collection<UserToRoomSqlEntity> {
+    fun getUsersByRoomIds(roomIds: Collection<Long>): Collection<UserToRoomSqlEntity> {
         return UserToRoomSqlEntities
-            .select { UserToRoomSqlEntities.userId inList userIds }
+            .select { UserToRoomSqlEntities.roomId inList roomIds }
             .map { UserToRoomSqlEntity.fromSqlResultRow(it) }
     }
 
@@ -90,12 +89,19 @@ internal class UserToRoomRepository {
     fun deleteUserFromRoom(userId: Long): Boolean {
         return UserToRoomSqlEntities.deleteWhere { UserToRoomSqlEntities.userId eq userId } > 0
     }
+
+    @MustBeCalledInTransactionContext
+    fun countUserRooms(userId: Long): Long {
+        return UserToRoomSqlEntities
+            .select { UserToRoomSqlEntities.userId eq userId }
+            .count()
+    }
 }
 
 internal class ModeratorToRoomRepository {
 
     @MustBeCalledInTransactionContext
-    fun getUsers(roomId: Long): Collection<ModeratorToRoomSqlEntity> {
+    fun getUsersByRoomId(roomId: Long): Collection<ModeratorToRoomSqlEntity> {
         return ModeratorToRoomSqlEntities
             .select { ModeratorToRoomSqlEntities.roomId eq roomId }
             .map { ModeratorToRoomSqlEntity.fromSqlResultRow(it) }
@@ -103,9 +109,9 @@ internal class ModeratorToRoomRepository {
 
 
     @MustBeCalledInTransactionContext
-    fun getByIds(userIds: Collection<Long>): Collection<ModeratorToRoomSqlEntity> {
+    fun getUsersByRoomIds(roomIds: Collection<Long>): Collection<ModeratorToRoomSqlEntity> {
         return ModeratorToRoomSqlEntities
-            .select { ModeratorToRoomSqlEntities.userId inList userIds }
+            .select { ModeratorToRoomSqlEntities.roomId inList roomIds }
             .map { ModeratorToRoomSqlEntity.fromSqlResultRow(it) }
     }
 
