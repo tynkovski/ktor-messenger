@@ -3,7 +3,11 @@ package adapters.primaryweb.mappers
 import adapters.primaryweb.models.gen.RestGender
 import adapters.primaryweb.models.gen.RestPersonResponse
 import adapters.primaryweb.models.gen.RestPostalAddressResponse
-import adapters.primaryweb.models.responses.*
+import adapters.primaryweb.models.responses.auth.RestTokenResponse
+import adapters.primaryweb.models.responses.room.RoomLastActionResponse
+import adapters.primaryweb.models.responses.room.RoomResponse
+import adapters.primaryweb.models.responses.room.RoomsPagingResponse
+import adapters.primaryweb.models.responses.user.RestUserResponse
 import core.models.PersonEntry
 import core.models.RoomEntry
 import core.models.TokenEntry
@@ -57,7 +61,7 @@ internal fun TokenEntry.toResponse(): RestTokenResponse = with(this) {
 
 internal fun RoomEntry.LastActionEntry.toResponse() = with(this) {
     RoomLastActionResponse(
-        authorId = authorId,
+        authorId = applicantId,
         actionType = actionType.toString(),
         description = description,
         actionDateTime = formatter.format(actionDateTime)

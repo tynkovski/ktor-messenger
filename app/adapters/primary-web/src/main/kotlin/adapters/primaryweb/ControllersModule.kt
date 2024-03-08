@@ -34,11 +34,17 @@ val controllersModule = module {
     }
     single {
         RoomController(
-            getRoomUsecase = get(),
             addRoomUsecase = get(),
+            getRoomUsecase = get(),
+            deleteRoomUsecase = get(),
             renameRoomUsecase = get(),
+            joinToRoomUsecase = get(),
+            quitFromRoomUsecase = get(),
+            inviteUserToRoomUsecase = get(),
+            kickUserFromRoomUsecase = get(),
+            makeModeratorInRoomUsecase = get(),
+            getRoomsPagedUsecase = get(),
             getRoomsCountUsecase = get(),
-            getRoomsPagedUsecase = get()
         )
     }
     single {

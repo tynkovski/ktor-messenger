@@ -157,12 +157,6 @@ internal val serviceModule = module {
             txPort = get()
         )
     }
-    single<UpdateRoomUsecase> {
-        UpdateRoomService(
-            updateRoomPort = get(),
-            txPort = get()
-        )
-    }
     single<RenameRoomUsecase> {
         RenameRoomService(
             getRoomPort = get(),
@@ -176,26 +170,37 @@ internal val serviceModule = module {
             txPort = get()
         )
     }
-    single<AddUserToRoomUsecase> {
-        AddUserToRoomService(
+    single<JoinToRoomUsecase> {
+        JoinToRoomService(
+            getRoomPort = get(),
             updateRoomPort = get(),
             txPort = get()
         )
     }
-    single<RemoveUserFromRoomUsecase> {
-        RemoveUserFromRoomService(
+    single<QuitFromRoomUsecase> {
+        QuitFromRoomService(
+            getRoomPort = get(),
             updateRoomPort = get(),
             txPort = get()
         )
     }
-    single<AddModeratorToRoomUsecase> {
-        AddModeratorToRoomService(
+    single<KickUserFromRoomUsecase> {
+        KickUserFromRoomService(
+            getRoomPort = get(),
             updateRoomPort = get(),
             txPort = get()
         )
     }
-    single<RemoveModeratorFromRoomUsecase> {
-        RemoveModeratorFromRoomService(
+    single<InviteUserToRoomUsecase> {
+        InviteUserToRoomService(
+            getRoomPort = get(),
+            updateRoomPort = get(),
+            txPort = get()
+        )
+    }
+    single<MakeModeratorInRoomUsecase> {
+        MakeModeratorInRoomService(
+            getRoomPort = get(),
             updateRoomPort = get(),
             txPort = get()
         )

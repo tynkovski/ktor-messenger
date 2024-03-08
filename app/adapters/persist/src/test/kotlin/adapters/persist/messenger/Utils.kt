@@ -16,7 +16,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import java.util.Properties
 
-fun createPostgreSqlContainer() = PostgreSQLContainer<Nothing>("postgres:14.6-alpine").apply {
+fun createPostgreSqlContainer() = PostgreSQLContainer<Nothing>("postgres:16.2").apply {
     startupAttempts = 1
     exposedPorts = listOf(5432)
     waitingFor(Wait.forListeningPort())

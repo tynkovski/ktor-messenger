@@ -3,11 +3,46 @@ package core.usecase
 import core.models.RoomEntry
 
 fun interface AddRoomUsecase {
-    suspend fun addRoom(entry: RoomEntry): RoomEntry
+    suspend fun addRoom(
+        applicantId: Long,
+        name: String?,
+        image: String?,
+        users: Set<Long>,
+        moderators: Set<Long>
+    ): RoomEntry
 }
 
 fun interface GetRoomUsecase {
-    suspend fun getRoom(id: Long): RoomEntry
+    suspend fun getRoom(roomId: Long): RoomEntry
+}
+
+
+fun interface DeleteRoomUsecase {
+    suspend fun deleteRoom(roomId: Long)
+}
+
+fun interface RenameRoomUsecase {
+    suspend fun renameRoom(applicantId: Long, roomId: Long, name: String?): RoomEntry
+}
+
+fun interface JoinToRoomUsecase {
+    suspend fun joinUser(userId: Long, roomId: Long): RoomEntry
+}
+
+fun interface QuitFromRoomUsecase {
+    suspend fun quitUser(userId: Long, roomId: Long): RoomEntry
+}
+
+fun interface InviteUserToRoomUsecase {
+    suspend fun inviteUser(applicantId: Long, userId: Long, roomId: Long): RoomEntry
+}
+
+fun interface KickUserFromRoomUsecase {
+    suspend fun kickUser(applicantId: Long, userId: Long, roomId: Long): RoomEntry
+}
+
+fun interface MakeModeratorInRoomUsecase {
+    suspend fun makeModerator(applicantId: Long, userId: Long, roomId: Long): RoomEntry
 }
 
 fun interface GetRoomCountUsecase {
@@ -16,32 +51,4 @@ fun interface GetRoomCountUsecase {
 
 fun interface GetRoomsPagingUsecase {
     suspend fun getRooms(userId: Long, page: Long, pageSize: Int): Collection<RoomEntry>
-}
-
-fun interface DeleteRoomUsecase {
-    suspend fun deleteRoom(id: Long)
-}
-
-fun interface UpdateRoomUsecase {
-    suspend fun updateRoom(entry: RoomEntry): RoomEntry
-}
-
-fun interface RenameRoomUsecase {
-    suspend fun renameRoom(id: Long, name: String?): RoomEntry
-}
-
-fun interface AddUserToRoomUsecase {
-    suspend fun addUser(userId: Long, entry: RoomEntry): RoomEntry
-}
-
-fun interface RemoveUserFromRoomUsecase {
-    suspend fun removeUser(userId: Long, entry: RoomEntry): RoomEntry
-}
-
-fun interface AddModeratorToRoomUsecase {
-    suspend fun addModerator(userId: Long, entry: RoomEntry): RoomEntry
-}
-
-fun interface RemoveModeratorFromRoomUsecase {
-    suspend fun removeModerator(userId: Long, entry: RoomEntry): RoomEntry
 }

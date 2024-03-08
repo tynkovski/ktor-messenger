@@ -6,7 +6,14 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.LocalDateTime
 
 internal enum class ActionSqlType {
-    USER_CREATE_ROOM, USER_SENT_MESSAGE, USER_INVITE_USER, USER_KICK_USER, USER_QUIT, USER_JOINED
+    USER_CREATE_ROOM,
+    USER_RENAME_ROOM,
+    USER_SENT_MESSAGE,
+    USER_INVITE_USER,
+    USER_KICK_USER,
+    USER_QUIT,
+    USER_JOINED,
+    MAKE_MODERATOR,
 }
 
 internal object RoomSqlEntities : Table(name = "room") {
@@ -42,12 +49,12 @@ internal object ActionToRoomSqlEntities : Table(name = "action_to_room") {
     val roomId = long("room_id")
         .references(RoomSqlEntities.id, onDelete = ReferenceOption.CASCADE)
 
-    val authorId = long("author_id")
+    val applicantId = long("author_id")
         .references(UserSqlEntities.id)
 
     val description = text("action_description").nullable()
 
-    val actionType = enumerationByName("action_type",20, ActionSqlType::class)
+    val actionType = enumerationByName("action_type", 20, ActionSqlType::class)
 
     val actionDateTime = datetime("action_datetime").index()
 
@@ -79,7 +86,7 @@ internal data class ModeratorToRoomSqlEntity(
 
 internal data class ActionToRoomSqlEntity(
     val roomId: Long,
-    val authorId: Long,
+    val applicantId: Long,
     val description: String?,
     val actionType: ActionSqlType,
     val actionDateTime: LocalDateTime

@@ -2,14 +2,19 @@ package adapters.primaryweb.controllers
 
 import core.usecase.AddMessageUsecase
 
-sealed class MessageControllerEvent : BaseControllerEvent {
-    data object Unknown : MessageControllerEvent()
+sealed class MessageControllerEvent(
+    override val name: String
+) : BaseControllerEvent {
+    companion object {
+        const val UNKNOWN = "unknown"
+    }
+    data object Unknown : MessageControllerEvent(UNKNOWN)
 }
 
 internal class MessageController(
     private val addMessageMessageUsecase: AddMessageUsecase
 ) : BaseWebsocketsController<MessageControllerEvent>() {
-    override suspend fun processEvent(userId: Long, event: MessageControllerEvent) {
+    override suspend fun processEvent(applicantId: Long, event: MessageControllerEvent) {
         // todo add logic
     }
 

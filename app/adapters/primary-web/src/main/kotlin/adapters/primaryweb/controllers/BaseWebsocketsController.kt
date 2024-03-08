@@ -10,7 +10,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentHashMap
 
-interface BaseControllerEvent
+interface BaseControllerEvent {
+    val name: String
+}
 
 abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalController {
 
@@ -21,13 +23,17 @@ abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalCont
 
     private suspend fun processFrame(userId: Long, frame: Frame) {
         if (frame is Frame.Text) {
-            val (event, json) = frame.readText().split("#", limit = 2)
+            val (event, json) = frame
+                .readText()
+                .split("#", limit = 2)
+                .map(String::trim)
             processEvent(userId, processText(event, json))
         }
     }
 
     protected suspend inline fun <reified R : Any> notifyUsersIfConnected(
         users: Set<Long>,
+        event: String,
         response: @Serializable R
     ) {
         logger.debug { "notifying users: $users" }
@@ -36,7 +42,7 @@ abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalCont
         for (userId in users) {
             getSession(userId)?.let {
                 val json = Json.encodeToString<R>(response)
-                val frame = Frame.Text(json)
+                val frame = Frame.Text("$event#$json")
                 it.outgoing.send(frame)
             }
         }
@@ -62,7 +68,7 @@ abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalCont
         }
     }
 
-    abstract suspend fun processEvent(userId: Long, event: BaseControllerEvent)
+    abstract suspend fun processEvent(applicantId: Long, event: BaseControllerEvent)
 
     abstract suspend fun processText(event: String, json: String): BaseControllerEvent
 }

@@ -1,4 +1,4 @@
-package adapters.primaryweb.models.responses
+package adapters.primaryweb.models.responses.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

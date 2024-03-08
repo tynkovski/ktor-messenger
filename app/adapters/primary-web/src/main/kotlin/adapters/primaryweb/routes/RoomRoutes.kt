@@ -17,9 +17,7 @@ internal fun Route.roomRoute() {
             get("/paged") { roomController.getRoomsPaged(call) }
             get("{id}") { roomController.getRoom(call) }
         }
-    }
 
-    authenticate {
         webSocket("/room") {
             try {
                 roomController.connect(this)

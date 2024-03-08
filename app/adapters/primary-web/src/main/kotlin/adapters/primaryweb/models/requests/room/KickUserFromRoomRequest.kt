@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RenameRoomRequest(
+data class KickUserFromRoomRequest(
     @SerialName("roomId") val roomId: Long,
-    @SerialName("name") val name: String?,
+    @SerialName("userId") val userId: Long
 )

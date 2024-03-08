@@ -23,7 +23,7 @@ internal fun ModeratorToRoomSqlEntity.toSqlStatement(statement: InsertStatement<
 
 internal fun ActionToRoomSqlEntity.toSqlStatement(statement: InsertStatement<Number>) = statement.let {
     it[ActionToRoomSqlEntities.roomId] = roomId
-    it[ActionToRoomSqlEntities.authorId] = authorId
+    it[ActionToRoomSqlEntities.applicantId] = applicantId
     it[ActionToRoomSqlEntities.description] = description
     it[ActionToRoomSqlEntities.actionDateTime] = actionDateTime
     it[ActionToRoomSqlEntities.actionType] = actionType
@@ -54,7 +54,7 @@ internal fun ModeratorToRoomSqlEntity.Companion.fromSqlResultRow(resultRow: Resu
 internal fun ActionToRoomSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
     ActionToRoomSqlEntity(
         roomId = resultRow[ActionToRoomSqlEntities.roomId],
-        authorId = resultRow[ActionToRoomSqlEntities.authorId],
+        applicantId = resultRow[ActionToRoomSqlEntities.applicantId],
         description = resultRow[ActionToRoomSqlEntities.description],
         actionDateTime = resultRow[ActionToRoomSqlEntities.actionDateTime],
         actionType = resultRow[ActionToRoomSqlEntities.actionType],

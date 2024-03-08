@@ -3,14 +3,136 @@ package core.services
 import core.models.RoomEntry
 import core.outport.*
 import core.usecase.*
+import java.time.LocalDateTime
+
+private fun createRoom(
+    applicantId: Long,
+    name: String?,
+    image: String?,
+    users: Set<Long>,
+    moderators: Set<Long>
+): RoomEntry {
+    val time = LocalDateTime.now()
+    return RoomEntry(
+        id = null,
+        name = name,
+        image = image,
+        lastAction = RoomEntry.LastActionEntry(
+            applicantId = applicantId,
+            actionType = RoomEntry.LastActionEntry.ActionType.USER_CREATE_ROOM,
+            description = null,
+            actionDateTime = time
+        ),
+        users = users.toSet(),
+        moderators = moderators.toSet(),
+        createdAt = time
+    )
+}
+
+private fun renameRoom(
+    applicantId: Long,
+    name: String?,
+    room: RoomEntry,
+) = room.copy(
+    name = name,
+    lastAction = RoomEntry.LastActionEntry(
+        applicantId = applicantId,
+        actionType = RoomEntry.LastActionEntry.ActionType.USER_RENAME_ROOM,
+        description = name,
+        actionDateTime = LocalDateTime.now()
+    )
+)
+
+// todo add `link` parameter: User joined via link
+private fun joinUserToRoom(
+    user: Long,
+    room: RoomEntry,
+) = room.copy(
+    users = room.users + user,
+    lastAction = RoomEntry.LastActionEntry(
+        applicantId = user,
+        actionType = RoomEntry.LastActionEntry.ActionType.USER_JOINED,
+        description = null,
+        actionDateTime = LocalDateTime.now()
+    )
+)
+
+private fun quitUserFromRoom(
+    user: Long,
+    room: RoomEntry,
+) = room.copy(
+    users = room.users - user,
+    moderators = room.moderators - user,
+    lastAction = RoomEntry.LastActionEntry(
+        applicantId = user,
+        actionType = RoomEntry.LastActionEntry.ActionType.USER_QUIT,
+        description = null,
+        actionDateTime = LocalDateTime.now()
+    )
+)
+
+private fun inviteUserToRoom(
+    applicantId: Long,
+    user: Long,
+    room: RoomEntry,
+) = room.copy(
+    users = room.users + user,
+    lastAction = RoomEntry.LastActionEntry(
+        applicantId = applicantId,
+        actionType = RoomEntry.LastActionEntry.ActionType.USER_INVITE_USER,
+        description = "$user",
+        actionDateTime = LocalDateTime.now()
+    )
+)
+
+private fun kickUserFromRoom(
+    applicantId: Long,
+    user: Long,
+    room: RoomEntry,
+) = room.copy(
+    users = room.users - user,
+    lastAction = RoomEntry.LastActionEntry(
+        applicantId = applicantId,
+        actionType = RoomEntry.LastActionEntry.ActionType.USER_KICK_USER,
+        description = "$user",
+        actionDateTime = LocalDateTime.now()
+    )
+)
+
+private fun addModeratorToRoom(
+    applicantId: Long,
+    user: Long,
+    room: RoomEntry,
+) = room.copy(
+    moderators = room.moderators + user,
+    lastAction = RoomEntry.LastActionEntry(
+        applicantId = applicantId,
+        actionType = RoomEntry.LastActionEntry.ActionType.MAKE_MODERATOR,
+        description = "$user",
+        actionDateTime = LocalDateTime.now()
+    )
+)
 
 internal class AddRoomService(
     private val addRoomPort: AddRoomPort,
     private val txPort: PersistTransactionPort,
 ) : AddRoomUsecase {
-    override suspend fun addRoom(entry: RoomEntry): RoomEntry =
+    override suspend fun addRoom(
+        applicantId: Long,
+        name: String?,
+        image: String?,
+        users: Set<Long>,
+        moderators: Set<Long>
+    ): RoomEntry =
         txPort.withNewTransaction {
-            addRoomPort.addRoom(entry)
+            val room = createRoom(
+                applicantId = applicantId,
+                name = name,
+                image = image,
+                users = users,
+                moderators = moderators
+            )
+            addRoomPort.addRoom(room)
         }
 }
 
@@ -18,9 +140,9 @@ internal class GetRoomService(
     private val getRoomPort: GetRoomPort,
     private val txPort: PersistTransactionPort,
 ) : GetRoomUsecase {
-    override suspend fun getRoom(id: Long): RoomEntry =
+    override suspend fun getRoom(roomId: Long): RoomEntry =
         txPort.withNewTransaction {
-            getRoomPort.getRoom(id)
+            getRoomPort.getRoom(roomId)
         }
 }
 
@@ -48,19 +170,9 @@ internal class DeleteRoomService(
     private val deleteRoomPort: DeleteRoomPort,
     private val txPort: PersistTransactionPort,
 ) : DeleteRoomUsecase {
-    override suspend fun deleteRoom(id: Long) =
+    override suspend fun deleteRoom(roomId: Long) =
         txPort.withNewTransaction {
-            deleteRoomPort.deleteRoom(id)
-        }
-}
-
-internal class UpdateRoomService(
-    private val updateRoomPort: UpdateRoomPort,
-    private val txPort: PersistTransactionPort,
-) : UpdateRoomUsecase {
-    override suspend fun updateRoom(entry: RoomEntry): RoomEntry =
-        txPort.withNewTransaction {
-            updateRoomPort.updateRoom(entry)
+            deleteRoomPort.deleteRoom(roomId)
         }
 }
 
@@ -69,57 +181,75 @@ internal class RenameRoomService(
     private val updateRoomPort: UpdateRoomPort,
     private val txPort: PersistTransactionPort,
 ) : RenameRoomUsecase {
-    override suspend fun renameRoom(id: Long, name: String?): RoomEntry =
+    override suspend fun renameRoom(applicantId: Long, roomId: Long, name: String?): RoomEntry =
         txPort.withNewTransaction {
-            val room = getRoomPort.getRoom(id).copy(name = name)
-            updateRoomPort.updateRoom(room)
+            val room = getRoomPort.getRoom(roomId)
+            val renamedRoom = renameRoom(applicantId, name, room)
+            updateRoomPort.updateRoom(renamedRoom)
         }
 }
 
-internal class AddUserToRoomService(
+internal class JoinToRoomService(
+    private val getRoomPort: GetRoomPort,
     private val updateRoomPort: UpdateRoomPort,
     private val txPort: PersistTransactionPort,
-) : AddUserToRoomUsecase {
-    override suspend fun addUser(userId: Long, entry: RoomEntry): RoomEntry =
+) : JoinToRoomUsecase {
+    override suspend fun joinUser(userId: Long, roomId: Long): RoomEntry =
         txPort.withNewTransaction {
-            val users = entry.users + userId
-            val newRoom = entry.copy(users = users)
-            updateRoomPort.updateRoom(newRoom)
+            val room = getRoomPort.getRoom(roomId)
+            val roomWithUser = joinUserToRoom(userId, room)
+            updateRoomPort.updateRoom(roomWithUser)
         }
 }
 
-internal class RemoveUserFromRoomService(
+internal class QuitFromRoomService(
+    private val getRoomPort: GetRoomPort,
     private val updateRoomPort: UpdateRoomPort,
     private val txPort: PersistTransactionPort,
-) : RemoveUserFromRoomUsecase {
-    override suspend fun removeUser(userId: Long, entry: RoomEntry): RoomEntry =
+) : QuitFromRoomUsecase {
+    override suspend fun quitUser(userId: Long, roomId: Long): RoomEntry =
         txPort.withNewTransaction {
-            val users = entry.users - userId
-            val newRoom = entry.copy(users = users)
-            updateRoomPort.updateRoom(newRoom)
+            val room = getRoomPort.getRoom(roomId)
+            val roomWithoutUser = quitUserFromRoom(userId, room)
+            updateRoomPort.updateRoom(roomWithoutUser)
         }
 }
 
-internal class AddModeratorToRoomService(
+internal class InviteUserToRoomService(
+    private val getRoomPort: GetRoomPort,
     private val updateRoomPort: UpdateRoomPort,
     private val txPort: PersistTransactionPort,
-) : AddModeratorToRoomUsecase {
-    override suspend fun addModerator(userId: Long, entry: RoomEntry): RoomEntry =
+) : InviteUserToRoomUsecase {
+    override suspend fun inviteUser(applicantId: Long, userId: Long, roomId: Long): RoomEntry =
         txPort.withNewTransaction {
-            val moderators = entry.moderators + userId
-            val newRoom = entry.copy(moderators = moderators)
-            updateRoomPort.updateRoom(newRoom)
+            val room = getRoomPort.getRoom(roomId)
+            val roomWithUser = inviteUserToRoom(applicantId, userId, room)
+            updateRoomPort.updateRoom(roomWithUser)
         }
 }
 
-internal class RemoveModeratorFromRoomService(
+internal class KickUserFromRoomService(
+    private val getRoomPort: GetRoomPort,
     private val updateRoomPort: UpdateRoomPort,
     private val txPort: PersistTransactionPort,
-) : RemoveModeratorFromRoomUsecase {
-    override suspend fun removeModerator(userId: Long, entry: RoomEntry): RoomEntry =
+) : KickUserFromRoomUsecase {
+    override suspend fun kickUser(applicantId: Long, userId: Long, roomId: Long): RoomEntry =
         txPort.withNewTransaction {
-            val moderators = entry.moderators - userId
-            val newRoom = entry.copy(moderators = moderators)
-            updateRoomPort.updateRoom(newRoom)
+            val room = getRoomPort.getRoom(roomId)
+            val roomWithoutUser = kickUserFromRoom(applicantId, userId, room)
+            updateRoomPort.updateRoom(roomWithoutUser)
+        }
+}
+
+internal class MakeModeratorInRoomService(
+    private val getRoomPort: GetRoomPort,
+    private val updateRoomPort: UpdateRoomPort,
+    private val txPort: PersistTransactionPort,
+) : MakeModeratorInRoomUsecase {
+    override suspend fun makeModerator(applicantId: Long, userId: Long, roomId: Long): RoomEntry =
+        txPort.withNewTransaction {
+            val room = getRoomPort.getRoom(roomId)
+            val roomWithModerator = addModeratorToRoom(applicantId, userId, room)
+            updateRoomPort.updateRoom(roomWithModerator)
         }
 }

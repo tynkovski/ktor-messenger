@@ -13,13 +13,20 @@ data class RoomEntry(
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) {
     data class LastActionEntry(
-        val authorId: Long,
+        val applicantId: Long,
         val actionType: ActionType,
         val description: String?,
-        val actionDateTime: LocalDateTime = LocalDateTime.now(),
+        val actionDateTime: LocalDateTime,
     ) {
         enum class ActionType {
-            USER_CREATE_ROOM, USER_SENT_MESSAGE, USER_INVITE_USER, USER_KICK_USER, USER_QUIT, USER_JOINED
+            USER_CREATE_ROOM,
+            USER_RENAME_ROOM,
+            USER_SENT_MESSAGE,
+            USER_INVITE_USER,
+            USER_KICK_USER,
+            USER_QUIT,
+            USER_JOINED,
+            MAKE_MODERATOR
         }
 
         companion object
