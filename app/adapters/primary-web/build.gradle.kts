@@ -27,7 +27,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("io.insert-koin:koin-ktor:$koinVersion")
     implementation("io.swagger.core.v3:swagger-annotations:$swaggerAnnotationsVersion")
-
+    //implementation ("io.github.smiley4:ktor-swagger-ui:2.7.4")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.kotest.extensions:kotest-assertions-ktor:$kotestKtorVersion")
     testImplementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -37,9 +37,9 @@ openApiGenerate {
     inputSpec.set("$projectDir/src/main/resources/openapi/messenger.yaml")
     outputDir.set("$projectDir")
     generatorName.set("kotlin")
-    globalProperties.put("models", "")
+    globalProperties.put("gen", "")
     generateApiDocumentation.set(false)
     generateModelDocumentation.set(false)
     additionalProperties.put("serializationLibrary", "kotlinx_serialization")
-    packageName.set("adapters.primaryweb.gen")
+    packageName.set("adapters.primaryweb.models")
 }

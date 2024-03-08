@@ -10,10 +10,7 @@ import adapters.persist.util.DatabaseErrorInspector
 import com.github.michaelbull.logging.InlineLogger
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import core.outport.BootPersistStoragePort
-import core.outport.MustBeCalledInTransactionContext
-import core.outport.PersistTransactionPort
-import core.outport.ShutdownPersistStoragePort
+import core.outport.*
 import java.util.Properties
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.exceptions.ExposedSQLException
@@ -29,7 +26,8 @@ internal class DatabaseConnector(
     private val errorInspector: DatabaseErrorInspector,
 ) : BootPersistStoragePort,
     ShutdownPersistStoragePort,
-    PersistTransactionPort {
+    PersistTransactionPort,
+    ClearPersistStoragePort {
 
     private val logger = InlineLogger()
     private lateinit var ds: HikariDataSource
@@ -39,12 +37,12 @@ internal class DatabaseConnector(
         PersonSqlEntities, PostalAddressSqlEntities,
         UserSqlEntities,
         KeyStoreSqlEntities,
-        RoomSqlEntities, UserToRoomSqlEntities, ModeratorToRoomSqlEntities,
+        RoomSqlEntities, UserToRoomSqlEntities, ModeratorToRoomSqlEntities, ActionToRoomSqlEntities,
         MessageSqlEntities, ReaderToMessageSqlEntities
         // add your tables here
     )
 
-    suspend fun deleteAllTables() {
+    override suspend fun deleteAllTables() {
         logger.debug { "Deleting all tables..." }
         withNewTransaction {
             SchemaUtils.drop(*tables)

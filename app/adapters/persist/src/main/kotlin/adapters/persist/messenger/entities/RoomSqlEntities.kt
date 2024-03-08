@@ -5,6 +5,10 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.LocalDateTime
 
+internal enum class ActionSqlType {
+    USER_CREATE_ROOM, USER_SENT_MESSAGE, USER_INVITE_USER, USER_KICK_USER, USER_QUIT, USER_JOINED
+}
+
 internal object RoomSqlEntities : Table(name = "room") {
     val id = long("id").autoIncrement()
     val name = text("name").nullable()
@@ -34,6 +38,22 @@ internal object ModeratorToRoomSqlEntities : Table(name = "moderator_to_room") {
     override val primaryKey = PrimaryKey(roomId, userId, name = "PK_moderator_to_room_id")
 }
 
+internal object ActionToRoomSqlEntities : Table(name = "action_to_room") {
+    val roomId = long("room_id")
+        .references(RoomSqlEntities.id, onDelete = ReferenceOption.CASCADE)
+
+    val authorId = long("author_id")
+        .references(UserSqlEntities.id)
+
+    val description = text("action_description").nullable()
+
+    val actionType = enumerationByName("action_type",20, ActionSqlType::class)
+
+    val actionDateTime = datetime("action_datetime").index()
+
+    override val primaryKey = PrimaryKey(roomId)
+}
+
 internal data class RoomSqlEntity(
     val id: Long?,
     val name: String?,
@@ -44,15 +64,25 @@ internal data class RoomSqlEntity(
 }
 
 internal data class UserToRoomSqlEntity(
-    val userId: Long,
     val roomId: Long,
+    val userId: Long,
 ) {
     companion object
 }
 
 internal data class ModeratorToRoomSqlEntity(
-    val userId: Long,
     val roomId: Long,
+    val userId: Long,
+) {
+    companion object
+}
+
+internal data class ActionToRoomSqlEntity(
+    val roomId: Long,
+    val authorId: Long,
+    val description: String?,
+    val actionType: ActionSqlType,
+    val actionDateTime: LocalDateTime
 ) {
     companion object
 }

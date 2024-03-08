@@ -7,6 +7,7 @@ import adapters.persist.messenger.message.ReaderToMessageRepository
 import adapters.persist.messenger.person.PersonAdapter
 import adapters.persist.messenger.person.PersonRepository
 import adapters.persist.messenger.person.PostalAddressRepository
+import adapters.persist.messenger.room.*
 import adapters.persist.messenger.room.ModeratorToRoomRepository
 import adapters.persist.messenger.room.RoomAdapter
 import adapters.persist.messenger.room.RoomRepository
@@ -47,6 +48,9 @@ val persistenceModule = module {
     single {
         ModeratorToRoomRepository()
     }
+    single {
+        ActionToRoomRepository()
+    }
 
     single {
         MessageRepository()
@@ -64,6 +68,7 @@ val persistenceModule = module {
         BootPersistStoragePort::class,
         ShutdownPersistStoragePort::class,
         PersistTransactionPort::class,
+        ClearPersistStoragePort::class
     )
 
     single {
@@ -98,7 +103,8 @@ val persistenceModule = module {
         RoomAdapter(
             roomRepository = get(),
             userToRoomRepository = get(),
-            moderatorToRoomRepository = get()
+            moderatorToRoomRepository = get(),
+            actionToRoomRepository = get()
         )
     } binds arrayOf(
         AddRoomPort::class,

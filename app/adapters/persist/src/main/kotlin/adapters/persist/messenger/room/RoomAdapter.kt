@@ -1,11 +1,10 @@
 package adapters.persist.messenger.room
 
+import adapters.persist.messenger.entities.ActionToRoomSqlEntity
 import adapters.persist.messenger.entities.ModeratorToRoomSqlEntity
 import adapters.persist.messenger.entities.UserToRoomSqlEntity
 import adapters.persist.messenger.mappers.*
-import adapters.persist.messenger.mappers.fromEntities
-import adapters.persist.messenger.mappers.toSqlEntity
-import adapters.persist.messenger.mappers.toUsersToRoomEntities
+import core.models.LastActionNotFoundException
 import core.models.RoomEntry
 import core.models.RoomEntryNotFoundException
 import core.outport.*
@@ -14,6 +13,7 @@ internal class RoomAdapter(
     private val roomRepository: RoomRepository,
     private val userToRoomRepository: UserToRoomRepository,
     private val moderatorToRoomRepository: ModeratorToRoomRepository,
+    private val actionToRoomRepository: ActionToRoomRepository,
 ) : AddRoomPort,
     GetRoomPort,
     GetRoomCountPort,
@@ -47,14 +47,21 @@ internal class RoomAdapter(
     }
 
     @MustBeCalledInTransactionContext
+    private fun upsertLastAction(roomId: Long, action: RoomEntry.LastActionEntry): ActionToRoomSqlEntity {
+        val actionEntity = action.toActionToRoomEntity(roomId)
+        return actionToRoomRepository.upsert(actionEntity)
+    }
+
+    @MustBeCalledInTransactionContext
     private fun upsertRoomEntry(roomEntry: RoomEntry): RoomEntry {
         val roomAdded = roomRepository.upsert(roomEntry.toSqlEntity())
         val roomId = roomAdded.id!!
 
         val usersAdded = upsertUsers(roomId, roomEntry)
         val moderatorsAdded = upsertModerators(roomId, roomEntry)
+        val lasActionAdded = upsertLastAction(roomId, roomEntry.lastAction)
 
-        return RoomEntry.fromEntities(roomAdded, usersAdded, moderatorsAdded)
+        return RoomEntry.fromEntities(roomAdded, usersAdded, moderatorsAdded, lasActionAdded)
     }
 
     @MustBeCalledInTransactionContext
@@ -84,27 +91,33 @@ internal class RoomAdapter(
 
         val usersEntities = userToRoomRepository.getUsersByRoomId(id)
         val moderatorsEntities = moderatorToRoomRepository.getUsersByRoomId(id)
+        val actionToRoomSqlEntity = actionToRoomRepository.getByRoomId(id)
+            ?: throw LastActionNotFoundException(searchCriteria = "id=$id")
 
         return RoomEntry.fromEntities(
             roomSqlEntity = roomEntity,
             usersToRoomSqlEntities = usersEntities,
-            moderatorsToRoomSqlEntities = moderatorsEntities
+            moderatorsToRoomSqlEntities = moderatorsEntities,
+            actionToRoomSqlEntity = actionToRoomSqlEntity
         )
     }
 
     @MustBeCalledInTransactionContext
     override fun getRoomsPaging(userId: Long, page: Long, pageSize: Int): Collection<RoomEntry> {
         val roomEntities = roomRepository.getRoomsPaging(userId = userId, page = page, pageSize = pageSize)
-        val roomsIds = roomEntities.map { it.id!! }
-
-        val usersEntities = userToRoomRepository.getUsersByRoomIds(roomsIds)
-        val moderatorsEntities = moderatorToRoomRepository.getUsersByRoomIds(roomsIds)
-
         return roomEntities.map { entity ->
+            val roomId = entity.id!!
+
+            val usersEntities = userToRoomRepository.getUsersByRoomId(roomId)
+            val moderatorsEntities = moderatorToRoomRepository.getUsersByRoomId(roomId)
+            val lastActionsEntity = actionToRoomRepository.getByRoomId(roomId)
+                ?: throw LastActionNotFoundException(searchCriteria = "id=$roomId")
+
             RoomEntry.fromEntities(
                 roomSqlEntity = entity,
                 usersToRoomSqlEntities = usersEntities,
-                moderatorsToRoomSqlEntities = moderatorsEntities
+                moderatorsToRoomSqlEntities = moderatorsEntities,
+                actionToRoomSqlEntity = lastActionsEntity,
             )
         }
     }

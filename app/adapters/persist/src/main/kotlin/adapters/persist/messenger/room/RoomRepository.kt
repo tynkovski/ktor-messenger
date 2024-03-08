@@ -30,10 +30,10 @@ internal class RoomRepository {
 
     @MustBeCalledInTransactionContext
     fun getRoomsPaging(userId: Long, page: Long, pageSize: Int): Collection<RoomSqlEntity> {
-        return (RoomSqlEntities innerJoin UserToRoomSqlEntities)
+        return (RoomSqlEntities innerJoin UserToRoomSqlEntities innerJoin ActionToRoomSqlEntities)
             .slice(RoomSqlEntities.columns)
             .select { UserToRoomSqlEntities.userId eq userId }
-            .orderBy(RoomSqlEntities.createdAt, SortOrder.ASC)
+            .orderBy(ActionToRoomSqlEntities.actionDateTime, SortOrder.DESC)
             .limit(n = pageSize, offset = page * pageSize)
             .map { RoomSqlEntity.fromSqlResultRow(it) }
     }
@@ -59,13 +59,6 @@ internal class UserToRoomRepository {
     fun getUsersByRoomId(roomId: Long): Collection<UserToRoomSqlEntity> {
         return UserToRoomSqlEntities
             .select { UserToRoomSqlEntities.roomId eq roomId }
-            .map { UserToRoomSqlEntity.fromSqlResultRow(it) }
-    }
-
-    @MustBeCalledInTransactionContext
-    fun getUsersByRoomIds(roomIds: Collection<Long>): Collection<UserToRoomSqlEntity> {
-        return UserToRoomSqlEntities
-            .select { UserToRoomSqlEntities.roomId inList roomIds }
             .map { UserToRoomSqlEntity.fromSqlResultRow(it) }
     }
 
@@ -107,14 +100,6 @@ internal class ModeratorToRoomRepository {
             .map { ModeratorToRoomSqlEntity.fromSqlResultRow(it) }
     }
 
-
-    @MustBeCalledInTransactionContext
-    fun getUsersByRoomIds(roomIds: Collection<Long>): Collection<ModeratorToRoomSqlEntity> {
-        return ModeratorToRoomSqlEntities
-            .select { ModeratorToRoomSqlEntities.roomId inList roomIds }
-            .map { ModeratorToRoomSqlEntity.fromSqlResultRow(it) }
-    }
-
     @MustBeCalledInTransactionContext
     fun upsert(entity: ModeratorToRoomSqlEntity): ModeratorToRoomSqlEntity {
         return ModeratorToRoomSqlEntities
@@ -134,5 +119,27 @@ internal class ModeratorToRoomRepository {
     @MustBeCalledInTransactionContext
     fun deleteModeratorFromRoom(userId: Long): Boolean {
         return ModeratorToRoomSqlEntities.deleteWhere { ModeratorToRoomSqlEntities.userId eq userId } > 0
+    }
+}
+
+internal class ActionToRoomRepository {
+    @MustBeCalledInTransactionContext
+    fun getByRoomId(roomId: Long): ActionToRoomSqlEntity? {
+        return ActionToRoomSqlEntities
+            .select { ActionToRoomSqlEntities.roomId eq roomId }
+            .limit(1)
+            .map { ActionToRoomSqlEntity.fromSqlResultRow(it) }
+            .singleOrNull()
+    }
+
+    @MustBeCalledInTransactionContext
+    fun upsert(entity: ActionToRoomSqlEntity): ActionToRoomSqlEntity {
+        return ActionToRoomSqlEntities
+            .pgInsertOrUpdate(ActionToRoomSqlEntities.roomId) {
+                entity.toSqlStatement(it)
+            }
+            .resultedValues!!
+            .first()
+            .let { ActionToRoomSqlEntity.fromSqlResultRow(it) }
     }
 }

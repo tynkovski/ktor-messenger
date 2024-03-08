@@ -35,6 +35,21 @@ internal class RoomController(
     private val renameRoomUsecase: RenameRoomUsecase,
 ) : BaseWebsocketsController<RoomControllerEvent>() {
 
+    private fun buildRoom(authorId: Long, request: CreateRoomRequest): RoomEntry {
+        return RoomEntry(
+            id = null,
+            name = request.name,
+            image = request.image,
+            lastAction = RoomEntry.LastActionEntry(
+                authorId = authorId,
+                actionType = RoomEntry.LastActionEntry.ActionType.USER_CREATE_ROOM,
+                description = null,
+            ),
+            users = request.users.toSet(),
+            moderators = request.users.toSet(),
+        )
+    }
+
     suspend fun getRoom(call: ApplicationCall) {
         val roomId = call.longParameter("id")
         val userId = findUser(call).id!!
@@ -48,6 +63,7 @@ internal class RoomController(
 
     suspend fun getRoomsPaged(call: ApplicationCall) {
         val userId = findUser(call).id!!
+        // todo call.parameters["x"] to call.longParameter("x")
         val page = call.parameters["page"]?.toLong()!!
         val pageSize = call.parameters["pageSize"]?.toInt()!!
         val count = getRoomsCountUsecase.getRoomCount(userId)
@@ -55,20 +71,10 @@ internal class RoomController(
         call.respond(status = HttpStatusCode.OK, message = rooms.toResponse(count))
     }
 
-    private fun buildRoom(request: CreateRoomRequest): RoomEntry {
-        return RoomEntry(
-            id = null,
-            name = request.name,
-            image = request.image,
-            users = request.users.toSet(),
-            moderators = request.users.toSet(),
-        )
-    }
-
     override suspend fun processEvent(userId: Long, event: RoomControllerEvent) {
         when (event) {
             is RoomControllerEvent.CreateRoom -> with(event.roomRequest) {
-                val room = addRoomUsecase.addRoom(buildRoom(this))
+                val room = addRoomUsecase.addRoom(buildRoom(userId, this))
                 notifyUsersIfConnected(room.users.toSet(), room.toResponse())
             }
 

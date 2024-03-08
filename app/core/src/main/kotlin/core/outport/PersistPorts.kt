@@ -8,6 +8,10 @@ interface ShutdownPersistStoragePort {
     fun shutdownStorage()
 }
 
+interface ClearPersistStoragePort {
+    suspend fun deleteAllTables()
+}
+
 interface PersistTransactionPort {
     /** Request new transaction */
     suspend fun <T> withNewTransaction(block: suspend () -> T): T

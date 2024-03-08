@@ -2,7 +2,6 @@ package adapters.persist.messenger.mappers
 
 import adapters.persist.messenger.entities.*
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.statements.BatchInsertStatement
 import org.jetbrains.exposed.sql.statements.InsertStatement
 
 internal fun RoomSqlEntity.toSqlStatement(statement: InsertStatement<Number>) = statement.let {
@@ -20,6 +19,14 @@ internal fun UserToRoomSqlEntity.toSqlStatement(statement: InsertStatement<Numbe
 internal fun ModeratorToRoomSqlEntity.toSqlStatement(statement: InsertStatement<Number>) = statement.let {
     it[ModeratorToRoomSqlEntities.userId] = userId
     it[ModeratorToRoomSqlEntities.roomId] = roomId
+}
+
+internal fun ActionToRoomSqlEntity.toSqlStatement(statement: InsertStatement<Number>) = statement.let {
+    it[ActionToRoomSqlEntities.roomId] = roomId
+    it[ActionToRoomSqlEntities.authorId] = authorId
+    it[ActionToRoomSqlEntities.description] = description
+    it[ActionToRoomSqlEntities.actionDateTime] = actionDateTime
+    it[ActionToRoomSqlEntities.actionType] = actionType
 }
 
 internal fun RoomSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
@@ -42,4 +49,13 @@ internal fun ModeratorToRoomSqlEntity.Companion.fromSqlResultRow(resultRow: Resu
     ModeratorToRoomSqlEntity(
         userId = resultRow[ModeratorToRoomSqlEntities.userId],
         roomId = resultRow[ModeratorToRoomSqlEntities.roomId]
+    )
+
+internal fun ActionToRoomSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
+    ActionToRoomSqlEntity(
+        roomId = resultRow[ActionToRoomSqlEntities.roomId],
+        authorId = resultRow[ActionToRoomSqlEntities.authorId],
+        description = resultRow[ActionToRoomSqlEntities.description],
+        actionDateTime = resultRow[ActionToRoomSqlEntities.actionDateTime],
+        actionType = resultRow[ActionToRoomSqlEntities.actionType],
     )

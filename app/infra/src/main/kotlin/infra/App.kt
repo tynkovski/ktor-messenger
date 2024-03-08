@@ -12,6 +12,7 @@ import adapters.security.hashingModule
 import com.github.michaelbull.logging.InlineLogger
 import core.coreModule
 import core.outport.BootPersistStoragePort
+import core.outport.ClearPersistStoragePort
 import core.outport.ShutdownPersistStoragePort
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStopped
@@ -47,9 +48,13 @@ fun Application.main() {
         shutdownStoragePort.shutdownStorage()
     }
 
+    val clearPersistStoragePort by inject<ClearPersistStoragePort>()
     val bootPersistStoragePort by inject<BootPersistStoragePort>()
+
     runBlocking {
-        bootPersistStoragePort.bootStorage {}
+        bootPersistStoragePort.bootStorage {
+            // clearPersistStoragePort.deleteAllTables()
+        }
     }
 
     webBootstrap()

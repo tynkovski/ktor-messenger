@@ -3,10 +3,7 @@ package adapters.primaryweb.mappers
 import adapters.primaryweb.models.gen.RestGender
 import adapters.primaryweb.models.gen.RestPersonResponse
 import adapters.primaryweb.models.gen.RestPostalAddressResponse
-import adapters.primaryweb.models.responses.RestTokenResponse
-import adapters.primaryweb.models.responses.RestUserResponse
-import adapters.primaryweb.models.responses.RoomResponse
-import adapters.primaryweb.models.responses.RoomsPagingResponse
+import adapters.primaryweb.models.responses.*
 import core.models.PersonEntry
 import core.models.RoomEntry
 import core.models.TokenEntry
@@ -33,7 +30,7 @@ internal fun PersonEntry.toResponse(): RestPersonResponse = with(this) {
                 state = it.state,
                 country = it.country,
             )
-        },
+        }
     )
 }
 
@@ -58,6 +55,15 @@ internal fun TokenEntry.toResponse(): RestTokenResponse = with(this) {
     )
 }
 
+internal fun RoomEntry.LastActionEntry.toResponse() = with(this) {
+    RoomLastActionResponse(
+        authorId = authorId,
+        actionType = actionType.toString(),
+        description = description,
+        actionDateTime = formatter.format(actionDateTime)
+    )
+}
+
 internal fun RoomEntry.toResponse(): RoomResponse = with(this) {
     RoomResponse(
         id = id!!,
@@ -65,7 +71,8 @@ internal fun RoomEntry.toResponse(): RoomResponse = with(this) {
         image = image,
         users = users.toList(),
         moderators = moderators.toList(),
-        createdAt = formatter.format(createdAt)
+        createdAt = formatter.format(createdAt),
+        lastAction = lastAction.toResponse(),
     )
 }
 
@@ -79,6 +86,7 @@ internal fun Collection<RoomEntry>.toResponse(count: Long): RoomsPagingResponse 
                 image = room.image,
                 users = room.users.toList(),
                 moderators = room.moderators.toList(),
+                lastAction = room.lastAction.toResponse(),
                 createdAt = formatter.format(room.createdAt)
             )
         }
