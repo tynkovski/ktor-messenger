@@ -114,7 +114,9 @@ internal class MessageController(
                 notifyUsersIfConnected(users, event.name, message.toResponse())
             }
 
-            MessageControllerEvent.Unknown -> Unit
+            MessageControllerEvent.Unknown -> {
+                notifyUsersIfConnected(setOf(applicantId), event.name, Unit)
+            }
         }
     }
 
