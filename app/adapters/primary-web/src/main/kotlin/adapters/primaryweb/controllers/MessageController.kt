@@ -27,18 +27,15 @@ internal class MessageController(
     private val readMessageUsecase: ReadMessageUsecase,
 ) : BaseWebsocketsController<MessageControllerEvent>() {
     suspend fun getMessagesPaged(call: ApplicationCall) {
-        val userId = findUser(call).id!!
         val roomId = call.longParameter("roomId")
-        val page = call.parameters["page"]?.toLong()!!
-        val pageSize = call.parameters["pageSize"]?.toInt()!!
+        val page = call.parameters["page"]?.toLong() ?: 0
+        val pageSize = call.parameters["pageSize"]?.toInt() ?: 20
         val count = getMessageCountUsecase.getMessageCount(roomId)
         val messages = getMessagesPagingUsecase.getMessages(roomId, page, pageSize)
         call.respond(status = HttpStatusCode.OK, message = messages.toResponse(count))
-
     }
 
     suspend fun getMessage(call: ApplicationCall) {
-        val userId = findUser(call).id!!
         val messageId = call.longParameter("id")
         val message = getMessageUsecase.getMessage(messageId)
         call.respond(status = HttpStatusCode.OK, message = message.toResponse())

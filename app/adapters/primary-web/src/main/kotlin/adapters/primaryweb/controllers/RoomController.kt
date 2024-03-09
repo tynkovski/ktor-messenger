@@ -99,9 +99,8 @@ internal class RoomController(
 
     suspend fun getRoomsPaged(call: ApplicationCall) {
         val userId = findUser(call).id!!
-        // todo call.parameters["x"] to call.longParameter("x")
-        val page = call.parameters["page"]?.toLong()!!
-        val pageSize = call.parameters["pageSize"]?.toInt()!!
+        val page = call.parameters["page"]?.toLong() ?: 0
+        val pageSize = call.parameters["pageSize"]?.toInt() ?: 20
         val count = getRoomsCountUsecase.getRoomCount(userId)
         val rooms = getRoomsPagedUsecase.getRooms(userId, page, pageSize)
         call.respond(status = HttpStatusCode.OK, message = rooms.toResponse(count))
