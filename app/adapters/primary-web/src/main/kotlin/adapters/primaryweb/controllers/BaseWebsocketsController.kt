@@ -27,6 +27,8 @@ abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalCont
                 .readText()
                 .split("#", limit = 2)
                 .map(String::trim)
+            logger.debug { "event: $event, json: $json" }
+
             processEvent(userId, processText(event, json))
         }
     }
@@ -36,14 +38,18 @@ abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalCont
         event: String,
         response: @Serializable R
     ) {
+        // todo notify each user in coroutine: CoroutineScope(Dispatchers.IO).launch { }
         logger.debug { "notifying users: $users" }
-        // todo notify each user in coroutine
-        // CoroutineScope(Dispatchers.IO).launch { }
         for (userId in users) {
-            getSession(userId)?.let {
-                val json = Json.encodeToString<R>(response)
-                val frame = Frame.Text("$event#$json")
-                it.outgoing.send(frame)
+            getSession(userId)?.let { session ->
+                kotlin.runCatching {
+                    val json = Json.encodeToString<R>(response)
+                    Frame.Text("$event#$json")
+                }.onSuccess { frame ->
+                    session.outgoing.send(frame)
+                }.onFailure { e ->
+                    session.outgoing.send(Frame.Text("$event#${e.printStackTrace()}"))
+                }
             }
         }
     }
@@ -54,6 +60,7 @@ abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalCont
 
     suspend fun connect(session: DefaultWebSocketServerSession) {
         val userId = findUser(session.call).id!!
+        logger.debug { "connecting user with id $userId" }
         members[userId] = session
         members[userId]?.incoming?.consumeEach { frame ->
             processFrame(userId, frame)
@@ -68,7 +75,7 @@ abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalCont
         }
     }
 
-    abstract suspend fun processEvent(applicantId: Long, event: BaseControllerEvent)
+    protected abstract suspend fun processEvent(applicantId: Long, event: BaseControllerEvent)
 
-    abstract suspend fun processText(event: String, json: String): BaseControllerEvent
+    protected abstract suspend fun processText(event: String, json: String): BaseControllerEvent
 }

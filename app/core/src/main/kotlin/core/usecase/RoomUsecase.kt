@@ -2,8 +2,8 @@ package core.usecase
 
 import core.models.RoomEntry
 
-fun interface AddRoomUsecase {
-    suspend fun addRoom(
+fun interface CreateRoomUsecase {
+    suspend fun createRoom(
         applicantId: Long,
         name: String?,
         image: String?,
@@ -50,4 +50,8 @@ fun interface GetRoomCountUsecase {
 
 fun interface GetRoomsPagingUsecase {
     suspend fun getRooms(userId: Long, page: Long, pageSize: Int): Collection<RoomEntry>
+}
+
+fun interface GetRoomUsersUsecase {
+    suspend fun getRoomUsers(roomId: Long): Collection<Long>
 }

@@ -36,7 +36,7 @@ val controllersModule = module {
 
     single {
         RoomController(
-            addRoomUsecase = get(),
+            createRoomUsecase = get(),
             getRoomUsecase = get(),
             deleteRoomUsecase = get(),
             renameRoomUsecase = get(),
@@ -55,10 +55,11 @@ val controllersModule = module {
             getMessageUsecase = get(),
             getMessagesPagingUsecase = get(),
             getMessageCountUsecase = get(),
-            addMessageMessageUsecase = get(),
+            sendMessageUsecase = get(),
             deleteMessageUsecase = get(),
             editMessageUsecase = get(),
-            readMessageUsecase = get()
+            readMessageUsecase = get(),
+            getRoomUsecase = get()
         )
     }
 }

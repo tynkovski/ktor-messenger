@@ -131,8 +131,8 @@ internal val serviceModule = module {
         )
     }
 
-    single<AddRoomUsecase> {
-        AddRoomService(
+    single<CreateRoomUsecase> {
+        CreateRoomService(
             addRoomPort = get(),
             txPort = get()
         )
@@ -146,6 +146,12 @@ internal val serviceModule = module {
     single<GetRoomCountUsecase> {
         GetRoomCountService(
             getRoomCountPort = get(),
+            txPort = get()
+        )
+    }
+    single<GetRoomUsersUsecase> {
+        GetRoomUsersService(
+            getRoomPort = get(),
             txPort = get()
         )
     }
@@ -204,8 +210,8 @@ internal val serviceModule = module {
         )
     }
 
-    single<AddMessageUsecase> {
-        AddMessageService(
+    single<SendMessageUsecase> {
+        SendMessageService(
             addMessagePort = get(),
             txPort = get()
         )

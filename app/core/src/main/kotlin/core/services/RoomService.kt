@@ -1,11 +1,12 @@
 package core.services
 
 import core.models.RoomEntry
+import core.models.UserEntry
 import core.outport.*
 import core.usecase.*
 import java.time.LocalDateTime
 
-private fun createRoom(
+private fun createRoomHelper(
     applicantId: Long,
     name: String?,
     image: String?,
@@ -113,11 +114,11 @@ private fun addModeratorToRoom(
     )
 )
 
-internal class AddRoomService(
+internal class CreateRoomService(
     private val addRoomPort: AddRoomPort,
     private val txPort: PersistTransactionPort,
-) : AddRoomUsecase {
-    override suspend fun addRoom(
+) : CreateRoomUsecase {
+    override suspend fun createRoom(
         applicantId: Long,
         name: String?,
         image: String?,
@@ -125,7 +126,7 @@ internal class AddRoomService(
         moderators: Set<Long>
     ): RoomEntry =
         txPort.withNewTransaction {
-            val room = createRoom(
+            val room = createRoomHelper(
                 applicantId = applicantId,
                 name = name,
                 image = image,
@@ -155,6 +156,18 @@ internal class GetRoomCountService(
             getRoomCountPort.getRoomCount(userId)
         }
 }
+
+internal class GetRoomUsersService(
+    private val getRoomPort: GetRoomPort,
+    private val txPort: PersistTransactionPort,
+) : GetRoomUsersUsecase {
+    override suspend fun getRoomUsers(roomId: Long): Collection<Long> =
+        txPort.withNewTransaction {
+            val room = getRoomPort.getRoom(roomId)
+            room.users
+        }
+}
+
 
 internal class GetRoomsPagingService(
     private val getRoomsPort: GetRoomsPagingPort,

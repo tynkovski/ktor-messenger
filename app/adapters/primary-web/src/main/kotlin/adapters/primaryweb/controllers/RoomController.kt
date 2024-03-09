@@ -4,7 +4,6 @@ import adapters.primaryweb.mappers.toResponse
 import adapters.primaryweb.models.requests.room.*
 import adapters.primaryweb.models.responses.room.DeleteRoomResponse
 import adapters.primaryweb.util.longParameter
-import core.models.RoomEntry
 import core.usecase.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -27,7 +26,6 @@ sealed class RoomControllerEvent(override val name: String) : BaseControllerEven
             }
         }
 
-        const val UNKNOWN = "unknown"
         const val CREATE_ROOM = "create_room"
         const val RENAME_ROOM = "rename_room"
         const val DELETE_ROOM = "delete_room"
@@ -36,6 +34,7 @@ sealed class RoomControllerEvent(override val name: String) : BaseControllerEven
         const val JOINED_TO_ROOM = "joined_to_room"
         const val QUIT_FROM_ROOM = "quit_from_room"
         const val MAKE_MODERATOR = "make_moderator"
+        const val UNKNOWN = "unknown"
     }
 
     data class CreateRoom(
@@ -74,7 +73,7 @@ sealed class RoomControllerEvent(override val name: String) : BaseControllerEven
 }
 
 internal class RoomController(
-    private val addRoomUsecase: AddRoomUsecase,
+    private val createRoomUsecase: CreateRoomUsecase,
     private val getRoomUsecase: GetRoomUsecase,
     private val deleteRoomUsecase: DeleteRoomUsecase,
     private val renameRoomUsecase: RenameRoomUsecase,
@@ -110,7 +109,7 @@ internal class RoomController(
         when (event) {
             is RoomControllerEvent.CreateRoom -> with(event.request) {
                 val usersSet = users.toSet()
-                val room = addRoomUsecase.addRoom(
+                val room = createRoomUsecase.createRoom(
                     applicantId = applicantId,
                     name = name,
                     image = image,
@@ -156,7 +155,9 @@ internal class RoomController(
                 notifyUsersIfConnected(room.users, event.name, room.toResponse())
             }
 
-            RoomControllerEvent.Unknown -> Unit
+            RoomControllerEvent.Unknown -> {
+                notifyUsersIfConnected(setOf(applicantId), event.name, Unit)
+            }
         }
     }
 

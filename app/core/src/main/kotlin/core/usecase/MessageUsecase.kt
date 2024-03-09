@@ -2,8 +2,8 @@ package core.usecase
 
 import core.models.MessageEntry
 
-fun interface AddMessageUsecase {
-    suspend fun createMessage(
+fun interface SendMessageUsecase {
+    suspend fun sendMessage(
         applicantId: Long,
         roomId: Long,
         text: String

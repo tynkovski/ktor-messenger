@@ -34,11 +34,11 @@ private fun readMessage(
     readBy = message.readBy + readerId
 )
 
-internal class AddMessageService(
+internal class SendMessageService(
     private val addMessagePort: AddMessagePort,
     private val txPort: PersistTransactionPort,
-) : AddMessageUsecase {
-    override suspend fun createMessage(
+) : SendMessageUsecase {
+    override suspend fun sendMessage(
         applicantId: Long,
         roomId: Long,
         text: String
