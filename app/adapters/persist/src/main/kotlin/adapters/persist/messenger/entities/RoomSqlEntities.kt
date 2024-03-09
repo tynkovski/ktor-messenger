@@ -58,7 +58,7 @@ internal object ActionToRoomSqlEntities : Table(name = "action_to_room") {
 
     val actionDateTime = datetime("action_datetime").index()
 
-    override val primaryKey = PrimaryKey(roomId)
+    override val primaryKey = PrimaryKey(roomId, name = "PK_action_to_room_id")
 }
 
 internal data class RoomSqlEntity(

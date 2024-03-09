@@ -7,15 +7,19 @@ interface AddMessagePort {
 }
 
 interface GetMessagePort {
-    fun getMessage(id: Long): MessageEntry
+    fun getMessage(messageId: Long): MessageEntry
+}
+
+interface GetMessageCountPort {
+    fun getMessageCount(roomId: Long): Long
 }
 
 interface GetMessagesPagingPort {
-    fun getMessagesPaging(roomId: Long, page: Int, pageSize: Int): Collection<MessageEntry>
+    fun getMessagesPaging(roomId: Long, page: Long, pageSize: Int): Collection<MessageEntry>
 }
 
 interface DeleteMessagePort {
-    fun deleteMessage(id: Long)
+    fun deleteMessage(messageId: Long)
 }
 
 interface UpdateMessagePort {

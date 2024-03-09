@@ -14,27 +14,27 @@ internal fun MessageEntry.Companion.fromEntities(
         roomId = roomId,
         text = text,
         readBy = readersToMessageSqlEntity.map { it.readerId }.toSet(),
-        sentAt = sentAt
+        sentAt = sentAt,
+        editedAt = editedAt
     )
 }
 
-internal fun MessageEntry.toSqlEntities() = Pair(
-    with(this) {
-        MessageSqlEntity(
-            id = id,
-            senderId = senderId,
-            roomId = roomId,
-            text = text,
-            sentAt = sentAt
-        )
-    },
-    with(this.readBy) {
-        map { readerId ->
-            ReaderToMessageSqlEntity(
-                readerId = readerId,
-                messageId = id!!
-            )
-        }
-    }
-)
+internal fun MessageEntry.toSqlEntity() = with(this) {
+    MessageSqlEntity(
+        id = id,
+        senderId = senderId,
+        roomId = roomId,
+        text = text,
+        sentAt = sentAt,
+        editedAt = editedAt
+    )
+}
 
+internal fun MessageEntry.toReadersSqlEntities(messageId: Long) = with(this.readBy) {
+    map { readerId ->
+        ReaderToMessageSqlEntity(
+            readerId = readerId,
+            messageId = messageId
+        )
+    }
+}

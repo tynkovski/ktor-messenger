@@ -7,7 +7,7 @@ interface AddRoomPort {
 }
 
 interface GetRoomPort {
-    fun getRoom(id: Long): RoomEntry
+    fun getRoom(roomId: Long): RoomEntry
 }
 
 interface GetRoomCountPort {
@@ -19,7 +19,7 @@ interface GetRoomsPagingPort {
 }
 
 interface DeleteRoomPort {
-    fun deleteRoom(id: Long)
+    fun deleteRoom(roomId: Long)
 }
 
 interface UpdateRoomPort {

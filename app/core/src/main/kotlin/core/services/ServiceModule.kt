@@ -47,9 +47,7 @@ internal val serviceModule = module {
         )
     }
 
-    single {
-        JwtTokenService(configPort = get())
-    } binds arrayOf(
+    single { JwtTokenService(configPort = get()) } binds arrayOf(
         AccessTokenVerifierUsecase::class,
         GenerateKeyUsecase::class,
         GenerateAccessTokenUsecase::class,
@@ -202,6 +200,51 @@ internal val serviceModule = module {
         MakeModeratorInRoomService(
             getRoomPort = get(),
             updateRoomPort = get(),
+            txPort = get()
+        )
+    }
+
+    single<AddMessageUsecase> {
+        AddMessageService(
+            addMessagePort = get(),
+            txPort = get()
+        )
+    }
+    single<GetMessageUsecase> {
+        GetMessageService(
+            getMessagePort = get(),
+            txPort = get()
+        )
+    }
+    single<GetMessagesPagingUsecase> {
+        GetMessagesPagingService(
+            getMessagesPort = get(),
+            txPort = get()
+        )
+    }
+    single<GetMessageCountUsecase> {
+        GetMessageCountService(
+            getMessageCountPort = get(),
+            txPort = get()
+        )
+    }
+    single<DeleteMessageUsecase> {
+        DeleteMessageService(
+            deleteMessagePort = get(),
+            txPort = get()
+        )
+    }
+    single<EditMessageUsecase> {
+        EditMessageService(
+            getMessagePort= get(),
+            updateMessagePort = get(),
+            txPort = get()
+        )
+    }
+    single<ReadMessageUsecase> {
+        ReadMessageService(
+            getMessagePort = get(),
+            updateMessagePort = get(),
             txPort = get()
         )
     }

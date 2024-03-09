@@ -20,6 +20,7 @@ internal class RoomAdapter(
     GetRoomsPagingPort,
     UpdateRoomPort,
     DeleteRoomPort {
+
     @MustBeCalledInTransactionContext
     private fun upsertUsers(roomId: Long, roomEntry: RoomEntry): Collection<UserToRoomSqlEntity> {
         val usersToAdd = roomEntry.toUsersToRoomEntities(roomId)
@@ -85,14 +86,14 @@ internal class RoomAdapter(
     }
 
     @MustBeCalledInTransactionContext
-    override fun getRoom(id: Long): RoomEntry {
-        val roomEntity = roomRepository.getByIdOrNull(id)
-            ?: throw RoomEntryNotFoundException(searchCriteria = "id=$id")
+    override fun getRoom(roomId: Long): RoomEntry {
+        val roomEntity = roomRepository.getByIdOrNull(roomId)
+            ?: throw RoomEntryNotFoundException(searchCriteria = "id=$roomId")
 
-        val usersEntities = userToRoomRepository.getUsersByRoomId(id)
-        val moderatorsEntities = moderatorToRoomRepository.getUsersByRoomId(id)
-        val actionToRoomSqlEntity = actionToRoomRepository.getByRoomId(id)
-            ?: throw LastActionNotFoundException(searchCriteria = "id=$id")
+        val usersEntities = userToRoomRepository.getUsersByRoomId(roomId)
+        val moderatorsEntities = moderatorToRoomRepository.getUsersByRoomId(roomId)
+        val actionToRoomSqlEntity = actionToRoomRepository.getByRoomId(roomId)
+            ?: throw LastActionNotFoundException(searchCriteria = "id=$roomId")
 
         return RoomEntry.fromEntities(
             roomSqlEntity = roomEntity,
@@ -123,9 +124,9 @@ internal class RoomAdapter(
     }
 
     @MustBeCalledInTransactionContext
-    override fun deleteRoom(id: Long) {
-        if (!roomRepository.deleteById(id)) {
-            throw RoomEntryNotFoundException(searchCriteria = "id=$id")
+    override fun deleteRoom(roomId: Long) {
+        if (!roomRepository.deleteById(roomId)) {
+            throw RoomEntryNotFoundException(searchCriteria = "id=$roomId")
         }
     }
 }

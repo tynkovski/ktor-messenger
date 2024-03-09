@@ -9,7 +9,8 @@ data class MessageEntry(
     val roomId: Long,
     val text: String,
     val readBy: Set<Long>,
-    val sentAt: LocalDateTime = LocalDateTime.now()
+    val editedAt: LocalDateTime?,
+    val sentAt: LocalDateTime
 ) {
     companion object
 }

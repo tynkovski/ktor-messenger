@@ -2,6 +2,7 @@ package adapters.persist
 
 import adapters.persist.messenger.keystore.KeyStoreAdapter
 import adapters.persist.messenger.keystore.KeyStoreRepository
+import adapters.persist.messenger.message.MessageAdapter
 import adapters.persist.messenger.message.MessageRepository
 import adapters.persist.messenger.message.ReaderToMessageRepository
 import adapters.persist.messenger.person.PersonAdapter
@@ -126,5 +127,19 @@ val persistenceModule = module {
         CreateAndSaveTokensPort::class,
         CreateAccessTokenPort::class,
         DeleteRefreshTokenPort::class
+    )
+
+    single {
+        MessageAdapter(
+            messageRepository = get(),
+            readerToMessageRepository = get()
+        )
+    } binds arrayOf(
+        AddMessagePort::class,
+        GetMessagePort::class,
+        GetMessageCountPort::class,
+        GetMessagesPagingPort::class,
+        UpdateMessagePort::class,
+        DeleteMessagePort::class,
     )
 }

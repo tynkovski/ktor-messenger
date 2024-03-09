@@ -24,7 +24,6 @@ internal class JwtTokenService(
     private val config = configPort.tokenConfig
 
     private val accessTokenAlgorithm = Algorithm.HMAC256(config.accessSecret)
-
     private val refreshTokenAlgorithm = Algorithm.HMAC256(config.refreshSecret)
 
     private val accessTokenVerifier = JWT.require(accessTokenAlgorithm)
@@ -36,7 +35,6 @@ internal class JwtTokenService(
         .withAudience(config.audience)
         .withIssuer(config.issuer)
         .build()
-
 
     override fun generateKey(): String = Random.nextBytes(64).toHex()
 

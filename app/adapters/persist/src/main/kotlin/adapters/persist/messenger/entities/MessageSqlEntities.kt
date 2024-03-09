@@ -21,6 +21,8 @@ internal object MessageSqlEntities : Table(name = "message") {
 
     val sentAt = datetime("created_at")
 
+    val editedAt = datetime("edited_at").nullable()
+
     override val primaryKey = PrimaryKey(id, name = "PK_message_id")
 }
 
@@ -31,7 +33,7 @@ internal object ReaderToMessageSqlEntities : Table(name = "user_to_message") {
     val messageId = long("message_id")
         .references(MessageSqlEntities.id, onDelete = ReferenceOption.CASCADE)
 
-    override val primaryKey = PrimaryKey(messageId, readerId, name = "PK_user_to_message_id")
+    override val primaryKey = PrimaryKey(messageId, readerId, name = "PK_reader_to_message_id")
 }
 
 internal data class MessageSqlEntity(
@@ -39,7 +41,8 @@ internal data class MessageSqlEntity(
     val senderId: Long,
     val roomId: Long,
     val text: String,
-    val sentAt: LocalDateTime
+    val sentAt: LocalDateTime,
+    val editedAt: LocalDateTime?
 ) {
     companion object
 }

@@ -4,14 +4,13 @@ import adapters.primaryweb.models.gen.RestGender
 import adapters.primaryweb.models.gen.RestPersonResponse
 import adapters.primaryweb.models.gen.RestPostalAddressResponse
 import adapters.primaryweb.models.responses.auth.RestTokenResponse
+import adapters.primaryweb.models.responses.message.MessageResponse
+import adapters.primaryweb.models.responses.message.MessagesPagingResponse
 import adapters.primaryweb.models.responses.room.RoomLastActionResponse
 import adapters.primaryweb.models.responses.room.RoomResponse
 import adapters.primaryweb.models.responses.room.RoomsPagingResponse
 import adapters.primaryweb.models.responses.user.RestUserResponse
-import core.models.PersonEntry
-import core.models.RoomEntry
-import core.models.TokenEntry
-import core.models.UserEntry
+import core.models.*
 import java.time.format.DateTimeFormatter
 
 private const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
@@ -75,24 +74,34 @@ internal fun RoomEntry.toResponse(): RoomResponse = with(this) {
         image = image,
         users = users.toList(),
         moderators = moderators.toList(),
-        createdAt = formatter.format(createdAt),
         lastAction = lastAction.toResponse(),
+        createdAt = formatter.format(createdAt),
     )
 }
 
 internal fun Collection<RoomEntry>.toResponse(count: Long): RoomsPagingResponse = with(this) {
     RoomsPagingResponse(
         count = count,
-        rooms = map { room ->
-            RoomResponse(
-                id = room.id!!,
-                name = room.name,
-                image = room.image,
-                users = room.users.toList(),
-                moderators = room.moderators.toList(),
-                lastAction = room.lastAction.toResponse(),
-                createdAt = formatter.format(room.createdAt)
-            )
-        }
+        rooms = map { room -> room.toResponse() }
     )
 }
+
+internal fun MessageEntry.toResponse(): MessageResponse = with(this) {
+    MessageResponse(
+        id = id!!,
+        senderId = senderId,
+        roomId = roomId,
+        text = text,
+        readBy = readBy.toList(),
+        editedAt = editedAt?.let { formatter.format(it) },
+        sentAt = formatter.format(sentAt)
+    )
+}
+
+internal fun Collection<MessageEntry>.toResponse(count: Long): MessagesPagingResponse = with(this) {
+    MessagesPagingResponse(
+        count = count,
+        messages = map { message -> message.toResponse() }
+    )
+}
+

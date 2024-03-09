@@ -13,6 +13,7 @@ internal fun MessageSqlEntity.toSqlStatement(statement: InsertStatement<Number>)
     it[MessageSqlEntities.roomId] = roomId
     it[MessageSqlEntities.text] = text
     it[MessageSqlEntities.sentAt] = sentAt
+    it[MessageSqlEntities.editedAt] = editedAt
 }
 
 internal fun ReaderToMessageSqlEntity.toSqlStatement(statement: InsertStatement<Number>) = statement.let {
@@ -27,6 +28,7 @@ internal fun MessageSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
         roomId = resultRow[MessageSqlEntities.roomId],
         text = resultRow[MessageSqlEntities.text],
         sentAt = resultRow[MessageSqlEntities.sentAt],
+        editedAt = resultRow[MessageSqlEntities.editedAt]
     )
 
 internal fun ReaderToMessageSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =

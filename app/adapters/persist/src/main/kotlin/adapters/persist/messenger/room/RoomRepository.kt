@@ -48,8 +48,8 @@ internal class RoomRepository {
     }
 
     @MustBeCalledInTransactionContext
-    fun deleteById(id: Long): Boolean {
-        return RoomSqlEntities.deleteWhere { RoomSqlEntities.id eq id } > 0
+    fun deleteById(roomId: Long): Boolean {
+        return RoomSqlEntities.deleteWhere { RoomSqlEntities.id eq roomId } > 0
     }
 }
 

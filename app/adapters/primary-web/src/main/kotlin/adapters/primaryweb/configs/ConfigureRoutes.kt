@@ -24,4 +24,3 @@ internal fun Application.configureRoutes() {
         chatRoute()
     }
 }
-

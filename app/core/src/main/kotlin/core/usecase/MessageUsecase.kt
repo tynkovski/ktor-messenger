@@ -3,25 +3,33 @@ package core.usecase
 import core.models.MessageEntry
 
 fun interface AddMessageUsecase {
-    suspend fun createMessage(entry: MessageEntry): MessageEntry
+    suspend fun createMessage(
+        applicantId: Long,
+        roomId: Long,
+        text: String
+    ): MessageEntry
 }
 
 fun interface GetMessageUsecase {
-    suspend fun getMessage(id: Long): MessageEntry
+    suspend fun getMessage(messageId: Long): MessageEntry
+}
+
+fun interface GetMessageCountUsecase {
+    suspend fun getMessageCount(roomId: Long): Long
 }
 
 fun interface GetMessagesPagingUsecase {
-    suspend fun getMessages(roomId: Long, page: Int, pageSize: Int): Collection<MessageEntry>
+    suspend fun getMessages(roomId: Long, page: Long, pageSize: Int): Collection<MessageEntry>
 }
 
 fun interface DeleteMessageUsecase {
-    suspend fun deleteMessage(id: Long)
+    suspend fun deleteMessage(messageId: Long)
 }
 
-fun interface UpdateMessageUsecase {
-    suspend fun updateMessage(entry: MessageEntry): MessageEntry
+fun interface EditMessageUsecase {
+    suspend fun editMessage(messageId: Long, text: String): MessageEntry
 }
 
 fun interface ReadMessageUsecase {
-    suspend fun readMessage(userId: Long, entry: MessageEntry): MessageEntry
+    suspend fun readMessage(messageId: Long, applicantId: Long): MessageEntry
 }

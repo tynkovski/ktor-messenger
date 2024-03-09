@@ -22,6 +22,7 @@ val controllersModule = module {
             saltedHashUsecase = get(),
         )
     }
+
     single {
         UserController(
             saltedHashUsecase = get(),
@@ -32,6 +33,7 @@ val controllersModule = module {
             getUserUsecase = get()
         )
     }
+
     single {
         RoomController(
             addRoomUsecase = get(),
@@ -47,7 +49,16 @@ val controllersModule = module {
             getRoomsCountUsecase = get(),
         )
     }
+
     single {
-        MessageController(get())
+        MessageController(
+            getMessageUsecase = get(),
+            getMessagesPagingUsecase = get(),
+            getMessageCountUsecase = get(),
+            addMessageMessageUsecase = get(),
+            deleteMessageUsecase = get(),
+            editMessageUsecase = get(),
+            readMessageUsecase = get()
+        )
     }
 }
