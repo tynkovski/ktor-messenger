@@ -7,11 +7,13 @@ import java.time.LocalDateTime
 // --- TABLES
 internal object UserSqlEntities : Table(name = "user") {
     val id = long("id").autoIncrement()
-    val name = text("name")
     val login = text("login").uniqueIndex()
     val password = text("password")
     val salt = text("salt")
+    val name = text("name").nullable()
+    val image = text("image").nullable()
     val createdAt = datetime("created_at")
+    val deletedAt = datetime("deleted_at").nullable()
 
     override val primaryKey = PrimaryKey(id, name = "PK_user_id")
 }
@@ -20,11 +22,13 @@ internal object UserSqlEntities : Table(name = "user") {
 
 internal data class UserSqlEntity(
     val id: Long? = null,
-    val name: String,
     val login: String,
     val password: String,
     val salt: String,
-    val createdAt: LocalDateTime
+    val name: String?,
+    val image: String?,
+    val createdAt: LocalDateTime,
+    val deletedAt: LocalDateTime?
 ) {
     companion object
 }

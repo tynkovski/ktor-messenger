@@ -12,6 +12,7 @@ internal fun UserSqlEntity.toSqlStatement(statement: InsertStatement<Number>) = 
     it[UserSqlEntities.password] = password
     it[UserSqlEntities.salt] = salt
     it[UserSqlEntities.createdAt] = createdAt
+    it[UserSqlEntities.image] = image
 }
 
 internal fun UserSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
@@ -22,4 +23,6 @@ internal fun UserSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
         password = resultRow[UserSqlEntities.password],
         salt = resultRow[UserSqlEntities.salt],
         createdAt = resultRow[UserSqlEntities.createdAt],
+        deletedAt = resultRow[UserSqlEntities.deletedAt],
+        image = resultRow[UserSqlEntities.image],
     )

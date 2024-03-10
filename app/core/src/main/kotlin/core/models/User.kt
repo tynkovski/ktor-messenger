@@ -4,12 +4,14 @@ import core.errors.ResourceNotFoundException
 import java.time.LocalDateTime
 
 data class UserEntry(
-    val id: Long? = null,
-    val name: String,
+    val id: Long?,
     val login: String,
     val password: String,
     val salt: String,
-    val createdAt: LocalDateTime = LocalDateTime.now()
+    val name: String?,
+    val image: String?,
+    val deletedAt: LocalDateTime?,
+    val createdAt: LocalDateTime
 ) {
     companion object
 }

@@ -53,7 +53,7 @@ fun Application.main() {
 
     runBlocking {
         bootPersistStoragePort.bootStorage {
-            // clearPersistStoragePort.deleteAllTables()
+            //clearPersistStoragePort.deleteAllTables()
         }
     }
 

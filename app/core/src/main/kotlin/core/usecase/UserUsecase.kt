@@ -2,28 +2,37 @@ package core.usecase
 
 import core.models.UserEntry
 
-fun interface AddUserUsecase {
-    suspend fun addUser(entry: UserEntry): UserEntry
+fun interface CreateUserUsecase {
+    suspend fun createUser(
+        name: String?,
+        image: String?,
+        login: String,
+        password: String
+    ): UserEntry
 }
 
 fun interface GetUserUsecase {
-    suspend fun getUser(id: Long): UserEntry
+    suspend fun getUser(userId: Long): UserEntry
 }
 
-fun interface GetUserByLoginUsecase {
-    suspend fun getUser(login: String): UserEntry
+fun interface GetUserByLoginPasswordUsecase {
+    suspend fun getUser(login: String, password: String): UserEntry?
 }
 
 fun interface DeleteUserUsecase {
-    suspend fun deleteUser(id: Long)
+    suspend fun deleteUser(userId: Long): UserEntry
 }
 
-fun interface UpdateUserUsecase {
-    suspend fun updateUser(entry: UserEntry): UserEntry
+fun interface EditUserUsecase {
+    suspend fun editUser(userId: Long, name: String?, image: String?): UserEntry
 }
 
 fun interface EditUserNameUsecase {
-    suspend fun editUserName(entry: UserEntry, name: String): UserEntry
+    suspend fun editUserName(userId: Long, name: String?): UserEntry
+}
+
+fun interface EditUserImageUsecase {
+    suspend fun editUserImage(userId: Long, image: String?): UserEntry
 }
 
 fun interface FindUserForAccessKeyUsecase {

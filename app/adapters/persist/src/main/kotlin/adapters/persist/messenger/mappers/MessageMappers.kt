@@ -15,7 +15,8 @@ internal fun MessageEntry.Companion.fromEntities(
         text = text,
         readBy = readersToMessageSqlEntity.map { it.readerId }.toSet(),
         sentAt = sentAt,
-        editedAt = editedAt
+        editedAt = editedAt,
+        deletedAt = deletedAt
     )
 }
 
@@ -26,7 +27,8 @@ internal fun MessageEntry.toSqlEntity() = with(this) {
         roomId = roomId,
         text = text,
         sentAt = sentAt,
-        editedAt = editedAt
+        editedAt = editedAt,
+        deletedAt = deletedAt
     )
 }
 

@@ -9,6 +9,7 @@ internal fun RoomSqlEntity.toSqlStatement(statement: InsertStatement<Number>) = 
     it[RoomSqlEntities.name] = name
     it[RoomSqlEntities.image] = image
     it[RoomSqlEntities.createdAt] = createdAt
+    it[RoomSqlEntities.deletedAt] = deletedAt
 }
 
 internal fun UserToRoomSqlEntity.toSqlStatement(statement: InsertStatement<Number>) = statement.let {
@@ -34,7 +35,8 @@ internal fun RoomSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
         id = resultRow[RoomSqlEntities.id],
         name = resultRow[RoomSqlEntities.name],
         image = resultRow[RoomSqlEntities.image],
-        createdAt = resultRow[RoomSqlEntities.createdAt]
+        createdAt = resultRow[RoomSqlEntities.createdAt],
+        deletedAt = resultRow[RoomSqlEntities.deletedAt]
     )
 
 

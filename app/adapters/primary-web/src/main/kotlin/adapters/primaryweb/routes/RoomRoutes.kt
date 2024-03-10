@@ -14,17 +14,16 @@ internal fun Route.roomRoute() {
     val roomController by inject<RoomController>()
     authenticate {
         route("/room") {
-            get("/paged") { roomController.getRoomsPaged(call) }
             get("{id}") { roomController.getRoom(call) }
-        }
-
-        webSocket("/room") {
-            try {
-                roomController.connect(this)
-            } catch (e: Exception) {
-                logger.error(e) { "roomRoute() ${e.printStackTrace()}" }
-            } finally {
-                roomController.disconnect(this)
+            get("/paged") { roomController.getRoomsPaged(call) }
+            webSocket {
+                try {
+                    roomController.connect(this)
+                } catch (e: Exception) {
+                    logger.error(e) { "roomRoute() ${e.printStackTrace()}" }
+                } finally {
+                    roomController.disconnect(this)
+                }
             }
         }
     }

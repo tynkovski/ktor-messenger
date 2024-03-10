@@ -14,19 +14,20 @@ internal fun Route.chatRoute() {
     val messageController by inject<MessageController>()
     authenticate {
         route("/message") {
+            get("{id}") {messageController.getMessage(call)}
+
             route("/paged") {
                 get("{roomId}") { messageController.getMessagesPaged(call) }
             }
-            get("{id}") {messageController.getMessage(call)}
-        }
 
-        webSocket("/chat") {
-            try {
-                messageController.connect(this)
-            } catch (e: Exception) {
-                logger.error(e) { "chatRoute() ${e.printStackTrace()}" }
-            } finally {
-                messageController.disconnect(this)
+            webSocket {
+                try {
+                    messageController.connect(this)
+                } catch (e: Exception) {
+                    logger.error(e) { "chatRoute() ${e.printStackTrace()}" }
+                } finally {
+                    messageController.disconnect(this)
+                }
             }
         }
     }

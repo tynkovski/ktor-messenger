@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RestUpdateUserRequest(
-    @SerialName(value = "name")
-    val name: String
+data class UpdateUserRequest(
+    @SerialName("name") val name: String?,
+    @SerialName("image") val image: String?
 )

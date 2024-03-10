@@ -56,10 +56,11 @@ internal val serviceModule = module {
         VerifyAccessTokenUsecase::class
     )
 
-    single<AddUserUsecase> {
-        AddUserService(
+    single<CreateUserUsecase> {
+        CreateUserService(
             addUserPort = get(),
-            txPort = get()
+            txPort = get(),
+            generateSaltedHashPort = get()
         )
     }
     single<GetUserUsecase> {
@@ -68,36 +69,42 @@ internal val serviceModule = module {
             txPort = get()
         )
     }
-    single<GetUserByLoginUsecase> {
-        GetUserByLoginService(
-            getUserPort = get(),
-            txPort = get()
-        )
-    }
+
     single<DeleteUserUsecase> {
         DeleteUserService(
+            getUserPort = get(),
             deleteUserPort = get(),
             txPort = get()
         )
     }
-    single<UpdateUserUsecase> {
-        UpdateUserService(
+    single<EditUserUsecase> {
+        EditUserService(
+            getUserPort = get(),
             updateUserPort = get(),
             txPort = get()
         )
     }
     single<EditUserNameUsecase> {
         EditUserNameService(
+            getUserPort = get(),
+            updateUserPort = get(),
+            txPort = get()
+        )
+    }
+    single<EditUserImageUsecase> {
+        EditUserImageService(
+            getUserPort = get(),
             updateUserPort = get(),
             txPort = get()
         )
     }
 
-    single<VerifyPasswordUsecase> {
-        VerifyPasswordService(verifyPasswordPort = get())
-    }
-    single<GenerateSaltedHashUsecase> {
-        GenerateSaltedHashService(generateSaltedHashPort = get())
+    single<GetUserByLoginPasswordUsecase> {
+        GetUserByLoginPasswordService(
+            getUserByLoginPort = get(),
+            verifyPasswordPort = get(),
+            txPort = get()
+        )
     }
 
     single<FindUserForAccessKeyUsecase> {
@@ -170,6 +177,7 @@ internal val serviceModule = module {
     }
     single<DeleteRoomUsecase> {
         DeleteRoomService(
+            getRoomPort = get(),
             deleteRoomPort = get(),
             txPort = get()
         )
@@ -234,15 +242,22 @@ internal val serviceModule = module {
             txPort = get()
         )
     }
+    single<GetLastMessageUsecase> {
+        GetLastMessageService(
+            getLastMessagePort = get(),
+            txPort = get()
+        )
+    }
     single<DeleteMessageUsecase> {
         DeleteMessageService(
+            getMessagePort = get(),
             deleteMessagePort = get(),
             txPort = get()
         )
     }
     single<EditMessageUsecase> {
         EditMessageService(
-            getMessagePort= get(),
+            getMessagePort = get(),
             updateMessagePort = get(),
             txPort = get()
         )

@@ -15,7 +15,7 @@ interface GetUserByLoginPort {
 }
 
 interface DeleteUserPort {
-    fun deleteUser(id: Long)
+    fun deleteUser(entry: UserEntry): UserEntry
 }
 
 interface UpdateUserPort {

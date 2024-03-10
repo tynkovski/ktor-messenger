@@ -14,6 +14,7 @@ internal class MessageAdapter(
     private val readerToMessageRepository: ReaderToMessageRepository
 ) : AddMessagePort,
     GetMessagePort,
+    GetLastMessagePort,
     GetMessageCountPort,
     GetMessagesPagingPort,
     UpdateMessagePort,
@@ -39,7 +40,7 @@ internal class MessageAdapter(
 
     @MustBeCalledInTransactionContext
     override fun addMessage(entry: MessageEntry): MessageEntry {
-        require(entry.id == null) { "entry.id must be null" }
+        require(entry.id == null) { "message.id must be null" }
         return upsertMessageEntry(entry)
     }
 
@@ -50,6 +51,15 @@ internal class MessageAdapter(
 
         val readerEntities = readerToMessageRepository.getReadersByMessageId(messageId)
 
+        return MessageEntry.fromEntities(messageEntity, readerEntities)
+    }
+
+    @MustBeCalledInTransactionContext
+    override fun getLastMessage(roomId: Long): MessageEntry? {
+        val messageEntity = messageRepository.getLastMessageOfRoom(roomId)
+            ?: return null
+
+        val readerEntities = readerToMessageRepository.getReadersByMessageId(messageEntity.id!!)
         return MessageEntry.fromEntities(messageEntity, readerEntities)
     }
 
@@ -70,7 +80,7 @@ internal class MessageAdapter(
 
     @MustBeCalledInTransactionContext
     override fun updateMessage(entry: MessageEntry): MessageEntry {
-        val messageId = requireNotNull(entry.id) { "entity.id must not be null" }
+        val messageId = requireNotNull(entry.id) { "message.id must not be null" }
         if (!messageRepository.hasEntityWithId(messageId)) {
             throw MessageEntryNotFoundException(searchCriteria = "id=$messageId")
         }
@@ -78,9 +88,12 @@ internal class MessageAdapter(
     }
 
     @MustBeCalledInTransactionContext
-    override fun deleteMessage(messageId: Long) {
-        if (!messageRepository.deleteById(messageId)) {
+    override fun deleteMessage(entry: MessageEntry) : MessageEntry {
+        val messageId = requireNotNull(entry.id) { "message.id must not be null" }
+        if (!messageRepository.hasEntityWithId(messageId)) {
             throw MessageEntryNotFoundException(searchCriteria = "id=$messageId")
         }
+
+        return upsertMessageEntry(entry)
     }
 }

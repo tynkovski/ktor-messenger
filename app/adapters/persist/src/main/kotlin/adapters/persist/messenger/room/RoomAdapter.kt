@@ -48,7 +48,7 @@ internal class RoomAdapter(
     }
 
     @MustBeCalledInTransactionContext
-    private fun upsertLastAction(roomId: Long, action: RoomEntry.LastActionEntry): ActionToRoomSqlEntity {
+    private fun upsertLastAction(roomId: Long, action: RoomEntry.LastActionEntry): ActionToRoomSqlEntity? {
         val actionEntity = action.toActionToRoomEntity(roomId)
         return actionToRoomRepository.upsert(actionEntity)
     }
@@ -60,7 +60,7 @@ internal class RoomAdapter(
 
         val usersAdded = upsertUsers(roomId, roomEntry)
         val moderatorsAdded = upsertModerators(roomId, roomEntry)
-        val lasActionAdded = upsertLastAction(roomId, roomEntry.lastAction)
+        val lasActionAdded = roomEntry.lastAction?.let { upsertLastAction(roomId, it) }
 
         return RoomEntry.fromEntities(roomAdded, usersAdded, moderatorsAdded, lasActionAdded)
     }
@@ -124,9 +124,11 @@ internal class RoomAdapter(
     }
 
     @MustBeCalledInTransactionContext
-    override fun deleteRoom(roomId: Long) {
-        if (!roomRepository.deleteById(roomId)) {
+    override fun deleteRoom(entry: RoomEntry): RoomEntry {
+        val roomId = requireNotNull(entry.id) { "room.id must not be null" }
+        if (!roomRepository.hasEntityWithId(roomId)) {
             throw RoomEntryNotFoundException(searchCriteria = "id=$roomId")
         }
+        return upsertRoomEntry(entry)
     }
 }

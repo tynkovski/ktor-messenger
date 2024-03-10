@@ -14,6 +14,10 @@ fun interface GetMessageUsecase {
     suspend fun getMessage(messageId: Long): MessageEntry
 }
 
+fun interface GetLastMessageUsecase {
+    suspend fun getLastMessage(roomId: Long): MessageEntry?
+}
+
 fun interface GetMessageCountUsecase {
     suspend fun getMessageCount(roomId: Long): Long
 }
@@ -23,7 +27,7 @@ fun interface GetMessagesPagingUsecase {
 }
 
 fun interface DeleteMessageUsecase {
-    suspend fun deleteMessage(messageId: Long)
+    suspend fun deleteMessage(messageId: Long): MessageEntry
 }
 
 fun interface EditMessageUsecase {

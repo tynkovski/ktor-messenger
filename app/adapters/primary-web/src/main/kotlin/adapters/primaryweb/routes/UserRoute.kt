@@ -9,11 +9,15 @@ import org.koin.ktor.ext.inject
 internal fun Routing.userRoute() {
     val controller by inject<UserController>()
     route("/user") {
-        post { controller.addUser(call) }
+        post { controller.createUser(call) }
         authenticate {
-            get("{id}") { controller.getUserById(call) }
             get { controller.getUser(call) }
-            put { controller.updateUser(call) }
+            get("{id}") { controller.getUserById(call) }
+
+            put("/edit") { controller.updateUser(call) }
+            put("/image") { controller.editUserImage(call) }
+            put("/name") { controller.editUserName(call) }
+
             delete { controller.deleteUser(call) }
         }
     }

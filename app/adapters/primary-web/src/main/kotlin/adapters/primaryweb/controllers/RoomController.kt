@@ -2,7 +2,6 @@ package adapters.primaryweb.controllers
 
 import adapters.primaryweb.mappers.toResponse
 import adapters.primaryweb.models.requests.room.*
-import adapters.primaryweb.models.responses.room.DeleteRoomResponse
 import adapters.primaryweb.util.longParameter
 import core.usecase.*
 import io.ktor.http.*
@@ -47,27 +46,27 @@ sealed class RoomControllerEvent(override val name: String) : BaseControllerEven
 
     data class DeleteRoom(
         val request: DeleteRoomRequest
-    ) : RoomControllerEvent(RENAME_ROOM)
+    ) : RoomControllerEvent(DELETE_ROOM)
 
     data class JoinedToRoom(
         val request: JoinToRoomRequest
-    ) : RoomControllerEvent(RENAME_ROOM)
+    ) : RoomControllerEvent(JOINED_TO_ROOM)
 
     data class QuitFromRoom(
         val request: QuitFromRoomRequest
-    ) : RoomControllerEvent(RENAME_ROOM)
+    ) : RoomControllerEvent(QUIT_FROM_ROOM)
 
     data class InviteUserToRoom(
         val request: InviteUserToRoomRequest
-    ) : RoomControllerEvent(RENAME_ROOM)
+    ) : RoomControllerEvent(INVITE_USER_TO_ROOM)
 
     data class KickUserFromRoom(
         val request: KickUserFromRoomRequest
-    ) : RoomControllerEvent(RENAME_ROOM)
+    ) : RoomControllerEvent(KICK_USER_FROM_ROOM)
 
     data class MakeUserModeratorToRoom(
         val request: MakeModeratorToRoomRequest
-    ) : RoomControllerEvent(RENAME_ROOM)
+    ) : RoomControllerEvent(MAKE_MODERATOR)
 
     data object Unknown : RoomControllerEvent(UNKNOWN)
 }
@@ -126,8 +125,8 @@ internal class RoomController(
 
             is RoomControllerEvent.DeleteRoom -> with(event.request) {
                 val usersSet = getRoomUsecase.getRoom(roomId).users.toSet()
-                deleteRoomUsecase.deleteRoom(roomId)
-                notifyUsersIfConnected(usersSet, event.name, DeleteRoomResponse(roomId))
+                val room = deleteRoomUsecase.deleteRoom(roomId)
+                notifyUsersIfConnected(usersSet, event.name, room.toResponse())
             }
 
             is RoomControllerEvent.JoinedToRoom -> with(event.request) {

@@ -9,8 +9,6 @@ import adapters.persist.messenger.mappers.toSqlStatement
 import adapters.persist.util.postgresql.pgInsertOrUpdate
 import core.outport.MustBeCalledInTransactionContext
 import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
 
 internal class MessageRepository {
@@ -34,7 +32,7 @@ internal class MessageRepository {
     fun getMessagesPaging(roomId: Long, page: Long, pageSize: Int): Collection<MessageSqlEntity> {
         return MessageSqlEntities
             .select { MessageSqlEntities.roomId eq roomId }
-            .orderBy(MessageSqlEntities.sentAt, SortOrder.DESC)
+            .orderBy(MessageSqlEntities.createdAt, SortOrder.DESC)
             .limit(n = pageSize, offset = page * pageSize)
             .map { MessageSqlEntity.fromSqlResultRow(it) }
     }
@@ -50,7 +48,7 @@ internal class MessageRepository {
     fun getLastMessageOfRoom(roomId: Long): MessageSqlEntity? {
         return MessageSqlEntities
             .select { MessageSqlEntities.roomId eq roomId }
-            .orderBy(MessageSqlEntities.sentAt, SortOrder.DESC)
+            .orderBy(MessageSqlEntities.createdAt, SortOrder.DESC)
             .limit(1)
             .map { MessageSqlEntity.fromSqlResultRow(it) }
             .singleOrNull()
@@ -63,11 +61,6 @@ internal class MessageRepository {
             .resultedValues!!
             .first()
             .let { MessageSqlEntity.fromSqlResultRow(it) }
-    }
-
-    @MustBeCalledInTransactionContext
-    fun deleteById(messageId: Long): Boolean {
-        return MessageSqlEntities.deleteWhere { MessageSqlEntities.id eq messageId } > 0
     }
 }
 

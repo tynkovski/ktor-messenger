@@ -1,12 +1,11 @@
 package core.services
 
 import core.models.RoomEntry
-import core.models.UserEntry
 import core.outport.*
 import core.usecase.*
 import java.time.LocalDateTime
 
-private fun createRoomHelper(
+private fun buildRoom(
     applicantId: Long,
     name: String?,
     image: String?,
@@ -24,9 +23,10 @@ private fun createRoomHelper(
             description = null,
             actionDateTime = time
         ),
-        users = users.toSet(),
-        moderators = moderators.toSet(),
-        createdAt = time
+        users = users,
+        moderators = moderators,
+        createdAt = time,
+        deletedAt = null
     )
 }
 
@@ -42,6 +42,17 @@ private fun renameRoom(
         description = name,
         actionDateTime = LocalDateTime.now()
     )
+)
+
+private fun clearRoom(
+    room: RoomEntry
+) = room.copy(
+    name = "[deleted room]",
+    image = null,
+    lastAction = null,
+    users = setOf(),
+    moderators = setOf(),
+    deletedAt = LocalDateTime.now(),
 )
 
 // todo add `link` parameter: User joined via link
@@ -126,7 +137,7 @@ internal class CreateRoomService(
         moderators: Set<Long>
     ): RoomEntry =
         txPort.withNewTransaction {
-            val room = createRoomHelper(
+            val room = buildRoom(
                 applicantId = applicantId,
                 name = name,
                 image = image,
@@ -168,7 +179,6 @@ internal class GetRoomUsersService(
         }
 }
 
-
 internal class GetRoomsPagingService(
     private val getRoomsPort: GetRoomsPagingPort,
     private val txPort: PersistTransactionPort,
@@ -180,12 +190,15 @@ internal class GetRoomsPagingService(
 }
 
 internal class DeleteRoomService(
+    private val getRoomPort: GetRoomPort,
     private val deleteRoomPort: DeleteRoomPort,
     private val txPort: PersistTransactionPort,
 ) : DeleteRoomUsecase {
     override suspend fun deleteRoom(roomId: Long) =
         txPort.withNewTransaction {
-            deleteRoomPort.deleteRoom(roomId)
+            val room = getRoomPort.getRoom(roomId)
+            val deleted = clearRoom(room)
+            deleteRoomPort.deleteRoom(deleted)
         }
 }
 

@@ -33,24 +33,17 @@ internal class UserAdapter(
 
     @MustBeCalledInTransactionContext
     override fun addUser(entry: UserEntry): UserEntry {
-        require(entry.id == null) { "entry.id must be null" }
+        require(entry.id == null) { "user.id must be null" }
         return upsertUserEntry(entry = entry)
     }
 
     @MustBeCalledInTransactionContext
     override fun updateUser(entry: UserEntry): UserEntry {
-        val id = requireNotNull(entry.id) { "entity.id must not be null" }
+        val id = requireNotNull(entry.id) { "user.id must not be null" }
         if (!userRepository.hasEntityWithId(id = id)) {
             throw UserEntryNotFoundException(searchCriteria = "id=$id")
         }
         return upsertUserEntry(entry = entry)
-    }
-
-    @MustBeCalledInTransactionContext
-    override fun deleteUser(id: Long) {
-        if (!userRepository.deleteById(id)) {
-            throw UserEntryNotFoundException(searchCriteria = "id=$id")
-        }
     }
 
     @MustBeCalledInTransactionContext
@@ -76,5 +69,14 @@ internal class UserAdapter(
     ): UserEntry {
         val sqlEntity = userRepository.upsert(entry.toUserSqlEntity())
         return UserEntry.fromEntity(sqlEntity)
+    }
+
+    @MustBeCalledInTransactionContext
+    override fun deleteUser(entry: UserEntry): UserEntry {
+        val id = requireNotNull(entry.id) { "user.id must not be null" }
+        if (!userRepository.hasEntityWithId(id = id)) {
+            throw UserEntryNotFoundException(searchCriteria = "id=$id")
+        }
+        return upsertUserEntry(entry)
     }
 }

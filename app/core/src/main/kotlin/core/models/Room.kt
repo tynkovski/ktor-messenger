@@ -4,13 +4,14 @@ import core.errors.ResourceNotFoundException
 import java.time.LocalDateTime
 
 data class RoomEntry(
-    val id: Long? = null,
+    val id: Long?,
     val name: String?,
     val image: String?,
-    val lastAction: LastActionEntry,
     val users: Set<Long>,
     val moderators: Set<Long>,
-    val createdAt: LocalDateTime = LocalDateTime.now()
+    val lastAction: LastActionEntry?,
+    val deletedAt: LocalDateTime?,
+    val createdAt: LocalDateTime,
 ) {
     data class LastActionEntry(
         val applicantId: Long,

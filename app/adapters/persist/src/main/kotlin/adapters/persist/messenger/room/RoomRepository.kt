@@ -47,10 +47,10 @@ internal class RoomRepository {
             .let { RoomSqlEntity.fromSqlResultRow(it) }
     }
 
-    @MustBeCalledInTransactionContext
-    fun deleteById(roomId: Long): Boolean {
-        return RoomSqlEntities.deleteWhere { RoomSqlEntities.id eq roomId } > 0
-    }
+//    @MustBeCalledInTransactionContext
+//    fun deleteById(roomId: Long): Boolean {
+//        return RoomSqlEntities.deleteWhere { RoomSqlEntities.id eq roomId } > 0
+//    }
 }
 
 internal class UserToRoomRepository {
@@ -80,7 +80,16 @@ internal class UserToRoomRepository {
 
     @MustBeCalledInTransactionContext
     fun deleteUserFromRoom(userId: Long): Boolean {
-        return UserToRoomSqlEntities.deleteWhere { UserToRoomSqlEntities.userId eq userId } > 0
+        return UserToRoomSqlEntities.deleteWhere {
+            UserToRoomSqlEntities.userId eq userId
+        } > 0
+    }
+
+    @MustBeCalledInTransactionContext
+    fun deleteUsersFromRoom(roomId: Long): Boolean {
+        return UserToRoomSqlEntities.deleteWhere {
+            UserToRoomSqlEntities.roomId eq roomId
+        } > 0
     }
 
     @MustBeCalledInTransactionContext
@@ -118,7 +127,16 @@ internal class ModeratorToRoomRepository {
 
     @MustBeCalledInTransactionContext
     fun deleteModeratorFromRoom(userId: Long): Boolean {
-        return ModeratorToRoomSqlEntities.deleteWhere { ModeratorToRoomSqlEntities.userId eq userId } > 0
+        return ModeratorToRoomSqlEntities.deleteWhere {
+            ModeratorToRoomSqlEntities.userId eq userId
+        } > 0
+    }
+
+    @MustBeCalledInTransactionContext
+    fun deleteModeratorsFromRoom(roomId: Long): Boolean {
+        return ModeratorToRoomSqlEntities.deleteWhere {
+            ModeratorToRoomSqlEntities.roomId eq roomId
+        } > 0
     }
 }
 

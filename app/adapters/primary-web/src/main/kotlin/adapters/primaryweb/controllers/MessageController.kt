@@ -5,13 +5,11 @@ import adapters.primaryweb.models.requests.message.DeleteMessageRequest
 import adapters.primaryweb.models.requests.message.EditMessageRequest
 import adapters.primaryweb.models.requests.message.ReadMessageRequest
 import adapters.primaryweb.models.requests.message.SendMessageRequest
-import adapters.primaryweb.models.responses.message.DeleteMessageResponse
 import adapters.primaryweb.util.longParameter
 import core.usecase.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 sealed class MessageControllerEvent(
@@ -79,11 +77,11 @@ internal class MessageController(
         call.respond(status = HttpStatusCode.OK, message = message.toResponse())
     }
 
-    private suspend fun getRoomUsers(roomId: Long): Set< Long> {
+    private suspend fun getRoomUsers(roomId: Long): Set<Long> {
         return getRoomUsecase.getRoom(roomId).users.toSet()
     }
 
-    private suspend fun getMessageUsers(messageId: Long): Set< Long> {
+    private suspend fun getMessageUsers(messageId: Long): Set<Long> {
         val roomId = getMessageUsecase.getMessage(messageId).roomId
         return getRoomUsers(roomId)
     }
@@ -104,11 +102,11 @@ internal class MessageController(
 
             is MessageControllerEvent.DeleteMessage -> with(event.request) {
                 val users = getMessageUsers(messageId)
-                deleteMessageUsecase.deleteMessage(messageId)
-                notifyUsersIfConnected(users, event.name, DeleteMessageResponse(messageId))
+                val message = deleteMessageUsecase.deleteMessage(messageId)
+                notifyUsersIfConnected(users, event.name, message.toResponse())
             }
 
-            is MessageControllerEvent.ReadMessage ->  with(event.request) {
+            is MessageControllerEvent.ReadMessage -> with(event.request) {
                 val message = readMessageUsecase.readMessage(applicantId, messageId)
                 val users = getMessageUsers(messageId)
                 notifyUsersIfConnected(users, event.name, message.toResponse())

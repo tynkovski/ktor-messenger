@@ -7,7 +7,7 @@ internal fun RoomEntry.Companion.fromEntities(
     roomSqlEntity: RoomSqlEntity,
     usersToRoomSqlEntities: Collection<UserToRoomSqlEntity>,
     moderatorsToRoomSqlEntities: Collection<ModeratorToRoomSqlEntity>,
-    actionToRoomSqlEntity: ActionToRoomSqlEntity,
+    actionToRoomSqlEntity: ActionToRoomSqlEntity?,
 ) = with(roomSqlEntity) {
     RoomEntry(
         id = id,
@@ -16,7 +16,8 @@ internal fun RoomEntry.Companion.fromEntities(
         users = usersToRoomSqlEntities.map { it.userId }.toSet(),
         moderators = moderatorsToRoomSqlEntities.map { it.userId }.toSet(),
         createdAt = createdAt,
-        lastAction = RoomEntry.LastActionEntry.fromActionSqlEntity(actionToRoomSqlEntity)
+        deletedAt = deletedAt,
+        lastAction = actionToRoomSqlEntity?.let { RoomEntry.LastActionEntry.fromActionSqlEntity(it) }
     )
 }
 
@@ -47,7 +48,8 @@ internal fun RoomEntry.toSqlEntity() = with(this) {
         id = id,
         name = name,
         image = image,
-        createdAt = createdAt
+        createdAt = createdAt,
+        deletedAt = deletedAt
     )
 }
 

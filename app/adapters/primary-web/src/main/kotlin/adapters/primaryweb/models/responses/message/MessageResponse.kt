@@ -11,6 +11,7 @@ data class MessageResponse(
     @SerialName("text") val text: String,
     @SerialName("readBy") val readBy: List<Long>,
     @SerialName("editedAt") val editedAt: String?,
-    @SerialName("sentAt") val sentAt: String
+    @SerialName("sentAt") val sentAt: String,
+    @SerialName("isDeleted") val isDeleted: Boolean,
 )
 

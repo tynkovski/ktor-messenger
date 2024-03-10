@@ -17,7 +17,7 @@ fun interface GetRoomUsecase {
 }
 
 fun interface DeleteRoomUsecase {
-    suspend fun deleteRoom(roomId: Long)
+    suspend fun deleteRoom(roomId: Long): RoomEntry
 }
 
 fun interface RenameRoomUsecase {

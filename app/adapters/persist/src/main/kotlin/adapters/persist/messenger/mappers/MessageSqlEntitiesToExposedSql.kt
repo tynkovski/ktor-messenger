@@ -12,8 +12,9 @@ internal fun MessageSqlEntity.toSqlStatement(statement: InsertStatement<Number>)
     it[MessageSqlEntities.senderId] = senderId
     it[MessageSqlEntities.roomId] = roomId
     it[MessageSqlEntities.text] = text
-    it[MessageSqlEntities.sentAt] = sentAt
+    it[MessageSqlEntities.createdAt] = sentAt
     it[MessageSqlEntities.editedAt] = editedAt
+    it[MessageSqlEntities.deletedAt] = deletedAt
 }
 
 internal fun ReaderToMessageSqlEntity.toSqlStatement(statement: InsertStatement<Number>) = statement.let {
@@ -27,8 +28,9 @@ internal fun MessageSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
         senderId = resultRow[MessageSqlEntities.senderId],
         roomId = resultRow[MessageSqlEntities.roomId],
         text = resultRow[MessageSqlEntities.text],
-        sentAt = resultRow[MessageSqlEntities.sentAt],
-        editedAt = resultRow[MessageSqlEntities.editedAt]
+        sentAt = resultRow[MessageSqlEntities.createdAt],
+        editedAt = resultRow[MessageSqlEntities.editedAt],
+        deletedAt = resultRow[MessageSqlEntities.deletedAt]
     )
 
 internal fun ReaderToMessageSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =

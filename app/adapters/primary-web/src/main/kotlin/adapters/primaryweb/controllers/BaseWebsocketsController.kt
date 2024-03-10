@@ -16,10 +16,22 @@ interface BaseControllerEvent {
 
 abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalController {
 
-    private val members = ConcurrentHashMap<Long, WebSocketSession>()
+    private val members = ConcurrentHashMap<Long, DefaultWebSocketServerSession>()
 
     protected val logger = InlineLogger()
+
     protected fun getSession(userId: Long) = members[userId]
+
+    private fun addSession(userId: Long, session: DefaultWebSocketServerSession):DefaultWebSocketServerSession? {
+        members[userId] = session
+        return getSession(userId)
+    }
+
+    private fun removeSession(userId: Long) {
+        if (members.containsKey(userId)) {
+            members.remove(userId)
+        }
+    }
 
     private suspend fun processFrame(userId: Long, frame: Frame) {
         if (frame is Frame.Text) {
@@ -27,8 +39,6 @@ abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalCont
                 .readText()
                 .split("#", limit = 2)
                 .map(String::trim)
-            logger.debug { "event: $event, json: $json" }
-
             processEvent(userId, processText(event, json))
         }
     }
@@ -61,18 +71,16 @@ abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalCont
     suspend fun connect(session: DefaultWebSocketServerSession) {
         val userId = findUser(session.call).id!!
         logger.debug { "connecting user with id $userId" }
-        members[userId] = session
-        members[userId]?.incoming?.consumeEach { frame ->
+        addSession(userId, session)?.incoming?.consumeEach { frame ->
             processFrame(userId, frame)
         }
     }
 
     suspend fun disconnect(session: DefaultWebSocketServerSession) {
-        val userId = findUser(session.call).id
-        members[userId]?.close()
-        if (members.containsKey(userId)) {
-            members.remove(userId)
-        }
+        val userId = findUser(session.call).id!!
+        session.close()
+        logger.debug { "disconnecting user with id $userId" }
+        removeSession(userId)
     }
 
     protected abstract suspend fun processEvent(applicantId: Long, event: BaseControllerEvent)

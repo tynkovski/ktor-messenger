@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RestLogoutRequest(
-    @SerialName("refreshToken")
-    val refreshToken: String
+data class SignInRequest (
+    @SerialName("login") val login: String,
+    @SerialName("password") val password: String,
 )

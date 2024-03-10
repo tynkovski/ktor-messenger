@@ -9,28 +9,26 @@ import org.koin.dsl.module
 val controllersModule = module {
     single {
         AuthController(
-            verifyPasswordUsecase = get(),
-            getUserByLoginUsecase = get(),
             createAndSaveTokensUsecase = get(),
             verifyAccessTokenUsecase = get(),
             getUserForKeysUsecase = get(),
             createAccessTokenUsecase = get(),
             deleteRefreshTokenUsecase = get(),
             verifyRefreshTokenUsecase = get(),
-            addUserUsecase = get(),
+            createUserUsecase = get(),
             createTokensUsecase = get(),
-            saltedHashUsecase = get(),
+            getUserByLoginPasswordUsecase = get(),
         )
     }
 
     single {
         UserController(
-            saltedHashUsecase = get(),
-            addUserUsecase = get(),
-            updateUserUsecase = get(),
+            editUserUsecase = get(),
             editUserNameUsecase = get(),
             deleteUserUsecase = get(),
-            getUserUsecase = get()
+            getUserUsecase = get(),
+            createUserUsecase = get(),
+            editUserImageUsecase = get()
         )
     }
 

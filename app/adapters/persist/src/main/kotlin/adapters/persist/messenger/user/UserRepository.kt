@@ -6,8 +6,6 @@ import adapters.persist.messenger.mappers.fromSqlResultRow
 import adapters.persist.messenger.mappers.toSqlStatement
 import adapters.persist.util.postgresql.pgInsertOrUpdate
 import core.outport.MustBeCalledInTransactionContext
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
 
 internal class UserRepository {
@@ -36,11 +34,6 @@ internal class UserRepository {
             .resultedValues!!
             .first()
             .let { UserSqlEntity.fromSqlResultRow(it) }
-    }
-
-    @MustBeCalledInTransactionContext
-    fun deleteById(id: Long): Boolean {
-        return UserSqlEntities.deleteWhere { UserSqlEntities.id eq id } > 0
     }
 
     @MustBeCalledInTransactionContext

@@ -3,13 +3,13 @@ package adapters.primaryweb.mappers
 import adapters.primaryweb.models.gen.RestGender
 import adapters.primaryweb.models.gen.RestPersonResponse
 import adapters.primaryweb.models.gen.RestPostalAddressResponse
-import adapters.primaryweb.models.responses.auth.RestTokenResponse
+import adapters.primaryweb.models.responses.auth.TokenResponse
 import adapters.primaryweb.models.responses.message.MessageResponse
 import adapters.primaryweb.models.responses.message.MessagesPagingResponse
 import adapters.primaryweb.models.responses.room.RoomLastActionResponse
 import adapters.primaryweb.models.responses.room.RoomResponse
 import adapters.primaryweb.models.responses.room.RoomsPagingResponse
-import adapters.primaryweb.models.responses.user.RestUserResponse
+import adapters.primaryweb.models.responses.user.UserResponse
 import core.models.*
 import java.time.format.DateTimeFormatter
 
@@ -42,17 +42,19 @@ internal fun PersonEntry.Gender.toResponse(): RestGender = when (this) {
     PersonEntry.Gender.FEMALE -> RestGender.female
 }
 
-internal fun UserEntry.toResponse(): RestUserResponse = with(this) {
-    RestUserResponse(
+internal fun UserEntry.toResponse(): UserResponse = with(this) {
+    UserResponse(
         id = id!!,
         name = name,
+        image = image,
         login = login,
-        createdAt = formatter.format(createdAt)
+        createdAt = formatter.format(createdAt),
+        isDeleted = deletedAt != null
     )
 }
 
-internal fun TokenEntry.toResponse(): RestTokenResponse = with(this) {
-    RestTokenResponse(
+internal fun TokenEntry.toResponse(): TokenResponse = with(this) {
+    TokenResponse(
         accessToken = accessToken,
         refreshToken = refreshToken
     )
@@ -74,8 +76,9 @@ internal fun RoomEntry.toResponse(): RoomResponse = with(this) {
         image = image,
         users = users.toList(),
         moderators = moderators.toList(),
-        lastAction = lastAction.toResponse(),
+        lastAction = lastAction?.toResponse(),
         createdAt = formatter.format(createdAt),
+        isDeleted = deletedAt != null
     )
 }
 
@@ -94,7 +97,8 @@ internal fun MessageEntry.toResponse(): MessageResponse = with(this) {
         text = text,
         readBy = readBy.toList(),
         editedAt = editedAt?.let { formatter.format(it) },
-        sentAt = formatter.format(sentAt)
+        sentAt = formatter.format(sentAt),
+        isDeleted = deletedAt != null
     )
 }
 

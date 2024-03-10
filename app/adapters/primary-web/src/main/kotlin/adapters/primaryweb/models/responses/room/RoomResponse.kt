@@ -10,8 +10,9 @@ data class RoomResponse(
     @SerialName("image") val image: String?,
     @SerialName("users") val users: List<Long>,
     @SerialName("moderators") val moderators: List<Long>,
-    @SerialName("lastAction") val lastAction: RoomLastActionResponse,
     @SerialName("createdAt") val createdAt: String,
+    @SerialName("isDeleted") val isDeleted: Boolean,
+    @SerialName("lastAction") val lastAction: RoomLastActionResponse?,
 )
 
 @Serializable

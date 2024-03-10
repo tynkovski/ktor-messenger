@@ -34,7 +34,6 @@ internal class DatabaseConnector(
     private lateinit var db: Database
 
     private val tables = arrayOf(
-        PersonSqlEntities, PostalAddressSqlEntities,
         UserSqlEntities,
         KeyStoreSqlEntities,
         RoomSqlEntities, UserToRoomSqlEntities, ModeratorToRoomSqlEntities, ActionToRoomSqlEntities,
