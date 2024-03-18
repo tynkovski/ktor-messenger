@@ -1,6 +1,5 @@
 package core.services
 
-import com.github.michaelbull.logging.InlineLogger
 import core.models.UserEntry
 import core.outport.*
 import core.security.hashing.SaltedHash
@@ -101,7 +100,6 @@ internal class GetUserByLoginPasswordService(
 ) : GetUserByLoginPasswordUsecase {
     override suspend fun getUser(login: String, password: String): UserEntry? = txPort.withNewTransaction {
         val user = getUserByLoginPort.getUser(login)
-        InlineLogger().debug { "$user" }
         val saltedHash = SaltedHash(user.password, user.salt)
         if (verifyPasswordPort.verify(password, saltedHash)) user else null
     }
@@ -159,4 +157,64 @@ internal class FindUserForKeysService(
     override suspend fun findUserForKeys(accessKey: String, refreshKey: String) = txPort.withNewTransaction {
         findUserForKeysPort.findUserForKeys(accessKey, refreshKey)
     }
+}
+
+internal class AddToContactsService(
+    private val addToContactsPort: AddToContactsPort,
+    private val txPort: PersistTransactionPort,
+) : AddToContactsUsecase {
+    override suspend fun addToContacts(applicantId: Long, userId: Long): Boolean =
+        txPort.withNewTransaction {
+            addToContactsPort.addToContacts(applicantId, userId)
+        }
+}
+
+internal class RemoveFromContactsService(
+    private val removeFromContactsPort: RemoveFromContactsPort,
+    private val txPort: PersistTransactionPort,
+) : RemoveFromContactsUsecase {
+    override suspend fun removeFromContacts(applicantId: Long, userId: Long): Boolean =
+        txPort.withNewTransaction {
+            removeFromContactsPort.removeFromContacts(applicantId, userId)
+        }
+}
+
+internal class BlockUserService(
+    private val blockUserPort: BlockUserPort,
+    private val txPort: PersistTransactionPort,
+) : BlockUserUsecase {
+    override suspend fun blockUser(applicantId: Long, userId: Long): Boolean =
+        txPort.withNewTransaction {
+            blockUserPort.blockUser(applicantId, userId)
+        }
+}
+
+internal class UnblockUserService(
+    private val unblockUserPort: UnblockUserPort,
+    private val txPort: PersistTransactionPort,
+) : UnblockUserUsecase {
+    override suspend fun unblockUser(applicantId: Long, userId: Long): Boolean =
+        txPort.withNewTransaction {
+            unblockUserPort.unblockUser(applicantId, userId)
+        }
+}
+
+internal class GetContactsService(
+    private val getContactsPort: GetContactsPort,
+    private val txPort: PersistTransactionPort,
+) : GetContactsUsecase {
+    override suspend fun getContacts(applicantId: Long): Collection<Long> =
+        txPort.withNewTransaction {
+            getContactsPort.getContacts(applicantId)
+        }
+}
+
+internal class GetBlockedUsersService(
+    private val getBlockedUsersPort: GetBlockedUsersPort,
+    private val txPort: PersistTransactionPort,
+) : GetBlockedUsersUsecase {
+    override suspend fun getBlockedUsers(applicantId: Long): Collection<Long> =
+        txPort.withNewTransaction {
+            getBlockedUsersPort.getBlockedUsers(applicantId)
+        }
 }

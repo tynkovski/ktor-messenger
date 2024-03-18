@@ -37,7 +37,8 @@ internal class DatabaseConnector(
         UserSqlEntities,
         KeyStoreSqlEntities,
         RoomSqlEntities, UserToRoomSqlEntities, ModeratorToRoomSqlEntities, ActionToRoomSqlEntities,
-        MessageSqlEntities, ReaderToMessageSqlEntities
+        MessageSqlEntities, ReaderToMessageSqlEntities,
+        ContactToUserEntities, BlockedToUserEntities,
         // add your tables here
     )
 

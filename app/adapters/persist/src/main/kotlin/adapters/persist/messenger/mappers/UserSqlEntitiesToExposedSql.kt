@@ -1,7 +1,9 @@
 package adapters.persist.messenger.mappers
 
+import adapters.persist.messenger.entities.*
+import adapters.persist.messenger.entities.ContactToUserEntities
+import adapters.persist.messenger.entities.ContactToUserEntity
 import adapters.persist.messenger.entities.UserSqlEntities
-import adapters.persist.messenger.entities.UserSqlEntity
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.InsertStatement
 
@@ -15,6 +17,18 @@ internal fun UserSqlEntity.toSqlStatement(statement: InsertStatement<Number>) = 
     it[UserSqlEntities.image] = image
 }
 
+internal fun ContactToUserEntity.toSqlStatement(statement: InsertStatement<Number>) = statement.let {
+     it[ContactToUserEntities.userId] = userId
+     it[ContactToUserEntities.contactId] = contactId
+     it[ContactToUserEntities.createdAt] = createdAt
+}
+
+internal fun BlockedToUserEntity.toSqlStatement(statement: InsertStatement<Number>) = statement.let {
+     it[BlockedToUserEntities.userId] = userId
+     it[BlockedToUserEntities.blockedId] = blockedId
+     it[BlockedToUserEntities.blockedAt] = blockedAt
+}
+
 internal fun UserSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
     UserSqlEntity(
         id = resultRow[UserSqlEntities.id],
@@ -26,3 +40,18 @@ internal fun UserSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
         deletedAt = resultRow[UserSqlEntities.deletedAt],
         image = resultRow[UserSqlEntities.image],
     )
+
+internal fun ContactToUserEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
+    ContactToUserEntity(
+        userId = resultRow[ContactToUserEntities.userId],
+        contactId = resultRow[ContactToUserEntities.contactId],
+        createdAt = resultRow[ContactToUserEntities.createdAt],
+    )
+
+internal fun BlockedToUserEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
+    BlockedToUserEntity(
+        userId = resultRow[BlockedToUserEntities.userId],
+        blockedId = resultRow[BlockedToUserEntities.blockedId],
+        blockedAt = resultRow[BlockedToUserEntities.blockedAt],
+    )
+

@@ -41,11 +41,12 @@ internal class JwtTokenService(
     override fun accessTokenVerifier(): JWTVerifier = accessTokenVerifier
 
     override fun generateAccessToken(key: String, vararg claim: TokenClaim): String {
+        // todo change token life duration
         var token = JWT.create()
             .withAudience(config.audience)
             .withIssuer(config.issuer)
             .withIssuedAt(Date())
-            .withExpiresAt(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1))) // todo change token life duration
+            .withExpiresAt(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)))
             .withClaim("key", key)
 
         claim.forEach { token = token.withClaim(it.name, it.value) }

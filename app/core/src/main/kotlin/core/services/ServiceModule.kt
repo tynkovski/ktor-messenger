@@ -269,4 +269,42 @@ internal val serviceModule = module {
             txPort = get()
         )
     }
+
+    single<AddToContactsUsecase> {
+        AddToContactsService(
+            addToContactsPort = get(),
+            txPort = get()
+        )
+    }
+    single<RemoveFromContactsUsecase> {
+        RemoveFromContactsService(
+            removeFromContactsPort = get(),
+            txPort = get()
+        )
+    }
+
+    single<BlockUserUsecase> {
+        BlockUserService(
+            blockUserPort = get(),
+            txPort = get()
+        )
+    }
+    single<UnblockUserUsecase> {
+        UnblockUserService(
+            unblockUserPort = get(),
+            txPort = get()
+        )
+    }
+    single<GetContactsUsecase> {
+        GetContactsService(
+            getContactsPort = get(),
+            txPort = get()
+        )
+    }
+    single<GetBlockedUsersUsecase> {
+        GetBlockedUsersService(
+            getBlockedUsersPort = get(),
+            txPort = get()
+        )
+    }
 }
