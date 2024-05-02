@@ -10,9 +10,9 @@ import org.jetbrains.exposed.sql.select
 
 internal class UserRepository {
     @MustBeCalledInTransactionContext
-    fun getByIdOrNull(id: Long): UserSqlEntity? {
+    fun getByIdOrNull(userId: Long): UserSqlEntity? {
         return UserSqlEntities
-            .select { UserSqlEntities.id eq id }
+            .select { UserSqlEntities.id eq userId }
             .limit(1)
             .map { UserSqlEntity.fromSqlResultRow(it) }
             .singleOrNull()
@@ -37,9 +37,9 @@ internal class UserRepository {
     }
 
     @MustBeCalledInTransactionContext
-    fun hasEntityWithId(id: Long): Boolean {
+    fun hasEntityWithId(userId: Long): Boolean {
         return UserSqlEntities
-            .select { UserSqlEntities.id eq id }
+            .select { UserSqlEntities.id eq userId }
             .limit(1)
             .count() > 0
     }

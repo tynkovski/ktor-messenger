@@ -13,6 +13,8 @@ import adapters.persist.messenger.room.ModeratorToRoomRepository
 import adapters.persist.messenger.room.RoomAdapter
 import adapters.persist.messenger.room.RoomRepository
 import adapters.persist.messenger.room.UserToRoomRepository
+import adapters.persist.messenger.user.BlacklistRepository
+import adapters.persist.messenger.user.ContactsRepository
 import adapters.persist.messenger.user.UserAdapter
 import adapters.persist.messenger.user.UserRepository
 import adapters.persist.util.DatabaseErrorInspector
@@ -27,6 +29,18 @@ val persistenceModule = module {
     }
 
     single {
+        DatabaseConnector(
+            databaseConfig = get<GetDatabaseConfigPort>().database,
+            errorInspector = get(),
+        )
+    } binds arrayOf(
+        BootPersistStoragePort::class,
+        ShutdownPersistStoragePort::class,
+        PersistTransactionPort::class,
+        ClearPersistStoragePort::class
+    )
+
+    single {
         PersonRepository()
     }
     single {
@@ -35,6 +49,12 @@ val persistenceModule = module {
 
     single {
         UserRepository()
+    }
+    single {
+        ContactsRepository()
+    }
+    single {
+        BlacklistRepository()
     }
     single {
         KeyStoreRepository()
@@ -61,18 +81,6 @@ val persistenceModule = module {
     }
 
     single {
-        DatabaseConnector(
-            databaseConfig = get<GetDatabaseConfigPort>().database,
-            errorInspector = get(),
-        )
-    } binds arrayOf(
-        BootPersistStoragePort::class,
-        ShutdownPersistStoragePort::class,
-        PersistTransactionPort::class,
-        ClearPersistStoragePort::class
-    )
-
-    single {
         PersonAdapter(
             personRepository = get(),
             postalAddressRepository = get(),
@@ -88,7 +96,9 @@ val persistenceModule = module {
     single {
         UserAdapter(
             userRepository = get(),
-            keyStoreRepository = get()
+            keyStoreRepository = get(),
+            contactsRepository = get(),
+            blacklistRepository = get()
         )
     } binds arrayOf(
         GetUserPort::class,
@@ -97,7 +107,13 @@ val persistenceModule = module {
         DeleteUserPort::class,
         GetUserByLoginPort::class,
         FindUserForAccessKeyPort::class,
-        FindUserForKeysPort::class
+        FindUserForKeysPort::class,
+        AddToContactsPort::class,
+        RemoveFromContactsPort::class,
+        BlockUserPort::class,
+        UnblockUserPort::class,
+        GetContactsPort::class,
+        GetBlockedUsersPort::class,
     )
 
     single {
@@ -137,6 +153,7 @@ val persistenceModule = module {
     } binds arrayOf(
         AddMessagePort::class,
         GetMessagePort::class,
+        GetLastMessagePort::class,
         GetMessageCountPort::class,
         GetMessagesPagingPort::class,
         UpdateMessagePort::class,

@@ -42,3 +42,27 @@ fun interface FindUserForAccessKeyUsecase {
 fun interface FindUserForKeysUsecase {
     suspend fun findUserForKeys(accessKey: String, refreshKey: String): UserEntry?
 }
+
+fun interface AddToContactsUsecase {
+    suspend fun addToContacts(applicantId: Long, userId: Long): Boolean
+}
+
+fun interface RemoveFromContactsUsecase {
+    suspend fun removeFromContacts(applicantId: Long, userId: Long): Boolean
+}
+
+fun interface GetContactsUsecase {
+    suspend fun getContacts(applicantId: Long): Collection<Long>
+}
+
+fun interface BlockUserUsecase {
+    suspend fun blockUser(applicantId: Long, userId: Long): Boolean
+}
+
+fun interface UnblockUserUsecase {
+    suspend fun unblockUser(applicantId: Long, userId: Long): Boolean
+}
+
+fun interface GetBlockedUsersUsecase {
+    suspend fun getBlockedUsers(applicantId: Long): Collection<Long>
+}
