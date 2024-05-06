@@ -159,6 +159,16 @@ internal class FindUserForKeysService(
     }
 }
 
+internal class GetContactsService(
+    private val getContactsPort: GetContactsPort,
+    private val txPort: PersistTransactionPort,
+) : GetContactsUsecase {
+    override suspend fun getContacts(applicantId: Long): Collection<Long> =
+        txPort.withNewTransaction {
+            getContactsPort.getContacts(applicantId)
+        }
+}
+
 internal class AddToContactsService(
     private val addToContactsPort: AddToContactsPort,
     private val txPort: PersistTransactionPort,
@@ -179,6 +189,16 @@ internal class RemoveFromContactsService(
         }
 }
 
+internal class GetBlockedUsersService(
+    private val getBlockedUsersPort: GetBlockedUsersPort,
+    private val txPort: PersistTransactionPort,
+) : GetBlockedUsersUsecase {
+    override suspend fun getBlockedUsers(applicantId: Long): Collection<Long> =
+        txPort.withNewTransaction {
+            getBlockedUsersPort.getBlockedUsers(applicantId)
+        }
+}
+
 internal class BlockUserService(
     private val blockUserPort: BlockUserPort,
     private val txPort: PersistTransactionPort,
@@ -196,25 +216,5 @@ internal class UnblockUserService(
     override suspend fun unblockUser(applicantId: Long, userId: Long): Boolean =
         txPort.withNewTransaction {
             unblockUserPort.unblockUser(applicantId, userId)
-        }
-}
-
-internal class GetContactsService(
-    private val getContactsPort: GetContactsPort,
-    private val txPort: PersistTransactionPort,
-) : GetContactsUsecase {
-    override suspend fun getContacts(applicantId: Long): Collection<Long> =
-        txPort.withNewTransaction {
-            getContactsPort.getContacts(applicantId)
-        }
-}
-
-internal class GetBlockedUsersService(
-    private val getBlockedUsersPort: GetBlockedUsersPort,
-    private val txPort: PersistTransactionPort,
-) : GetBlockedUsersUsecase {
-    override suspend fun getBlockedUsers(applicantId: Long): Collection<Long> =
-        txPort.withNewTransaction {
-            getBlockedUsersPort.getBlockedUsers(applicantId)
         }
 }

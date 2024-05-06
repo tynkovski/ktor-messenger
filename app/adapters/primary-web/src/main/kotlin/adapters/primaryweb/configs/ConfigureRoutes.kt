@@ -17,8 +17,9 @@ internal fun Application.configureRoutes() {
             logger.debug { "routing/trace(): ${it.buildText()}" }
         }
         healthRoute()
-        userRoute()
         authRoute()
+        contactsRoute()
+        userRoute()
         personRoute()
         roomRoute()
         chatRoute()

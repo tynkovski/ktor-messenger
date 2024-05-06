@@ -26,7 +26,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("io.insert-koin:koin-ktor:$koinVersion")
-    implementation("io.swagger.core.v3:swagger-annotations:$swaggerAnnotationsVersion")
+    //implementation("io.swagger.core.v3:swagger-annotations:$swaggerAnnotationsVersion")
     //implementation ("io.github.smiley4:ktor-swagger-ui:2.7.4")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.kotest.extensions:kotest-assertions-ktor:$kotestKtorVersion")

@@ -21,12 +21,12 @@ internal class UserAdapter(
     GetUserByLoginPort,
     FindUserForKeysPort,
     FindUserForAccessKeyPort,
+    GetContactsPort,
     AddToContactsPort,
     RemoveFromContactsPort,
+    GetBlockedUsersPort,
     BlockUserPort,
-    UnblockUserPort,
-    GetContactsPort,
-    GetBlockedUsersPort {
+    UnblockUserPort {
 
     @MustBeCalledInTransactionContext
     override fun getUser(id: Long): UserEntry {

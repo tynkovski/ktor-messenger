@@ -108,4 +108,3 @@ internal fun Collection<MessageEntry>.toResponse(count: Long): MessagesPagingRes
         messages = map { message -> message.toResponse() }
     )
 }
-

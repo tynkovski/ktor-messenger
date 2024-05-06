@@ -1,9 +1,6 @@
 package adapters.primaryweb
 
-import adapters.primaryweb.controllers.AuthController
-import adapters.primaryweb.controllers.MessageController
-import adapters.primaryweb.controllers.RoomController
-import adapters.primaryweb.controllers.UserController
+import adapters.primaryweb.controllers.*
 import org.koin.dsl.module
 
 val controllersModule = module {
@@ -31,6 +28,15 @@ val controllersModule = module {
             editUserImageUsecase = get()
         )
     }
+
+    single {
+        ContactsController(
+            getContactsUsecase = get(),
+            addToContactsUsecase = get(),
+            removeFromContactsUsecase = get()
+        )
+    }
+
 
     single {
         RoomController(
