@@ -93,6 +93,15 @@ internal class DeleteUserService(
         }
 }
 
+internal class GetUserByLoginService(
+    private val getUserByLoginPort: GetUserByLoginPort,
+    private val txPort: PersistTransactionPort,
+) : GetUserByLoginUsecase {
+    override suspend fun getUser(login: String): UserEntry = txPort.withNewTransaction {
+        getUserByLoginPort.getUser(login)
+    }
+}
+
 internal class GetUserByLoginPasswordService(
     private val getUserByLoginPort: GetUserByLoginPort,
     private val verifyPasswordPort: VerifyPasswordPort,

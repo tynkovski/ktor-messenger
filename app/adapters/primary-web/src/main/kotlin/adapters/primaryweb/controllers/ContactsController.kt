@@ -1,13 +1,10 @@
 package adapters.primaryweb.controllers
 
 import adapters.primaryweb.controllers.interfaces.UserPrincipalController
-import adapters.primaryweb.mappers.toResponse
-import adapters.primaryweb.models.requests.user.ContactRequest
-import adapters.primaryweb.models.requests.user.EditUserNameRequest
-import adapters.primaryweb.models.responses.message.MessagesPagingResponse
+import adapters.primaryweb.models.requests.contact.ContactRequest
+import adapters.primaryweb.models.responses.SimpleMessageResponse
 import adapters.primaryweb.models.responses.user.ContactsResponse
 import adapters.primaryweb.util.receiveValidated
-import core.models.MessageEntry
 import core.usecase.AddToContactsUsecase
 import core.usecase.GetContactsUsecase
 import core.usecase.RemoveFromContactsUsecase
@@ -21,28 +18,23 @@ class ContactsController(
     private val removeFromContactsUsecase: RemoveFromContactsUsecase
 ) : UserPrincipalController {
 
-
-    private fun Collection<Long>.toResponse(): ContactsResponse = ContactsResponse(
-        usersId = toList()
-    )
-
     suspend fun getContacts(call: ApplicationCall) {
         val userId = findUser(call).id!!
         val contacts = getContactsUsecase.getContacts(userId)
-        call.respond(status = HttpStatusCode.OK, message = contacts.toResponse())
+        call.respond(status = HttpStatusCode.OK, message = ContactsResponse(contacts.toList()))
     }
 
     suspend fun addContact(call: ApplicationCall) {
         val request = call.receiveValidated<ContactRequest>()
         val userId = findUser(call).id!!
         addToContactsUsecase.addToContacts(userId, request.userId)
-        call.respond(status = HttpStatusCode.OK, message = "Success")
+        call.respond(status = HttpStatusCode.OK, message = SimpleMessageResponse("ok"))
     }
 
     suspend fun removeContact(call: ApplicationCall) {
         val request = call.receiveValidated<ContactRequest>()
         val userId = findUser(call).id!!
         removeFromContactsUsecase.removeFromContacts(userId, request.userId)
-        call.respond(status = HttpStatusCode.OK, message = "Success")
+        call.respond(status = HttpStatusCode.OK, message = SimpleMessageResponse("ok"))
     }
 }

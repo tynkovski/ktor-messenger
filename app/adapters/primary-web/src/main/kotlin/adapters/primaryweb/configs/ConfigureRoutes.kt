@@ -19,6 +19,7 @@ internal fun Application.configureRoutes() {
         healthRoute()
         authRoute()
         contactsRoute()
+        searchRoute()
         userRoute()
         personRoute()
         roomRoute()

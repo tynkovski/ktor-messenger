@@ -99,6 +99,13 @@ internal val serviceModule = module {
         )
     }
 
+    single<GetUserByLoginUsecase> {
+        GetUserByLoginService(
+            getUserByLoginPort = get(),
+            txPort = get()
+        )
+    }
+
     single<GetUserByLoginPasswordUsecase> {
         GetUserByLoginPasswordService(
             getUserByLoginPort = get(),

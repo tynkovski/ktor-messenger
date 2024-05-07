@@ -28,7 +28,11 @@ val controllersModule = module {
             editUserImageUsecase = get()
         )
     }
-
+    single {
+        SearchController(
+            getUserUsecase = get()
+        )
+    }
     single {
         ContactsController(
             getContactsUsecase = get(),
@@ -36,7 +40,6 @@ val controllersModule = module {
             removeFromContactsUsecase = get()
         )
     }
-
 
     single {
         RoomController(

@@ -19,6 +19,10 @@ fun interface GetUserByLoginPasswordUsecase {
     suspend fun getUser(login: String, password: String): UserEntry?
 }
 
+fun interface GetUserByLoginUsecase {
+    suspend fun getUser(login: String): UserEntry
+}
+
 fun interface DeleteUserUsecase {
     suspend fun deleteUser(userId: Long): UserEntry
 }

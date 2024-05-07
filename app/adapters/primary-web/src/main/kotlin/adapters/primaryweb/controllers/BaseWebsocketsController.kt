@@ -15,7 +15,7 @@ interface BaseControllerEvent {
     val name: String
 }
 
-abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalController {
+abstract class BaseWebsocketsController<B: BaseControllerEvent> : UserPrincipalController {
 
     private val members = ConcurrentHashMap<Long, CopyOnWriteArrayList<DefaultWebSocketServerSession>>()
 
@@ -88,7 +88,7 @@ abstract class BaseWebsocketsController<BaseControllerEvent> : UserPrincipalCont
         removeSession(userId,session)
     }
 
-    protected abstract suspend fun processEvent(applicantId: Long, event: BaseControllerEvent)
+    protected abstract suspend fun processEvent(applicantId: Long, event: B)
 
-    protected abstract suspend fun processText(event: String, json: String): BaseControllerEvent
+    protected abstract suspend fun processText(event: String, json: String): B
 }
