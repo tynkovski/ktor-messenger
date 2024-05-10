@@ -76,6 +76,7 @@ abstract class BaseWebsocketsController<B: BaseControllerEvent> : UserPrincipalC
 
     suspend fun connect(session: DefaultWebSocketServerSession) {
         val userId = findUser(session.call).id!!
+        logger.debug { "connected user with id $userId" }
         addSession(userId, session)
         session.incoming.consumeEach { frame ->
             processFrame(userId, frame)

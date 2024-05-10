@@ -14,6 +14,7 @@ internal fun Route.roomRoute() {
     val roomController by inject<RoomController>()
     authenticate {
         route("/room") {
+            post { roomController.createRoom(call) }
             get("{id}") { roomController.getRoom(call) }
             get("/paged") { roomController.getRoomsPaged(call) }
             webSocket {

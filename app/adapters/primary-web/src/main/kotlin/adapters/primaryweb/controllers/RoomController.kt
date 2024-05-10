@@ -3,6 +3,7 @@ package adapters.primaryweb.controllers
 import adapters.primaryweb.mappers.toResponse
 import adapters.primaryweb.models.requests.room.*
 import adapters.primaryweb.util.longParameter
+import adapters.primaryweb.util.receiveValidated
 import core.usecase.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -92,6 +93,19 @@ internal class RoomController(
         if (!room.users.contains(userId)) {
             throw Exception("User with id $userId does not participate in conversation")
         }
+        call.respond(status = HttpStatusCode.OK, message = room.toResponse())
+    }
+
+    suspend fun createRoom(call: ApplicationCall) {
+        val userId = findUser(call).id!!
+        val request = call.receiveValidated<CreateRoomRequest>()
+        val room = createRoomUsecase.createRoom(
+            applicantId = userId,
+            name = request.name,
+            image = request.image,
+            users = request.users.toSet() + userId,
+            moderators = emptySet()
+        )
         call.respond(status = HttpStatusCode.OK, message = room.toResponse())
     }
 
