@@ -18,6 +18,10 @@ interface GetLastMessagePort {
     fun getLastMessage(roomId: Long): MessageEntry?
 }
 
+interface GetUnreadMessagesPort {
+    fun getUnreadMessages(applicantId: Long, roomId: Long): Collection<MessageEntry>
+}
+
 interface GetMessagesPagingPort {
     fun getMessagesPaging(roomId: Long, page: Long, pageSize: Int): Collection<MessageEntry>
 }

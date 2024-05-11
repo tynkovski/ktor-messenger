@@ -14,6 +14,10 @@ fun interface GetMessageUsecase {
     suspend fun getMessage(messageId: Long): MessageEntry
 }
 
+fun interface GetUnreadMessagesForRoomUsecase {
+    suspend fun getUnreadCount(applicantId: Long, roomId: Long): Int
+}
+
 fun interface GetLastMessageUsecase {
     suspend fun getLastMessage(roomId: Long): MessageEntry?
 }

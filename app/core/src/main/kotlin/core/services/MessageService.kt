@@ -67,6 +67,14 @@ internal class GetMessageService(
         }
 }
 
+internal class GetUnreadMessagesForRoomService(
+    private val getUnreadMessagesPort: GetUnreadMessagesPort,
+    private val txPort: PersistTransactionPort,
+) : GetUnreadMessagesForRoomUsecase {
+    override suspend fun getUnreadCount(applicantId: Long, roomId: Long) = txPort.withNewTransaction {
+        getUnreadMessagesPort.getUnreadMessages( applicantId, roomId).size }
+}
+
 internal class GetLastMessageService(
     private val getLastMessagePort: GetLastMessagePort,
     private val txPort: PersistTransactionPort,

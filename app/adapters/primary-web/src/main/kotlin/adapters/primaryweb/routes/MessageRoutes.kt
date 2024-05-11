@@ -14,7 +14,11 @@ internal fun Route.chatRoute() {
     val messageController by inject<MessageController>()
     authenticate {
         route("/message") {
-            get("{id}") {messageController.getMessage(call)}
+            get("{id}") { messageController.getMessage(call) }
+
+            route("/unread") {
+                get("/{id}") { messageController.getUnreadCont(call) }
+            }
 
             route("/paged") {
                 get("{roomId}") { messageController.getMessagesPaged(call) }

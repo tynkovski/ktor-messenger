@@ -9,6 +9,7 @@ import adapters.persist.messenger.mappers.toSqlStatement
 import adapters.persist.util.postgresql.pgInsertOrUpdate
 import core.outport.MustBeCalledInTransactionContext
 import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 
 internal class MessageRepository {
@@ -62,6 +63,14 @@ internal class MessageRepository {
             .first()
             .let { MessageSqlEntity.fromSqlResultRow(it) }
     }
+
+    @MustBeCalledInTransactionContext
+    fun getUnreadMessages(applicantId: Long, roomId: Long): Collection<MessageSqlEntity> {
+        return (MessageSqlEntities leftJoin ReaderToMessageSqlEntities)
+            .slice(MessageSqlEntities.columns)
+            .select { (MessageSqlEntities.roomId eq roomId) and (ReaderToMessageSqlEntities.readerId neq applicantId) }
+            .map { MessageSqlEntity.fromSqlResultRow(it) }
+    }
 }
 
 internal class ReaderToMessageRepository {
@@ -83,7 +92,7 @@ internal class ReaderToMessageRepository {
             }
             .resultedValues!!
             .first()
-            .let {ReaderToMessageSqlEntity.fromSqlResultRow(it)}
+            .let { ReaderToMessageSqlEntity.fromSqlResultRow(it) }
     }
 
     @MustBeCalledInTransactionContext

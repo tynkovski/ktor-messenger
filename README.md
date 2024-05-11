@@ -313,7 +313,7 @@ and fill up some essential fields:
 - Module: ktor-hexagonal-multimodule.app.infra.main
 - Main class: `io.ktor.server.netty.EngineMain`
 - Program arguments: `-config=app/infra/src/main/resources/application-dev.conf`
-- Environment variables: `APP_DEPLOYMENT_ENV=local;APP_DB_USERNAME=postgres;APP_DB_PASSWORD=postgrespass;APP_DB_URI=jdbc:postgresql://localhost:5432/addrbook;APP_VERSION=0.1;APP_BUILD_NUMBER=1`
+- Environment variables: `APP_DEPLOYMENT_ENV=local;APP_DB_USERNAME=postgres;APP_DB_PASSWORD=my_password_123;APP_DB_URI=jdbc:postgresql://localhost:5432/ktor-messenger;APP_VERSION=0.1;APP_BUILD_NUMBER=1;APP_JWT_ACCESS_SECRET=secret;APP_JWT_REFRESH_SECRET=secred`
 
 You should be able to run/debug your app now.
 

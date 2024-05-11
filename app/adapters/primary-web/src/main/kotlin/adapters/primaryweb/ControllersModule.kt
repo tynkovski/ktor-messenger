@@ -66,7 +66,8 @@ val controllersModule = module {
             deleteMessageUsecase = get(),
             editMessageUsecase = get(),
             readMessageUsecase = get(),
-            getRoomUsecase = get()
+            getRoomUsecase = get(),
+            getUnreadMessagesForRoomUsecase = get(),
         )
     }
 }

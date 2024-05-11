@@ -314,4 +314,11 @@ internal val serviceModule = module {
             txPort = get()
         )
     }
+
+    single<GetUnreadMessagesForRoomUsecase> {
+        GetUnreadMessagesForRoomService(
+            getUnreadMessagesPort = get(),
+            txPort = get()
+        )
+    }
 }

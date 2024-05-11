@@ -5,6 +5,7 @@ import adapters.primaryweb.models.requests.message.DeleteMessageRequest
 import adapters.primaryweb.models.requests.message.EditMessageRequest
 import adapters.primaryweb.models.requests.message.ReadMessageRequest
 import adapters.primaryweb.models.requests.message.SendMessageRequest
+import adapters.primaryweb.models.responses.message.UnreadResponse
 import adapters.primaryweb.util.longParameter
 import core.usecase.*
 import io.ktor.http.*
@@ -54,6 +55,7 @@ sealed class MessageControllerEvent(
 
 internal class MessageController(
     private val getMessageUsecase: GetMessageUsecase,
+    private val getUnreadMessagesForRoomUsecase: GetUnreadMessagesForRoomUsecase,
     private val getMessagesPagingUsecase: GetMessagesPagingUsecase,
     private val getMessageCountUsecase: GetMessageCountUsecase,
     private val sendMessageUsecase: SendMessageUsecase,
@@ -69,6 +71,14 @@ internal class MessageController(
         val count = getMessageCountUsecase.getMessageCount(roomId)
         val messages = getMessagesPagingUsecase.getMessages(roomId, page, pageSize)
         call.respond(status = HttpStatusCode.OK, message = messages.toResponse(count))
+    }
+
+    suspend fun getUnreadCont(call: ApplicationCall) {
+        val applicantId = findUser(call).id!!
+        val roomId = call.longParameter("id")
+        //val roomId = getMessageUsecase.getMessage(messageId).roomId
+        val count = getUnreadMessagesForRoomUsecase.getUnreadCount(applicantId, roomId)
+        call.respond(status = HttpStatusCode.OK, message = UnreadResponse(count))
     }
 
     suspend fun getMessage(call: ApplicationCall) {

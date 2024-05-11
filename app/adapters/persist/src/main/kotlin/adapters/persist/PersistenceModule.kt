@@ -158,5 +158,6 @@ val persistenceModule = module {
         GetMessagesPagingPort::class,
         UpdateMessagePort::class,
         DeleteMessagePort::class,
+        GetUnreadMessagesPort::class
     )
 }

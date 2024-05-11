@@ -18,7 +18,8 @@ internal class MessageAdapter(
     GetMessageCountPort,
     GetMessagesPagingPort,
     UpdateMessagePort,
-    DeleteMessagePort {
+    DeleteMessagePort,
+    GetUnreadMessagesPort {
 
     private val logger = InlineLogger()
 
@@ -95,5 +96,14 @@ internal class MessageAdapter(
         }
 
         return upsertMessageEntry(entry)
+    }
+
+    @MustBeCalledInTransactionContext
+    override fun getUnreadMessages(applicantId: Long, roomId: Long): Collection<MessageEntry> {
+        val messageEntities = messageRepository.getUnreadMessages(applicantId, roomId)
+        return messageEntities.map { entity ->
+            val readerEntities = readerToMessageRepository.getReadersByMessageId(entity.id!!)
+            MessageEntry.fromEntities(entity, readerEntities)
+        }
     }
 }
