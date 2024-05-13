@@ -15,6 +15,7 @@ internal class UserAdapter(
     private val contactsRepository: ContactsRepository,
     private val blacklistRepository: BlacklistRepository,
 ) : GetUserPort,
+    GetUsersPort,
     AddUserPort,
     DeleteUserPort,
     UpdateUserPort,
@@ -33,6 +34,14 @@ internal class UserAdapter(
         val entity = userRepository.getByIdOrNull(userId = id)
             ?: throw UserEntryNotFoundException(searchCriteria = "id=$id")
         return UserEntry.fromEntity(entity = entity)
+    }
+
+    @MustBeCalledInTransactionContext
+    override fun getUsers(ids: List<Long>): Collection<UserEntry> {
+        val entities = userRepository.getUsers(ids)
+        return entities.map {
+            UserEntry.fromEntity(entity = it)
+        }
     }
 
     @MustBeCalledInTransactionContext

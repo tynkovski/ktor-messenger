@@ -8,7 +8,7 @@ import org.koin.ktor.ext.inject
 
 internal fun Routing.contactsRoute() {
     val controller by inject<ContactsController>()
-    route("/contacts") {
+    route("/contact") {
         authenticate {
             get { controller.getContacts(call) }
             post { controller.addContact(call) }

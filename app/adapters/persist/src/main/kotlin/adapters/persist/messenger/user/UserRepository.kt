@@ -19,6 +19,13 @@ internal class UserRepository {
     }
 
     @MustBeCalledInTransactionContext
+    fun getUsers(userIds: List<Long>): Collection<UserSqlEntity> {
+        return UserSqlEntities
+            .select { UserSqlEntities.id inList userIds }
+            .map { UserSqlEntity.fromSqlResultRow(it) }
+    }
+
+    @MustBeCalledInTransactionContext
     fun getByLoginOrNull(login: String): UserSqlEntity? {
         return UserSqlEntities
             .select { UserSqlEntities.login eq login }

@@ -102,6 +102,7 @@ val persistenceModule = module {
         )
     } binds arrayOf(
         GetUserPort::class,
+        GetUsersPort::class,
         AddUserPort::class,
         UpdateUserPort::class,
         DeleteUserPort::class,

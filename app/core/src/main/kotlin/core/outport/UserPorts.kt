@@ -10,6 +10,10 @@ interface GetUserPort {
     fun getUser(id: Long): UserEntry
 }
 
+interface GetUsersPort {
+    fun getUsers(ids: List<Long>): Collection<UserEntry>
+}
+
 interface GetUserByLoginPort {
     fun getUser(login: String): UserEntry
 }

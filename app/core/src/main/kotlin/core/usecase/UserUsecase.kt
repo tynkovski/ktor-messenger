@@ -15,6 +15,10 @@ fun interface GetUserUsecase {
     suspend fun getUser(userId: Long): UserEntry
 }
 
+fun interface GetUsersUsecase {
+    suspend fun getUsers(userIds: List<Long>): Collection<UserEntry>
+}
+
 fun interface GetUserByLoginPasswordUsecase {
     suspend fun getUser(login: String, password: String): UserEntry?
 }

@@ -80,6 +80,14 @@ internal class GetUserService(
         txPort.withNewTransaction { getUserPort.getUser(userId) }
 }
 
+internal class GetUsersService(
+    private val getUsersPort: GetUsersPort,
+    private val txPort: PersistTransactionPort,
+) : GetUsersUsecase {
+    override suspend fun getUsers(userIds: List<Long>): Collection<UserEntry> =
+        txPort.withNewTransaction { getUsersPort.getUsers(userIds) }
+}
+
 internal class DeleteUserService(
     private val getUserPort: GetUserPort,
     private val deleteUserPort: DeleteUserPort,

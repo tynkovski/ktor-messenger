@@ -69,7 +69,12 @@ internal val serviceModule = module {
             txPort = get()
         )
     }
-
+    single<GetUsersUsecase> {
+        GetUsersService(
+            getUsersPort = get(),
+            txPort = get()
+        )
+    }
     single<DeleteUserUsecase> {
         DeleteUserService(
             getUserPort = get(),

@@ -2,6 +2,7 @@ package adapters.primaryweb.controllers
 
 import adapters.primaryweb.controllers.interfaces.UserPrincipalController
 import adapters.primaryweb.mappers.toResponse
+import adapters.primaryweb.models.requests.contact.ContactsRequest
 import adapters.primaryweb.models.requests.user.CreateUserRequest
 import adapters.primaryweb.models.requests.user.EditUserImageRequest
 import adapters.primaryweb.models.requests.user.EditUserNameRequest
@@ -15,6 +16,7 @@ import io.ktor.server.response.*
 
 internal class UserController(
     private val getUserUsecase: GetUserUsecase,
+    private val getUsersUsecase: GetUsersUsecase,
     private val createUserUsecase: CreateUserUsecase,
     private val editUserUsecase: EditUserUsecase,
     private val editUserNameUsecase: EditUserNameUsecase,
@@ -41,6 +43,13 @@ internal class UserController(
         val id = call.longParameter("id")
         val user = getUserUsecase.getUser(id)
         call.respond(status = HttpStatusCode.OK, message = user.toResponse())
+    }
+
+    suspend fun getUserByIds(call: ApplicationCall) {
+        val request = call.receiveValidated<ContactsRequest>()
+        val ids = request.userIds
+        val users = getUsersUsecase.getUsers(ids)
+        call.respond(status = HttpStatusCode.OK, message = users.toResponse())
     }
 
     suspend fun updateUser(call: ApplicationCall) {

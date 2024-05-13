@@ -10,6 +10,7 @@ import adapters.primaryweb.models.responses.room.RoomLastActionResponse
 import adapters.primaryweb.models.responses.room.RoomResponse
 import adapters.primaryweb.models.responses.room.RoomsPagingResponse
 import adapters.primaryweb.models.responses.user.UserResponse
+import adapters.primaryweb.models.responses.user.UsersResponse
 import core.models.*
 import java.time.format.DateTimeFormatter
 
@@ -50,6 +51,12 @@ internal fun UserEntry.toResponse(): UserResponse = with(this) {
         login = login,
         createdAt = formatter.format(createdAt),
         isDeleted = deletedAt != null
+    )
+}
+
+internal fun Collection<UserEntry>.toResponse(): UsersResponse = with(this) {
+    UsersResponse(
+       users = map { user -> user.toResponse() }
     )
 }
 

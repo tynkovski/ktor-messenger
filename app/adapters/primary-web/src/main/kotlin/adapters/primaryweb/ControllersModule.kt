@@ -21,6 +21,7 @@ val controllersModule = module {
     single {
         UserController(
             editUserUsecase = get(),
+            getUsersUsecase = get(),
             editUserNameUsecase = get(),
             deleteUserUsecase = get(),
             getUserUsecase = get(),
@@ -37,7 +38,8 @@ val controllersModule = module {
         ContactsController(
             getContactsUsecase = get(),
             addToContactsUsecase = get(),
-            removeFromContactsUsecase = get()
+            removeFromContactsUsecase = get(),
+            getUsersUsecase = get()
         )
     }
 
