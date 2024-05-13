@@ -19,24 +19,26 @@ class ContactsController(
 ) : UserPrincipalController {
 
     suspend fun getContacts(call: ApplicationCall) {
-        val userId = findUser(call).id!!
-        val contacts = getContactsUsecase.getContacts(userId)
+        val applicantId = findUser(call).id!!
+        val contacts = getContactsUsecase.getContacts(applicantId)
         val users = getUsersUsecase.getUsers(contacts.toList())
         call.respond(status = HttpStatusCode.OK, message = users.toResponse())
     }
 
     suspend fun addContact(call: ApplicationCall) {
-        val userId = call.longParameter("id")
-        addToContactsUsecase.addToContacts(userId, userId)
-        val contacts = getContactsUsecase.getContacts(userId)
+        val applicantId = findUser(call).id!!
+        val userId = call.request.queryParameters["id"]!!.toLong()
+        addToContactsUsecase.addToContacts(applicantId, userId)
+        val contacts = getContactsUsecase.getContacts(applicantId)
         val users = getUsersUsecase.getUsers(contacts.toList())
         call.respond(status = HttpStatusCode.OK, message = users.toResponse())
     }
 
     suspend fun removeContact(call: ApplicationCall) {
-        val userId = call.longParameter("id")
-        removeFromContactsUsecase.removeFromContacts(userId, userId)
-        val contacts = getContactsUsecase.getContacts(userId)
+        val applicantId = findUser(call).id!!
+        val userId = call.request.queryParameters["id"]!!.toLong()
+        removeFromContactsUsecase.removeFromContacts(applicantId, userId)
+        val contacts = getContactsUsecase.getContacts(applicantId)
         val users = getUsersUsecase.getUsers(contacts.toList())
         call.respond(status = HttpStatusCode.OK, message = users.toResponse())
     }
