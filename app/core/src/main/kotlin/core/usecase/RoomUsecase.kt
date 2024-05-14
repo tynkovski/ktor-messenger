@@ -16,6 +16,10 @@ fun interface GetRoomUsecase {
     suspend fun getRoom(roomId: Long): RoomEntry
 }
 
+fun interface FindRoomUsecase {
+    suspend fun findRoom(userId: Long, collocutorId: Long): RoomEntry?
+}
+
 fun interface DeleteRoomUsecase {
     suspend fun deleteRoom(roomId: Long): RoomEntry
 }

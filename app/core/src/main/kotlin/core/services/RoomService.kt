@@ -158,6 +158,16 @@ internal class GetRoomService(
         }
 }
 
+internal class FindRoomService(
+    private val findRoomPort: FindRoomPort,
+    private val txPort: PersistTransactionPort,
+) : FindRoomUsecase {
+    override suspend fun findRoom(userId: Long, collocutorId: Long): RoomEntry? =
+        txPort.withNewTransaction {
+            findRoomPort.findRoom(userId, collocutorId)
+        }
+}
+
 internal class GetRoomCountService(
     private val getRoomCountPort: GetRoomCountPort,
     private val txPort: PersistTransactionPort,

@@ -7,6 +7,7 @@ import adapters.persist.util.postgresql.pgInsertOrUpdate
 import core.outport.MustBeCalledInTransactionContext
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
 
@@ -26,6 +27,18 @@ internal class RoomRepository {
             .select { RoomSqlEntities.id eq id }
             .limit(1)
             .count() > 0
+    }
+
+    @MustBeCalledInTransactionContext
+    fun findRoom(userId: Long, collocutorId: Long): RoomSqlEntity? {
+        return (RoomSqlEntities leftJoin UserToRoomSqlEntities)
+            .slice(RoomSqlEntities.columns)
+            .select {
+                (UserToRoomSqlEntities.userId eq userId) and (UserToRoomSqlEntities.userId eq collocutorId)
+            }
+            .limit(1)
+            .map { RoomSqlEntity.fromSqlResultRow(it) }
+            .singleOrNull()
     }
 
     @MustBeCalledInTransactionContext

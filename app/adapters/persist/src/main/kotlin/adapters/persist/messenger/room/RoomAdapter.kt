@@ -16,6 +16,7 @@ internal class RoomAdapter(
     private val actionToRoomRepository: ActionToRoomRepository,
 ) : AddRoomPort,
     GetRoomPort,
+    FindRoomPort,
     GetRoomCountPort,
     GetRoomsPagingPort,
     UpdateRoomPort,
@@ -104,6 +105,24 @@ internal class RoomAdapter(
     }
 
     @MustBeCalledInTransactionContext
+    override fun findRoom(userId: Long, collocutorId: Long): RoomEntry? {
+        val roomEntity = roomRepository.findRoom(userId, collocutorId) ?: return null
+
+        val roomId = roomEntity.id!!
+        val usersEntities = userToRoomRepository.getUsersByRoomId(roomId)
+        val moderatorsEntities = moderatorToRoomRepository.getUsersByRoomId(roomId)
+        val actionToRoomSqlEntity = actionToRoomRepository.getByRoomId(roomId)
+            ?: throw LastActionNotFoundException(searchCriteria = "id=$roomId")
+
+        return RoomEntry.fromEntities(
+            roomSqlEntity = roomEntity,
+            usersToRoomSqlEntities = usersEntities,
+            moderatorsToRoomSqlEntities = moderatorsEntities,
+            actionToRoomSqlEntity = actionToRoomSqlEntity
+        )
+    }
+
+    @MustBeCalledInTransactionContext
     override fun getRoomsPaging(userId: Long, page: Long, pageSize: Int): Collection<RoomEntry> {
         val roomEntities = roomRepository.getRoomsPaging(userId = userId, page = page, pageSize = pageSize)
         return roomEntities.map { entity ->
@@ -131,4 +150,6 @@ internal class RoomAdapter(
         }
         return upsertRoomEntry(entry)
     }
+
+
 }

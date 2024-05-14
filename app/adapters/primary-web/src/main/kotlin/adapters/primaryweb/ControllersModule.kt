@@ -56,6 +56,7 @@ val controllersModule = module {
             makeModeratorInRoomUsecase = get(),
             getRoomsPagedUsecase = get(),
             getRoomsCountUsecase = get(),
+            findRoomUsecase = get()
         )
     }
 

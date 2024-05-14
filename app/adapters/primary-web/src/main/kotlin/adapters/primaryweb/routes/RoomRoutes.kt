@@ -16,6 +16,7 @@ internal fun Route.roomRoute() {
         route("/room") {
             post { roomController.createRoom(call) }
             get("{id}") { roomController.getRoom(call) }
+            get("/find/{id}") { roomController.findRoom(call) }
             get("/paged") { roomController.getRoomsPaged(call) }
             webSocket {
                 try {

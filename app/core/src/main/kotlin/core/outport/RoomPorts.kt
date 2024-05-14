@@ -10,6 +10,10 @@ interface GetRoomPort {
     fun getRoom(roomId: Long): RoomEntry
 }
 
+interface FindRoomPort {
+    fun findRoom(userId: Long, collocutorId: Long): RoomEntry?
+}
+
 interface GetRoomCountPort {
     fun getRoomCount(userId: Long): Long
 }

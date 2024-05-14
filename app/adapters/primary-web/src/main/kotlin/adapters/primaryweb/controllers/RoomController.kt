@@ -75,6 +75,7 @@ sealed class RoomControllerEvent(override val name: String) : BaseControllerEven
 internal class RoomController(
     private val createRoomUsecase: CreateRoomUsecase,
     private val getRoomUsecase: GetRoomUsecase,
+    private val findRoomUsecase: FindRoomUsecase,
     private val deleteRoomUsecase: DeleteRoomUsecase,
     private val renameRoomUsecase: RenameRoomUsecase,
     private val joinToRoomUsecase: JoinToRoomUsecase,
@@ -94,6 +95,24 @@ internal class RoomController(
             throw Exception("User with id $userId does not participate in conversation")
         }
         call.respond(status = HttpStatusCode.OK, message = room.toResponse())
+    }
+
+    suspend fun findRoom(call: ApplicationCall) {
+        val userId = findUser(call).id!!
+        val collocutorId = call.longParameter("id")
+        val room = findRoomUsecase.findRoom(userId, collocutorId)
+        if (room == null) {
+            val createdRoom = createRoomUsecase.createRoom(
+                applicantId = userId,
+                name = null,
+                image = null,
+                users = setOf(userId, collocutorId),
+                moderators = emptySet()
+            )
+            call.respond(status = HttpStatusCode.OK, message = createdRoom.toResponse())
+        } else {
+            call.respond(status = HttpStatusCode.OK, message = room.toResponse())
+        }
     }
 
     suspend fun createRoom(call: ApplicationCall) {
