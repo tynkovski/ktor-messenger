@@ -89,13 +89,6 @@ internal fun RoomEntry.toResponse(authorName: String?): RoomResponse = with(this
     )
 }
 
-//internal fun Collection<RoomEntry>.toResponse(count: Long): RoomsPagingResponse = with(this) {
-//    RoomsPagingResponse(
-//        count = count,
-//        rooms = map { room -> room.toResponse() }
-//    )
-//}
-
 internal fun MessageEntry.toResponse(): MessageResponse = with(this) {
     MessageResponse(
         id = id!!,
