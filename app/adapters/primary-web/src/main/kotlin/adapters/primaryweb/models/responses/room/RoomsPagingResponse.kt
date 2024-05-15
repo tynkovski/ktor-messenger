@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RoomsPagingResponse(
-    @SerialName("count") val count: Long,
+    @SerialName("page") val page: Long,
+    @SerialName("total_count") val count: Long,
     @SerialName("rooms") val rooms: List<RoomResponse>
 )
