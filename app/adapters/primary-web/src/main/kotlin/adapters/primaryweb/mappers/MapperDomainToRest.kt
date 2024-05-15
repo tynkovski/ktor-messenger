@@ -8,7 +8,6 @@ import adapters.primaryweb.models.responses.message.MessageResponse
 import adapters.primaryweb.models.responses.message.MessagesPagingResponse
 import adapters.primaryweb.models.responses.room.RoomLastActionResponse
 import adapters.primaryweb.models.responses.room.RoomResponse
-import adapters.primaryweb.models.responses.room.RoomsPagingResponse
 import adapters.primaryweb.models.responses.user.UserResponse
 import adapters.primaryweb.models.responses.user.UsersResponse
 import core.models.*
@@ -56,7 +55,7 @@ internal fun UserEntry.toResponse(): UserResponse = with(this) {
 
 internal fun Collection<UserEntry>.toResponse(): UsersResponse = with(this) {
     UsersResponse(
-       users = map { user -> user.toResponse() }
+        users = map { user -> user.toResponse() }
     )
 }
 
@@ -67,8 +66,9 @@ internal fun TokenEntry.toResponse(): TokenResponse = with(this) {
     )
 }
 
-internal fun RoomEntry.LastActionEntry.toResponse() = with(this) {
+internal fun RoomEntry.LastActionEntry.toResponse(authorName: String) = with(this) {
     RoomLastActionResponse(
+        authorName = authorName,
         authorId = applicantId,
         actionType = actionType.toString(),
         description = description,
@@ -76,23 +76,16 @@ internal fun RoomEntry.LastActionEntry.toResponse() = with(this) {
     )
 }
 
-internal fun RoomEntry.toResponse(): RoomResponse = with(this) {
+internal fun RoomEntry.toResponse(authorName: String?): RoomResponse = with(this) {
     RoomResponse(
         id = id!!,
         name = name,
         image = image,
         users = users.toList(),
         moderators = moderators.toList(),
-        lastAction = lastAction?.toResponse(),
+        lastAction = authorName?.let { lastAction?.toResponse(it) },
         createdAt = formatter.format(createdAt),
         isDeleted = deletedAt != null
-    )
-}
-
-internal fun Collection<RoomEntry>.toResponse(count: Long): RoomsPagingResponse = with(this) {
-    RoomsPagingResponse(
-        count = count,
-        rooms = map { room -> room.toResponse() }
     )
 }
 

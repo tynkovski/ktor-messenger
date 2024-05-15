@@ -2,8 +2,6 @@ package adapters.persist
 
 import adapters.persist.messenger.entities.*
 import adapters.persist.messenger.entities.KeyStoreSqlEntities
-import adapters.persist.messenger.entities.PersonSqlEntities
-import adapters.persist.messenger.entities.PostalAddressSqlEntities
 import adapters.persist.messenger.entities.RoomSqlEntities
 import adapters.persist.messenger.entities.UserSqlEntities
 import adapters.persist.util.DatabaseErrorInspector
