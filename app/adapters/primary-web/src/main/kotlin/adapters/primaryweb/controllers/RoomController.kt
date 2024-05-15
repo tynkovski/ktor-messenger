@@ -2,8 +2,10 @@ package adapters.primaryweb.controllers
 
 import adapters.primaryweb.mappers.toResponse
 import adapters.primaryweb.models.requests.room.*
+import adapters.primaryweb.models.responses.room.RoomsPagingResponse
 import adapters.primaryweb.util.longParameter
 import adapters.primaryweb.util.receiveValidated
+import core.models.RoomEntry
 import core.usecase.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -73,6 +75,7 @@ sealed class RoomControllerEvent(override val name: String) : BaseControllerEven
 }
 
 internal class RoomController(
+    private val getUserUsecase: GetUserUsecase,
     private val createRoomUsecase: CreateRoomUsecase,
     private val getRoomUsecase: GetRoomUsecase,
     private val findRoomUsecase: FindRoomUsecase,
@@ -87,18 +90,29 @@ internal class RoomController(
     private val getRoomsCountUsecase: GetRoomCountUsecase,
 ) : BaseWebsocketsController<RoomControllerEvent>() {
 
+    private suspend fun getRoomLastActionAuthorName(room: RoomEntry): String? {
+        val authorName = room.lastAction?.applicantId?.let { authorId ->
+            val author = getUserUsecase.getUser(authorId)
+            author.name ?: author.login
+        }
+        return authorName
+    }
+
     suspend fun getRoom(call: ApplicationCall) {
         val roomId = call.longParameter("id")
-        val userId = findUser(call).id!!
+        val user = findUser(call)
+        val userId = user.id!!
         val room = getRoomUsecase.getRoom(roomId)
         if (!room.users.contains(userId)) {
             throw Exception("User with id $userId does not participate in conversation")
         }
-        call.respond(status = HttpStatusCode.OK, message = room.toResponse())
+        val authorName = getRoomLastActionAuthorName(room)
+        call.respond(status = HttpStatusCode.OK, message = room.toResponse(authorName))
     }
 
     suspend fun findRoom(call: ApplicationCall) {
-        val userId = findUser(call).id!!
+        val user = findUser(call)
+        val userId = user.id!!
         val collocutorId = call.longParameter("id")
         val room = findRoomUsecase.findRoom(userId, collocutorId)
         if (room == null) {
@@ -109,14 +123,17 @@ internal class RoomController(
                 users = setOf(userId, collocutorId),
                 moderators = emptySet()
             )
-            call.respond(status = HttpStatusCode.OK, message = createdRoom.toResponse())
+            val authorName = user.name ?: user.login
+            call.respond(status = HttpStatusCode.OK, message = createdRoom.toResponse(authorName))
         } else {
-            call.respond(status = HttpStatusCode.OK, message = room.toResponse())
+            val authorName = getRoomLastActionAuthorName(room)
+            call.respond(status = HttpStatusCode.OK, message = room.toResponse(authorName))
         }
     }
 
     suspend fun createRoom(call: ApplicationCall) {
-        val userId = findUser(call).id!!
+        val user = findUser(call)
+        val userId = user.id!!
         val request = call.receiveValidated<CreateRoomRequest>()
         val room = createRoomUsecase.createRoom(
             applicantId = userId,
@@ -125,16 +142,25 @@ internal class RoomController(
             users = request.users.toSet() + userId,
             moderators = emptySet()
         )
-        call.respond(status = HttpStatusCode.OK, message = room.toResponse())
+        val authorName = getRoomLastActionAuthorName(room)
+        call.respond(status = HttpStatusCode.OK, message = room.toResponse(authorName))
     }
 
     suspend fun getRoomsPaged(call: ApplicationCall) {
-        val userId = findUser(call).id!!
+        val user = findUser(call)
+        val userId = user.id!!
         val page = call.parameters["page"]?.toLong() ?: 0
         val pageSize = call.parameters["pageSize"]?.toInt() ?: 20
         val count = getRoomsCountUsecase.getRoomCount(userId)
         val rooms = getRoomsPagedUsecase.getRooms(userId, page, pageSize)
-        call.respond(status = HttpStatusCode.OK, message = rooms.toResponse(count))
+        val response = RoomsPagingResponse(
+            count = count,
+            rooms = rooms.map { room ->
+                val authorName = getRoomLastActionAuthorName(room)
+                room.toResponse(authorName)
+            }
+        )
+        call.respond(status = HttpStatusCode.OK, message = response)
     }
 
     override suspend fun processEvent(applicantId: Long, event: RoomControllerEvent) {
@@ -148,43 +174,51 @@ internal class RoomController(
                     users = usersSet,
                     moderators = usersSet
                 )
-                notifyUsersIfConnected(usersSet, event.name, room.toResponse())
+                val authorName = getRoomLastActionAuthorName(room)
+                notifyUsersIfConnected(usersSet, event.name, room.toResponse(authorName))
             }
 
             is RoomControllerEvent.RenameRoom -> with(event.request) {
                 val room = renameRoomUsecase.renameRoom(applicantId, roomId, name)
-                notifyUsersIfConnected(room.users, event.name, room.toResponse())
+                val authorName = getRoomLastActionAuthorName(room)
+                notifyUsersIfConnected(room.users, event.name, room.toResponse(authorName))
             }
 
             is RoomControllerEvent.DeleteRoom -> with(event.request) {
                 val usersSet = getRoomUsecase.getRoom(roomId).users.toSet()
                 val room = deleteRoomUsecase.deleteRoom(roomId)
-                notifyUsersIfConnected(usersSet, event.name, room.toResponse())
+                val authorName = getRoomLastActionAuthorName(room)
+                notifyUsersIfConnected(usersSet, event.name, room.toResponse(authorName))
             }
 
             is RoomControllerEvent.JoinedToRoom -> with(event.request) {
                 val room = joinToRoomUsecase.joinUser(applicantId, roomId)
-                notifyUsersIfConnected(room.users, event.name, room.toResponse())
+                val authorName = getRoomLastActionAuthorName(room)
+                notifyUsersIfConnected(room.users, event.name, room.toResponse(authorName))
             }
 
             is RoomControllerEvent.QuitFromRoom -> with(event.request) {
                 val room = quitFromRoomUsecase.quitUser(applicantId, roomId)
-                notifyUsersIfConnected(room.users, event.name, room.toResponse())
+                val authorName = getRoomLastActionAuthorName(room)
+                notifyUsersIfConnected(room.users, event.name, room.toResponse(authorName))
             }
 
             is RoomControllerEvent.InviteUserToRoom -> with(event.request) {
                 val room = inviteUserToRoomUsecase.inviteUser(applicantId, userId, roomId)
-                notifyUsersIfConnected(room.users, event.name, room.toResponse())
+                val authorName = getRoomLastActionAuthorName(room)
+                notifyUsersIfConnected(room.users, event.name, room.toResponse(authorName))
             }
 
             is RoomControllerEvent.KickUserFromRoom -> with(event.request) {
                 val room = kickUserFromRoomUsecase.kickUser(applicantId, userId, roomId)
-                notifyUsersIfConnected(room.users, event.name, room.toResponse())
+                val authorName = getRoomLastActionAuthorName(room)
+                notifyUsersIfConnected(room.users, event.name, room.toResponse(authorName))
             }
 
             is RoomControllerEvent.MakeUserModeratorToRoom -> with(event.request) {
                 val room = makeModeratorInRoomUsecase.makeModerator(applicantId, userId, roomId)
-                notifyUsersIfConnected(room.users, event.name, room.toResponse())
+                val authorName = getRoomLastActionAuthorName(room)
+                notifyUsersIfConnected(room.users, event.name, room.toResponse(authorName))
             }
 
             RoomControllerEvent.Unknown -> {

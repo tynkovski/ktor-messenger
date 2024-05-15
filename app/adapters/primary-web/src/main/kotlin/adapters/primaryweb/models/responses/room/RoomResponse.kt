@@ -18,6 +18,7 @@ data class RoomResponse(
 @Serializable
 data class RoomLastActionResponse(
     @SerialName("authorId") val authorId: Long,
+    @SerialName("authorName") val authorName: String,
     @SerialName("actionType") val actionType: String,
     @SerialName("description") val description: String?,
     @SerialName("actionDateTime") val actionDateTime: String,

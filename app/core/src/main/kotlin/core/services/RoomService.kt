@@ -44,6 +44,19 @@ private fun renameRoom(
     )
 )
 
+private fun sendMessageToRoom(
+    applicantId: Long,
+    message: String,
+    room: RoomEntry,
+) = room.copy(
+    lastAction = RoomEntry.LastActionEntry(
+        applicantId = applicantId,
+        actionType = RoomEntry.LastActionEntry.ActionType.USER_SENT_MESSAGE,
+        description = message,
+        actionDateTime = LocalDateTime.now()
+    )
+)
+
 private fun clearRoom(
     room: RoomEntry
 ) = room.copy(
