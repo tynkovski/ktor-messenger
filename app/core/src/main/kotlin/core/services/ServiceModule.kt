@@ -1,6 +1,7 @@
 package core.services
 
 import core.usecase.*
+import core.usecase.UpdateRoomUsecase
 import org.koin.dsl.binds
 import org.koin.dsl.module
 
@@ -189,6 +190,12 @@ internal val serviceModule = module {
     single<RenameRoomUsecase> {
         RenameRoomService(
             getRoomPort = get(),
+            updateRoomPort = get(),
+            txPort = get()
+        )
+    }
+    single<UpdateRoomUsecase> {
+        UpdateRoomService(
             updateRoomPort = get(),
             txPort = get()
         )

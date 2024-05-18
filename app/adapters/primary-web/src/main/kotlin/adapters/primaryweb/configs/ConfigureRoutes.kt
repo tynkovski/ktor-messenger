@@ -23,6 +23,7 @@ internal fun Application.configureRoutes() {
         userRoute()
         personRoute()
         roomRoute()
-        chatRoute()
+        messageRoute()
+        realtimeChatRoute()
     }
 }

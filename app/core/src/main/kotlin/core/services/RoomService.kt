@@ -3,6 +3,7 @@ package core.services
 import core.models.RoomEntry
 import core.outport.*
 import core.usecase.*
+import core.usecase.UpdateRoomUsecase
 import java.time.LocalDateTime
 
 private fun buildRoom(
@@ -68,7 +69,6 @@ private fun clearRoom(
     deletedAt = LocalDateTime.now(),
 )
 
-// todo add `link` parameter: User joined via link
 private fun joinUserToRoom(
     user: Long,
     room: RoomEntry,
@@ -236,6 +236,15 @@ internal class RenameRoomService(
             val renamedRoom = renameRoom(applicantId, name, room)
             updateRoomPort.updateRoom(renamedRoom)
         }
+}
+
+internal class UpdateRoomService(
+    private val updateRoomPort: UpdateRoomPort,
+    private val txPort: PersistTransactionPort,
+) : UpdateRoomUsecase {
+    override suspend fun updateRoom(roomEntry: RoomEntry): RoomEntry = txPort.withNewTransaction {
+        updateRoomPort.updateRoom(roomEntry)
+    }
 }
 
 internal class JoinToRoomService(
