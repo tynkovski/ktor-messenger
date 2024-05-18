@@ -11,17 +11,47 @@ import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-interface BaseControllerEvent {
-    val name: String
-}
-
-abstract class BaseWebsocketsController<B: BaseControllerEvent> : UserPrincipalController {
+abstract class BaseWebsocketsController : UserPrincipalController {
 
     private val members = ConcurrentHashMap<Long, CopyOnWriteArrayList<DefaultWebSocketServerSession>>()
 
     protected val logger = InlineLogger()
 
+    protected abstract suspend fun processEvent(applicantId: Long, event: String, json: String)
+
     protected fun getSessions(userId: Long) = members[userId]
+
+    protected suspend inline fun <reified R : Any> notifyUsersIfConnected(
+        users: Set<Long>,
+        event: String,
+        response: @Serializable R
+    ) {
+        for (userId in users) {
+            // todo notify each user session in coroutine: CoroutineScope(Dispatchers.IO).launch { }
+            getSessions(userId)?.forEach { session ->
+                runCatching {
+                    val json = Json.encodeToString<R>(response)
+                    Frame.Text("$event#$json")
+                }.onSuccess { frame ->
+                    session.outgoing.send(frame)
+                }.onFailure { e ->
+                    // todo use response model
+                    val errorResponse = e.printStackTrace()
+                    session.outgoing.send(Frame.Text("$event#$errorResponse"))
+                }
+            }
+        }
+    }
+
+    private suspend fun processFrame(userId: Long, frame: Frame) {
+        if (frame is Frame.Text) {
+            val (event, json) = frame
+                .readText()
+                .split("#", limit = 2)
+                .map(String::trim)
+            processEvent(userId, event, json)
+        }
+    }
 
     private fun addSession(
         userId: Long,
@@ -42,38 +72,6 @@ abstract class BaseWebsocketsController<B: BaseControllerEvent> : UserPrincipalC
         }
     }
 
-    private suspend fun processFrame(userId: Long, frame: Frame) {
-        if (frame is Frame.Text) {
-            val (event, json) = frame
-                .readText()
-                .split("#", limit = 2)
-                .map(String::trim)
-            processEvent(userId, processText(event, json))
-        }
-    }
-
-    protected suspend inline fun <reified R : Any> notifyUsersIfConnected(
-        users: Set<Long>,
-        event: String,
-        response: @Serializable R
-    ) {
-        for (userId in users) {
-            // todo notify each session in coroutine: CoroutineScope(Dispatchers.IO).launch { }
-            getSessions(userId)?.forEach { session ->
-                runCatching {
-                    val json = Json.encodeToString<R>(response)
-                    Frame.Text("$event#$json")
-                }.onSuccess { frame ->
-                    session.outgoing.send(frame)
-                }.onFailure { e ->
-                    // todo use response model
-                    val errorResponse = e.printStackTrace()
-                    session.outgoing.send(Frame.Text("$event#$errorResponse"))
-                }
-            }
-        }
-    }
-
     suspend fun connect(session: DefaultWebSocketServerSession) {
         val userId = findUser(session.call).id!!
         logger.debug { "connected user with id $userId" }
@@ -88,8 +86,4 @@ abstract class BaseWebsocketsController<B: BaseControllerEvent> : UserPrincipalC
         session.close()
         removeSession(userId,session)
     }
-
-    protected abstract suspend fun processEvent(applicantId: Long, event: B)
-
-    protected abstract suspend fun processText(event: String, json: String): B
 }

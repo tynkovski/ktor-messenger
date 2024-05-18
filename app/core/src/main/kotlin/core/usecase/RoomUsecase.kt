@@ -28,6 +28,10 @@ fun interface RenameRoomUsecase {
     suspend fun renameRoom(applicantId: Long, roomId: Long, name: String?): RoomEntry
 }
 
+fun interface UpdateRoomUsecase {
+    suspend fun updateRoom(roomEntry: RoomEntry): RoomEntry
+}
+
 fun interface JoinToRoomUsecase {
     suspend fun joinUser(userId: Long, roomId: Long): RoomEntry
 }

@@ -48,13 +48,6 @@ val controllersModule = module {
             getUserUsecase = get(),
             createRoomUsecase = get(),
             getRoomUsecase = get(),
-            deleteRoomUsecase = get(),
-            renameRoomUsecase = get(),
-            joinToRoomUsecase = get(),
-            quitFromRoomUsecase = get(),
-            inviteUserToRoomUsecase = get(),
-            kickUserFromRoomUsecase = get(),
-            makeModeratorInRoomUsecase = get(),
             getRoomsPagedUsecase = get(),
             getRoomsCountUsecase = get(),
             findRoomUsecase = get()
@@ -66,12 +59,27 @@ val controllersModule = module {
             getMessageUsecase = get(),
             getMessagesPagingUsecase = get(),
             getMessageCountUsecase = get(),
+        )
+    }
+
+    single {
+        RealtimeChatController(
+            getMessageUsecase = get(),
+            getUserUsecase = get(),
+            getRoomUsecase = get(),
+            updateRoomUsecase = get(),
             sendMessageUsecase = get(),
             deleteMessageUsecase = get(),
             editMessageUsecase = get(),
             readMessageUsecase = get(),
-            getRoomUsecase = get(),
-            getUnreadMessagesForRoomUsecase = get(),
+            createRoomUsecase = get(),
+            renameRoomUsecase = get(),
+            joinToRoomUsecase = get(),
+            quitFromRoomUsecase = get(),
+            inviteUserToRoomUsecase = get(),
+            kickUserFromRoomUsecase = get(),
+            makeModeratorInRoomUsecase = get(),
+            deleteRoomUsecase = get()
         )
     }
 }
