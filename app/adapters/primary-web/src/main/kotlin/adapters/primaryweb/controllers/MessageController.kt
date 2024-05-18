@@ -5,6 +5,7 @@ import adapters.primaryweb.models.requests.message.DeleteMessageRequest
 import adapters.primaryweb.models.requests.message.EditMessageRequest
 import adapters.primaryweb.models.requests.message.ReadMessageRequest
 import adapters.primaryweb.models.requests.message.SendMessageRequest
+import adapters.primaryweb.models.responses.message.MessagesPagingResponse
 import adapters.primaryweb.models.responses.message.UnreadResponse
 import adapters.primaryweb.util.longParameter
 import core.usecase.*
@@ -70,7 +71,13 @@ internal class MessageController(
         val pageSize = call.parameters["pageSize"]?.toInt() ?: 20
         val count = getMessageCountUsecase.getMessageCount(roomId)
         val messages = getMessagesPagingUsecase.getMessages(roomId, page, pageSize)
-        call.respond(status = HttpStatusCode.OK, message = messages.toResponse(count))
+        val response = MessagesPagingResponse(
+            count = count,
+            roomId = roomId,
+            page = page,
+            messages = messages.map { message -> message.toResponse() }
+        )
+        call.respond(status = HttpStatusCode.OK, message = response)
     }
 
     suspend fun getUnreadCont(call: ApplicationCall) {
