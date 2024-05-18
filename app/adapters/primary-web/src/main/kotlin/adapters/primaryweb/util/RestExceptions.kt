@@ -1,7 +1,7 @@
 package adapters.primaryweb.util
 
-import adapters.primaryweb.gen.models.RestErrorResponse
-import adapters.primaryweb.gen.models.RestErrorSpecificsResponse
+import adapters.primaryweb.models.gen.RestErrorResponse
+import adapters.primaryweb.models.gen.RestErrorSpecificsResponse
 import io.ktor.http.HttpStatusCode
 
 internal open class RestGenericException(

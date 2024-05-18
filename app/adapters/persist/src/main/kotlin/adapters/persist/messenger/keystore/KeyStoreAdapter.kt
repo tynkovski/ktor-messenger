@@ -47,7 +47,7 @@ internal class KeyStoreAdapter(
             ?: throw KeyStoreEntryNotFoundException(searchCriteria = "refreshKey=$refreshKey")
 
         val randAccessKey = generateKeyUsecase.generateKey()
-        val savedKeyEntity = keyStoreRepository.upsert(
+        val savedKeyEntity = keyStoreRepository.upsert( // todo we can update refresh token here
             keyStore.copy(
                 accessKey = randAccessKey,
                 createdAt = LocalDateTime.now()

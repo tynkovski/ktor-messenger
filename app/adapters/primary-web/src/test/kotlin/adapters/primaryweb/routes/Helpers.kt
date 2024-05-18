@@ -1,6 +1,6 @@
 package adapters.primaryweb.routes
 
-import adapters.primaryweb.gen.models.RestPersonResponse
+import adapters.primaryweb.models.gen.RestPersonResponse
 import adapters.primaryweb.webBootstrap
 import core.models.PersonEntry
 import core.outport.DeploymentConfig

@@ -162,7 +162,7 @@ One of the workflows we have is ability to add new person into a persistent stor
 1. User performs HTTP POST request to `/persons` to add new person. This request is handled by
 ktor's route implemented in `adapters.primaryweb.routes.SaveAddressBookEntryRoute` class of
 primary adapter module `primary-web`. POST body request is represented
-by `adapters.primaryweb.gen.models.RestSavePersonRequest` data class (generate from OpenAPI spec).
+by `adapters.primaryweb.models.gen.RestSavePersonRequest` data class (generate from OpenAPI spec).
 REST request model is transformed into `core.models.PersonEntry` business model class defined
 in core's module. Then primary adapter's asks core module to create new person via
 `core.usecase.AddPersonUsecase` interface (this interface is supplied via dependency injection
@@ -187,7 +187,7 @@ entities into database.
 Once this operation is performed, repository will return new SQL entities (with updated ids),
 where they will be converted by adapter back into `PersonEntry` and returned to core's service.
 Core service will return it back to REST controller where this entry will be converted to
-REST response `adapters.primaryweb.gen.models.RestPersonResponse`.
+REST response `adapters.primaryweb.models.gen.RestPersonResponse`.
 
 
 #### Generate new random person workflow
@@ -313,7 +313,7 @@ and fill up some essential fields:
 - Module: ktor-hexagonal-multimodule.app.infra.main
 - Main class: `io.ktor.server.netty.EngineMain`
 - Program arguments: `-config=app/infra/src/main/resources/application-dev.conf`
-- Environment variables: `APP_DEPLOYMENT_ENV=local;APP_DB_USERNAME=postgres;APP_DB_PASSWORD=postgrespass;APP_DB_URI=jdbc:postgresql://localhost:5432/addrbook;APP_VERSION=0.1;APP_BUILD_NUMBER=1`
+- Environment variables: `APP_DEPLOYMENT_ENV=local;APP_DB_USERNAME=postgres;APP_DB_PASSWORD=my_password_123;APP_DB_URI=jdbc:postgresql://localhost:5432/ktor-messenger;APP_VERSION=0.1;APP_BUILD_NUMBER=1;APP_JWT_ACCESS_SECRET=secret;APP_JWT_REFRESH_SECRET=secred`
 
 You should be able to run/debug your app now.
 

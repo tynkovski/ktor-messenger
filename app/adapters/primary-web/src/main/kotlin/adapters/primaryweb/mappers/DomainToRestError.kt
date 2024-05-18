@@ -17,6 +17,5 @@ internal fun DomainException.toRestGenericException() = RestGenericException(
 private fun DomainException.guessHttpStatusCode(): HttpStatusCode = when (this) {
     is ResourceNotFoundException -> HttpStatusCode.NotFound
     is ResourceAlreadyExistsException -> HttpStatusCode.Conflict
-    // TODO add your other domain exceptions here
     else -> HttpStatusCode.InternalServerError
 }

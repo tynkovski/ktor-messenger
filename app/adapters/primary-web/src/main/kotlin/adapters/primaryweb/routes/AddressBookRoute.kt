@@ -1,6 +1,6 @@
 package adapters.primaryweb.routes
 
-import adapters.primaryweb.gen.models.RestSavePersonRequest
+import adapters.primaryweb.models.gen.RestSavePersonRequest
 import adapters.primaryweb.mappers.toPersonEntry
 import adapters.primaryweb.mappers.toResponse
 import adapters.primaryweb.util.longParameter

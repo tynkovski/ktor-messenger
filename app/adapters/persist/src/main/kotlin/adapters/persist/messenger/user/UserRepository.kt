@@ -6,18 +6,23 @@ import adapters.persist.messenger.mappers.fromSqlResultRow
 import adapters.persist.messenger.mappers.toSqlStatement
 import adapters.persist.util.postgresql.pgInsertOrUpdate
 import core.outport.MustBeCalledInTransactionContext
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
 
 internal class UserRepository {
     @MustBeCalledInTransactionContext
-    fun getByIdOrNull(id: Long): UserSqlEntity? {
+    fun getByIdOrNull(userId: Long): UserSqlEntity? {
         return UserSqlEntities
-            .select { UserSqlEntities.id eq id }
+            .select { UserSqlEntities.id eq userId }
             .limit(1)
             .map { UserSqlEntity.fromSqlResultRow(it) }
             .singleOrNull()
+    }
+
+    @MustBeCalledInTransactionContext
+    fun getUsers(userIds: List<Long>): Collection<UserSqlEntity> {
+        return UserSqlEntities
+            .select { UserSqlEntities.id inList userIds }
+            .map { UserSqlEntity.fromSqlResultRow(it) }
     }
 
     @MustBeCalledInTransactionContext
@@ -39,14 +44,9 @@ internal class UserRepository {
     }
 
     @MustBeCalledInTransactionContext
-    fun deleteById(id: Long): Boolean {
-        return UserSqlEntities.deleteWhere { UserSqlEntities.id eq id } > 0
-    }
-
-    @MustBeCalledInTransactionContext
-    fun hasEntityWithId(id: Long): Boolean {
+    fun hasEntityWithId(userId: Long): Boolean {
         return UserSqlEntities
-            .select { UserSqlEntities.id eq id }
+            .select { UserSqlEntities.id eq userId }
             .limit(1)
             .count() > 0
     }

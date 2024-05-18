@@ -1,6 +1,6 @@
 package adapters.primaryweb.routes
 
-import adapters.primaryweb.gen.models.RestHealthResponse
+import adapters.primaryweb.models.gen.RestHealthResponse
 import core.outport.GetDeploymentConfigPort
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call

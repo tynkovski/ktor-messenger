@@ -1,17 +1,14 @@
 package adapters.persist
 
+import adapters.persist.messenger.entities.*
 import adapters.persist.messenger.entities.KeyStoreSqlEntities
-import adapters.persist.messenger.entities.PersonSqlEntities
-import adapters.persist.messenger.entities.PostalAddressSqlEntities
+import adapters.persist.messenger.entities.RoomSqlEntities
 import adapters.persist.messenger.entities.UserSqlEntities
 import adapters.persist.util.DatabaseErrorInspector
 import com.github.michaelbull.logging.InlineLogger
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import core.outport.BootPersistStoragePort
-import core.outport.MustBeCalledInTransactionContext
-import core.outport.PersistTransactionPort
-import core.outport.ShutdownPersistStoragePort
+import core.outport.*
 import java.util.Properties
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.exceptions.ExposedSQLException
@@ -27,21 +24,23 @@ internal class DatabaseConnector(
     private val errorInspector: DatabaseErrorInspector,
 ) : BootPersistStoragePort,
     ShutdownPersistStoragePort,
-    PersistTransactionPort {
+    PersistTransactionPort,
+    ClearPersistStoragePort {
 
     private val logger = InlineLogger()
     private lateinit var ds: HikariDataSource
     private lateinit var db: Database
 
     private val tables = arrayOf(
-        PersonSqlEntities,
-        PostalAddressSqlEntities,
         UserSqlEntities,
-        KeyStoreSqlEntities
+        KeyStoreSqlEntities,
+        RoomSqlEntities, UserToRoomSqlEntities, ModeratorToRoomSqlEntities, ActionToRoomSqlEntities,
+        MessageSqlEntities, ReaderToMessageSqlEntities,
+        ContactToUserEntities, BlockedToUserEntities,
         // add your tables here
     )
 
-    suspend fun deleteAllTables() {
+    override suspend fun deleteAllTables() {
         logger.debug { "Deleting all tables..." }
         withNewTransaction {
             SchemaUtils.drop(*tables)

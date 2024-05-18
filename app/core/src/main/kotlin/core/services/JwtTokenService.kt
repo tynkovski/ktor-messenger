@@ -24,7 +24,6 @@ internal class JwtTokenService(
     private val config = configPort.tokenConfig
 
     private val accessTokenAlgorithm = Algorithm.HMAC256(config.accessSecret)
-
     private val refreshTokenAlgorithm = Algorithm.HMAC256(config.refreshSecret)
 
     private val accessTokenVerifier = JWT.require(accessTokenAlgorithm)
@@ -37,34 +36,33 @@ internal class JwtTokenService(
         .withIssuer(config.issuer)
         .build()
 
-
     override fun generateKey(): String = Random.nextBytes(64).toHex()
 
     override fun accessTokenVerifier(): JWTVerifier = accessTokenVerifier
 
     override fun generateAccessToken(key: String, vararg claim: TokenClaim): String {
+        val minutes = TimeUnit.MINUTES.toMillis(10)
         var token = JWT.create()
             .withAudience(config.audience)
             .withIssuer(config.issuer)
             .withIssuedAt(Date())
-            .withExpiresAt(Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30)))
+            .withExpiresAt(Date(System.currentTimeMillis() + minutes))
             .withClaim("key", key)
 
         claim.forEach { token = token.withClaim(it.name, it.value) }
-
         return token.sign(accessTokenAlgorithm)
     }
 
     override fun generateRefreshToken(key: String, vararg claim: TokenClaim): String {
+        val days = TimeUnit.DAYS.toMillis(180)
         var token = JWT.create()
             .withAudience(config.audience)
             .withIssuer(config.issuer)
             .withIssuedAt(Date())
-            .withExpiresAt(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(180)))
+            .withExpiresAt(Date(System.currentTimeMillis() + days))
             .withClaim("key", key)
 
         claim.forEach { token = token.withClaim(it.name, it.value) }
-
         return token.sign(refreshTokenAlgorithm)
     }
 
