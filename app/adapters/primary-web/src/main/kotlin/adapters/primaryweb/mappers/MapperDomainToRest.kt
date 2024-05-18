@@ -101,10 +101,3 @@ internal fun MessageEntry.toResponse(): MessageResponse = with(this) {
         isDeleted = deletedAt != null
     )
 }
-
-internal fun Collection<MessageEntry>.toResponse(count: Long): MessagesPagingResponse = with(this) {
-    MessagesPagingResponse(
-        count = count,
-        messages = map { message -> message.toResponse() }
-    )
-}

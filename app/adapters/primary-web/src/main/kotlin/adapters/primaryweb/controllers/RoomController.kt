@@ -155,6 +155,7 @@ internal class RoomController(
         val rooms = getRoomsPagedUsecase.getRooms(userId, page, pageSize)
         val response = RoomsPagingResponse(
             count = count,
+            page = page,
             rooms = rooms.map { room ->
                 val authorName = getRoomLastActionAuthorName(room)
                 room.toResponse(authorName)
