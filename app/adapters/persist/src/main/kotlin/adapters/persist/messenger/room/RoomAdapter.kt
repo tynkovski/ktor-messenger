@@ -150,6 +150,4 @@ internal class RoomAdapter(
         }
         return upsertRoomEntry(entry)
     }
-
-
 }

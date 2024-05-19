@@ -6,6 +6,7 @@ import adapters.primaryweb.models.requests.room.*
 import adapters.primaryweb.models.responses.room.RoomsPagingResponse
 import adapters.primaryweb.util.longParameter
 import adapters.primaryweb.util.receiveValidated
+import com.github.michaelbull.logging.InlineLogger
 import core.models.RoomEntry
 import core.usecase.*
 import io.ktor.http.*
@@ -20,6 +21,7 @@ internal class RoomController(
     private val getRoomsPagedUsecase: GetRoomsPagingUsecase,
     private val getRoomsCountUsecase: GetRoomCountUsecase,
 ) : UserPrincipalController {
+    private val logger = InlineLogger()
 
     private suspend fun getLastActionAuthor(room: RoomEntry): String? {
         val lastAction = room.lastAction ?: return null

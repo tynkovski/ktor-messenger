@@ -32,7 +32,7 @@ internal class RoomRepository {
     @MustBeCalledInTransactionContext
     fun findRoom(userId: Long, collocutorId: Long): RoomSqlEntity? {
         return (RoomSqlEntities leftJoin UserToRoomSqlEntities)
-            .slice(RoomSqlEntities.columns)
+            .slice(UserToRoomSqlEntities.columns)
             .select {
                 (UserToRoomSqlEntities.userId eq userId) and (UserToRoomSqlEntities.userId eq collocutorId)
             }

@@ -61,9 +61,8 @@ private fun sendMessageToRoom(
 private fun clearRoom(
     room: RoomEntry
 ) = room.copy(
-    name = "[deleted room]",
+    name = null,
     image = null,
-    lastAction = null,
     users = setOf(),
     moderators = setOf(),
     deletedAt = LocalDateTime.now(),
